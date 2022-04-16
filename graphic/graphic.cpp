@@ -1,7 +1,7 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <iostream>
 using namespace sf;
-
+//ABOBA
 Sprite figures[32];
 int k = 0;
 int size = 56;
