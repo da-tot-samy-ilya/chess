@@ -25,7 +25,7 @@ public:
 class Board
 {
 public:
-	std::vector <std::vector <Square>> square[8][8];
+	Square square[8][8];
 	void SetBoard();
 };
 
