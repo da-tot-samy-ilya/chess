@@ -37,4 +37,9 @@
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="CheckingForMove.h">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>

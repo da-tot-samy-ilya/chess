@@ -1,5 +1,9 @@
 #pragma once
 #include "ChessFigure.h"
+#include "Rook.h"
+#include "Bishop.h"
+#include "Queen.h"
+#include "Knight.h"
 
 class Pawn : public Piece
 {
@@ -19,7 +23,20 @@ int Pawn::move(int vert, int hor)
         vertical = vert;
         didMove = true;
         if (vert == 7 || vert == 0)
-            // фигура на выбор
+        {
+            char a;
+            switch (a)
+            {
+            case('r'):
+                Rook(colour, vertical, horizontal); // будет похоже на срубание фигуры
+            case('b'):
+                Bishop(colour, vertical, horizontal);
+            case('q'):
+                Queen(colour, vertical, horizontal);
+            case('k'):
+                Knight(colour, vertical, horizontal);
+            }
+        }
             return 1;
     }
     return 0;

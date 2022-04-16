@@ -13,7 +13,7 @@ public:
 
 int Bishop::move(int vert, int hor)
 {
-    if ((Check(vert, hor))&&(abs((vert - vertical) == abs(hor - horizontal)) && (vert != vertical)))
+    if ( Check(vert, hor) && MovingBishop(vert, hor, vertical, horizontal))
     {
         horizontal = hor;
         vertical = vert;

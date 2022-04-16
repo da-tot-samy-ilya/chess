@@ -1,5 +1,6 @@
 #pragma once
 #include "ChessFigure.h"
+#include "Pawn.h"
 
 class Rook : public Piece
 {
