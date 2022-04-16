@@ -20,5 +20,5 @@ int Queen::move(int vert, int hor)
 }
 int Queen::cut_down(Piece& f)
 {
-
+	return 1;
 }
