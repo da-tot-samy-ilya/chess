@@ -1,54 +1,15 @@
-﻿#include "oop.h"
-#include <vector>
+#pragma once
+#include "Square.h"
+#include "Rook.h"
 
-int main() {
-	return 0;
-}
+//enum Piece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 
-Square::Square()
+class Board
 {
-	piece = EMPTY;
-	piece_color = NULL;
-	square_color = white;
-}
-
-void Square::setPlace(Square* place)
-{
-	piece_color = place->getPieceColor();
-	piece = place->getPiece();
-}
-
-void Square::setSquareColor(SquareColor s)
-{
-	square_color = s;
-}
-
-void Square::setEmpty()
-{
-	//piece_color = NONE;
-	piece = EMPTY;
-}
-
-Piece Square::getPiece()
-{
-	return piece;
-}
-
-bool Square::getPieceColor()
-{
-	return piece_color;
-}
-
-void Square::setPieceAndColor(Piece p, bool c)
-{
-	piece = p;
-	piece_color = c;
-}
-
-void Square::setPieceColor(bool c)
-{
-	piece_color = c;
-}
+public:
+	Square square[8][8];
+	void SetBoard();
+};
 
 void Board::SetBoard()
 {
@@ -79,7 +40,7 @@ void Board::SetBoard()
 	for (int i = 2; i < 6; i++)
 	{
 		for (int j = 0; j < 8; j++)
-			square[j][i].setPieceAndColor(EMPTY, NULL);
+			square[j][i].setPieceAndColor(EMPTY, 'n');
 
 	}
 	int counter = 0;
@@ -95,5 +56,3 @@ void Board::SetBoard()
 				counter = 0;
 		}
 }
-
-
