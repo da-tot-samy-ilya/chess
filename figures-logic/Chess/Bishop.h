@@ -1,12 +1,11 @@
 #pragma once
 #include "ChessFigure.h"
 
-class Queen;
 class Bishop : public Piece
 {
 
 public:
-    Bishop(bool col, int vert, int hor) : Piece(col, vert, hor) {};
+    Bishop(char col, int vert, int hor) : Piece(col, vert, hor) {};
     Bishop(Bishop& f) : Piece(f.colour, f.vertical, f.horizontal) {};
     int move(int vert, int hor) override;
     int cut_down(Piece& f) override;
@@ -14,7 +13,7 @@ public:
 
 int Bishop::move(int vert, int hor)
 {
-    if ( abs((vert - vertical) == abs(hor - horizontal)) && (vert != vertical))
+    if ((Check(vert, hor))&&(abs((vert - vertical) == abs(hor - horizontal)) && (vert != vertical)))
     {
         horizontal = hor;
         vertical = vert;
