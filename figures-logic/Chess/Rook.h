@@ -1,14 +1,14 @@
 #pragma once
 #include "ChessFigure.h"
 
-class Queen;
 class Rook : public Piece
 {
-public:
+public: 
     Rook(bool col, int vert, int hor) : Piece(col, vert, hor) {};
     Rook(Rook& f) : Piece(f.colour, f.vertical, f.horizontal) {};
     int move(int vert, int hor) override;
     int cut_down(Piece& f) override;
+    bool getFirstMove() { return didMove };
 };
 
 int Rook::move(int vert, int hor)
