@@ -19,6 +19,7 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
+<<<<<<< HEAD
   <ItemGroup>
     <ClInclude Include="Board.h">
       <Filter>Исходные файлы</Filter>
@@ -39,4 +40,12 @@
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
+||||||| a5ec6b7
+=======
+  <ItemGroup>
+    <ClInclude Include="oop.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+  </ItemGroup>
+>>>>>>> fd5c32c0c228a44f6c22ad2cbed549f412af9969
 </Project>
