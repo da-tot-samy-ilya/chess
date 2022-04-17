@@ -7,6 +7,7 @@ private:
 	Piece piece;
 	char piece_color = 'n'; //n - none, w - white, b - black
 	SquareColor square_color;
+	bool isEmpty = true;
 public:
 	void setPlace(Square*);
 	void setEmpty();
@@ -15,12 +16,12 @@ public:
 	void setSquareColor(SquareColor);
 	Piece getPiece();
 	char getPieceColor();
+	bool getEmpty();
 	Square();
 };
 
 Square::Square()
 {
-	piece = EMPTY;
 	square_color = white;
 }
 
@@ -38,7 +39,7 @@ void Square::setSquareColor(SquareColor s)
 void Square::setEmpty()
 {
 	piece_color = 'n';
-	piece = EMPTY;
+	isEmpty = true;
 }
 
 Piece Square::getPiece()
@@ -55,9 +56,16 @@ void Square::setPieceAndColor(Piece p, char c)
 {
 	piece = p;
 	piece_color = c;
+	isEmpty = false;
 }
 
 void Square::setPieceColor(char c)
 {
 	piece_color = c;
+	isEmpty = false;
+}
+
+bool Square::getEmpty()
+{
+	return isEmpty;
 }

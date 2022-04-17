@@ -5,7 +5,7 @@
 class Piece
 {
 protected:
-    char colour; // цвет фигуры: 1 - black, 0 - white
+    char colour; // цвет фигуры
     int vertical; // буквы
     int horizontal; // цифры
 public:
