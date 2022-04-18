@@ -1,6 +1,5 @@
 #pragma once
-//square[]
-#include <iostream>
+#include "Board.h"
 
 bool MovingBishop(int vEnd, int hEnd, int vStart, int hStart)
 {

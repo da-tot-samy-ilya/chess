@@ -6,11 +6,11 @@ class Knight : public Piece
 public:
     Knight(bool col, int vert, int hor) : Piece(col, vert, hor) {};
     Knight(Knight& f) : Piece(f.colour, f.vertical, f.horizontal) {};
-    int move(int vert, int hor) override;
-    int cut_down(Piece& f) override;
+    bool move(int vert, int hor) override;
+    bool cut_down(Piece& f) override;
 };
 
-int Knight::move(int vert, int hor)
+bool Knight::move(int vert, int hor)
 {
     if (vertical + 2 == vert && horizontal + 1 == hor || vertical + 1 == vert && horizontal + 2 == hor ||
         vertical - 1 == vert && horizontal + 2 == hor || vertical - 2 == vert && horizontal + 1 == hor ||
@@ -23,7 +23,7 @@ int Knight::move(int vert, int hor)
     }
     return 0;
 }
-int Knight::cut_down(Piece& f)
+bool Knight::cut_down(Piece& f)
 {
     
 }

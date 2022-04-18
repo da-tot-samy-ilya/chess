@@ -1,17 +1,16 @@
 #pragma once
 #include "ChessFigure.h"
-#include "Pawn.h"
 
 class Rook : public Piece
 {
 public:
     Rook(char col, int vert, int hor) : Piece(col, vert, hor) {};
     Rook(Rook& f) : Piece(f.colour, f.vertical, f.horizontal) {};
-    int move(int vert, int hor) override;
-    int cut_down(Piece& f) override;
+    bool move(int vert, int hor) override;
+    bool cut_down(Piece& f) override;
 };
 
-int Rook::move(int vert, int hor)
+bool Rook::move(int vert, int hor)
 {
     if ((Check(vert, hor))&&(((vert = vertical) && (hor != horizontal)) || ((vert != vertical) && (hor == horizontal))))
     {
@@ -21,7 +20,7 @@ int Rook::move(int vert, int hor)
     }
     return 0;
 }
-int Rook::cut_down(Piece& f)
+bool Rook::cut_down(Piece& f)
 {
-
+    return false;
 }

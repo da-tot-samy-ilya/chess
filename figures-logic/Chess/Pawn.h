@@ -12,11 +12,11 @@ private:
 public:
     Pawn(char col, int vert, int hor) : Piece(col, vert, hor) {};
     Pawn(Pawn& f) : Piece(f.colour, f.vertical, f.horizontal) {};
-    int move(int vert, int hor) override;
-    int cut_down(Piece& f) override;
+    bool move(int vert, int hor) override;
+    bool cut_down(Piece& f) override;
 };
 
-int Pawn::move(int vert, int hor)
+bool Pawn::move(int vert, int hor)
 {
     if (Check(vert, hor) && ((!didMove && vertical == vert - 2) || (vertical == vert - 1)))
     {
@@ -41,7 +41,7 @@ int Pawn::move(int vert, int hor)
     }
     return 0;
 }
-int Pawn::cut_down(Piece& f)
+bool Pawn::cut_down(Piece& f)
 {
     //взятие на проходе, рубят по диагонали...
 }

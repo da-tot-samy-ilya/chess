@@ -7,11 +7,17 @@ class Bishop : public Piece
 public:
     Bishop(char col, int vert, int hor) : Piece(col, vert, hor) {};
     Bishop(Bishop& f) : Piece(f.colour, f.vertical, f.horizontal) {};
-    int move(int vert, int hor) override;
-    int cut_down(Piece& f) override;
+    bool move(int vert, int hor) override;
+    bool cut_down(Piece& f) override;
+    /*Bishop operator=(Piece& p)
+    {
+        colour = p.colour;
+        vertical = p.vertical;
+        horizontal = 
+    }*/
 };
 
-int Bishop::move(int vert, int hor)
+bool Bishop::move(int vert, int hor)
 {
     if ( Check(vert, hor) && MovingBishop(vert, hor, vertical, horizontal))
     {
@@ -21,7 +27,7 @@ int Bishop::move(int vert, int hor)
     }
     return 0;
 }
-int Bishop::cut_down(Piece& f)
+bool Bishop::cut_down(Piece& f)
 {
     
 }

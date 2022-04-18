@@ -1,5 +1,5 @@
 #pragma once
-#include "Square.h"
+#include "ChessFigure.h"
 #include "Rook.h"
 #include "Knight.h"
 #include "Bishop.h"
@@ -8,68 +8,82 @@
 #include "King.h"
 #include "Pawn.h"
 
-//enum Piece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
+enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
+//  a b c d e f g h - vertical
+//0 - hor
+//1
+//2
+//3
+//4
+//5
+//6
+//7
 
 class Board
 {
 public:
-	Square square[8][8];
-	void SetBoard();
+	Piece* square[8][8];
+	void SetBoard(); // изначальное положение доски
+	void SetPiece(char colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty
 };
+
+
+void Board::SetPiece(char colour, int hor, int vert, TypePiece type)
+{
+	switch (type)
+	{
+	case (KING):
+		square[hor][vert] = new King(colour, vert, hor);
+	case (QUEEN):
+		square[hor][vert] = new Queen(colour, vert, hor);
+	case(BISHOP):
+		square[hor][vert] = new Bishop(colour, vert, hor);
+	case(KNIGHT):
+		square[hor][vert] = new Knight(colour, vert, hor);
+	case(ROOK):
+		square[hor][vert] = new Rook(colour, vert, hor);
+	case(PAWN):
+		square[hor][vert] = new Pawn(colour, vert, hor);
+	case (EMPTY):
+		square[hor][vert] = new Pawn('n', vert, hor);
+	}
+}
 
 void Board::SetBoard()
 {
-	square[0][0].setPieceAndColor(Rook r1('w', 0, 0), 'w');
-	square[1][0].setPieceAndColor(Knight kn1('w', 1, 0), 'w');
-	square[2][0].setPieceAndColor(Bishop b1('w', 2, 0), 'w');
-	square[3][0].setPieceAndColor(Queen q1('w', 3, 0), 'w');
-	square[4][0].setPieceAndColor(King k1('w', 4, 0), 'w');
-	square[5][0].setPieceAndColor(Bishop b2('w', 5, 0), 'w');
-	square[6][0].setPieceAndColor(Knight kn2('w', 6, 0), 'w');
-	square[7][0].setPieceAndColor(Rook r2('w', 7, 0), 'w');
+	for (int i = 0; i < 8; i++)
+	{
+		char colour = 'n';
+		if (i < 3) colour = 'w';
+		if (i > 5) colour = 'b';
+		if (i == 0 || i == 7)
+		{
 
-	square[0][7].setPieceAndColor(Rook r3('b', 0, 7), 'b');
-	square[1][7].setPieceAndColor(Knight kn3('b', 1, 7), 'b');
-	square[2][7].setPieceAndColor(Bishop b3('b', 2, 7), 'b');
-	square[3][7].setPieceAndColor(Queen q2('b', 3, 7), 'b');
-	square[4][7].setPieceAndColor(King k2('b', 4, 7), 'b');
-	square[5][7].setPieceAndColor(Bishop b4('b', 5, 7), 'b');
-	square[6][7].setPieceAndColor(Knight kn4('b', 6, 7), 'b');
-	square[7][7].setPieceAndColor(Rook r4('b', 7, 7), 'b');
-
-	square[0][1].setPieceAndColor(Pawn p11('w', 0, 1), 'w');
-	square[1][1].setPieceAndColor(Pawn p12('w', 1, 1), 'w');
-	square[2][1].setPieceAndColor(Pawn p13('w', 2, 1), 'w');
-	square[3][1].setPieceAndColor(Pawn p14('w', 3, 1), 'w');
-	square[4][1].setPieceAndColor(Pawn p15('w', 4, 1), 'w');
-	square[5][1].setPieceAndColor(Pawn p16('w', 5, 1), 'w');
-	square[6][1].setPieceAndColor(Pawn p17('w', 6, 1), 'w');
-	square[7][1].setPieceAndColor(Pawn p18('w', 7, 1), 'w');
-
-	square[0][6].setPieceAndColor(Pawn p21('b', 0, 6), 'b');
-	square[1][6].setPieceAndColor(Pawn p22('b', 1, 6), 'b');
-	square[2][6].setPieceAndColor(Pawn p23('b', 2, 6), 'b');
-	square[3][6].setPieceAndColor(Pawn p24('b', 3, 6), 'b');
-	square[4][6].setPieceAndColor(Pawn p25('b', 4, 6), 'b');
-	square[5][6].setPieceAndColor(Pawn p26('b', 5, 6), 'b');
-	square[6][6].setPieceAndColor(Pawn p27('b', 6, 6), 'b');
-	square[7][6].setPieceAndColor(Pawn p28('b', 7, 6), 'b');
-
-	for (int i = 2; i < 6; i++)
-		for (int j = 0; j < 8; j++)
-			square[i][j].setEmpty();
-			//square[j][i].setPieceAndColor(EMPTY, 'n');
-
-	int counter = 0;
+			square[i][0] = new Rook(colour, 0, i);
+			square[i][1] = new Knight(colour, 1, i);
+			square[i][2] = new Bishop(colour, 2, i);
+			square[i][3] = new Queen(colour, 3, i);
+			square[i][4] = new King(colour, 4, i);
+			square[i][5] = new Bishop(colour, 5, i);
+			square[i][6] = new Knight(colour, 6, i);
+			square[i][7] = new Rook(colour, 7, i);
+		}
+		else
+		{
+			for (int j = 0; j < 8; j++)
+				square[i][j] = new Pawn(colour, j, i);
+		}
+	}
+	/*int counter = 0;
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 8; j++)
 		{
 			if (counter == 0)
 			{
-				square[i][j].setSquareColor(black);
+				square[i][j]->setSquareColor(black);
 				counter = 1;
 			}
 			else
 				counter = 0;
-		}
+		}*/
 }

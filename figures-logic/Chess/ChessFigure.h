@@ -7,8 +7,9 @@ class Piece
 protected:
     char colour; // цвет фигуры
     int vertical; // буквы
-    int horizontal; // цифры
+    int horizontal;// цифры
 public:
+    Piece() : colour('n'), vertical(-1), horizontal(-1) {};
     Piece(char colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};
     Piece(Piece& f)
     {
@@ -16,8 +17,12 @@ public:
         vertical = f.vertical;
         horizontal = f.horizontal;
     };
-    virtual int move(int vert, int hor) = 0;
-    virtual int cut_down(Piece& f) = 0;
+    virtual bool move(int vert, int hor) { return false; };
+    virtual bool cut_down(Piece& f) { return false; };
+
+    char GetColour() { return this->colour; };
+    int GetVert() { return this->vertical; };
+    int GetHor() { return this->horizontal; };
 };
 
 bool Check(int vert, int hor)
