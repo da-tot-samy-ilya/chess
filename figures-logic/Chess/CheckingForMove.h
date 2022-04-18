@@ -56,5 +56,18 @@ bool PiecesAlongTheWayForQueen(int vEnd, int hEnd, int vStart, int hStart)
 
 bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 {
+	return (abs(vEnd - vStart) < 2 && abs(hEnd - hStart) < 2 && (abs(hEnd - hStart) != 0 || abs(hEnd - hStart) != 0));
+}
 
+bool MovingKnight(int vEnd, int hEnd, int vStart, int hStart)
+{
+	return (vStart + 2 == vEnd && hStart + 1 == hEnd || vStart + 1 == vEnd && hStart + 2 == hEnd ||
+		vStart - 1 == vEnd && hStart + 2 == hEnd || vStart - 2 == vEnd && hStart + 1 == hEnd||
+		vStart - 2 == vEnd && hStart - 1 == hEnd || vStart - 1 == vEnd && hStart - 2 == hEnd ||
+		vStart + 1 == vEnd && hStart - 2 == hEnd|| vStart + 2 == vEnd && hStart - 1 == hEnd);
+}
+
+bool MovingPawn(int vEnd, int hEnd, int vStart, int hStart, bool didMove)
+{
+	return ((!didMove && vStart == vEnd - 2) || (vStart == vEnd- 1));
 }

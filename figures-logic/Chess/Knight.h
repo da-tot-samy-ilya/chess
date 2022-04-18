@@ -9,16 +9,13 @@ private:
 public:
     Knight(bool col, int vert, int hor) : Piece(col, vert, hor) {};
     Knight(Knight& f) : Piece(f.colour, f.vertical, f.horizontal) {};
-    bool move(int vert, int hor) override;
+    bool move(int vert, int hor, char col) override;
     bool cut_down(Piece& f) override;
 };
 
-bool Knight::move(int vert, int hor)
+bool Knight::move(int vert, int hor, char col)
 {
-    if (vertical + 2 == vert && horizontal + 1 == hor || vertical + 1 == vert && horizontal + 2 == hor ||
-        vertical - 1 == vert && horizontal + 2 == hor || vertical - 2 == vert && horizontal + 1 == hor ||
-        vertical - 2 == vert && horizontal - 1 == hor || vertical - 1 == vert && horizontal - 2 == hor ||
-        vertical + 1 == vert && horizontal - 2 == hor || vertical + 2 == vert && horizontal - 1 == hor)
+    if ()
     {
         horizontal = hor;
         vertical = vert;

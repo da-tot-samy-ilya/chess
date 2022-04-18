@@ -9,14 +9,14 @@ private:
 public:
 	Queen(char col, int vert, int hor) : Piece(col, vert, hor) {};
 	Queen(Queen& f) : Piece(f.colour, f.vertical, f.horizontal) {};
-	bool move(int vert, int hor) override;
+	bool move(int vert, int hor, char col) override;
 	bool cut_down(Piece& f) override;
 };
 
 
-bool Queen::move(int vert, int hor)
+bool Queen::move(int vert, int hor, char col)
 {
-	if (Check(vert, hor))
+	if (Check(vert, hor) && ())
 	{
 		horizontal = hor;
 		vertical = vert;

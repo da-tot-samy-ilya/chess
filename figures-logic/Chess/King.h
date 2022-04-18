@@ -12,24 +12,21 @@ private:
 public:
     King(char col, int vert, int hor) : Piece(col, vert, hor) {};
     King(King& f) : Piece(f.colour, f.vertical, f.horizontal) {};
-    bool move(int vert, int hor) override;
+    bool move(int vert, int hor, char col) override;
     bool cut_down(Piece& f) override;
     bool getFirstMove() { return didMove; };
 };
 
-bool King::move(int vert, int hor)
+bool King::move(int vert, int hor, char col)
 {
-    if ((Check(vert, hor)) && (vertical + 1 == vert && horizontal == hor || vertical == vert && horizontal + 1 == hor ||
-        vertical - 1 == vert && horizontal == hor || vertical == vert && horizontal - 1 == hor ||
-        vertical + 1 == vert && horizontal + 1 == hor || vertical + 1 == vert && horizontal - 1 == hor ||
-        vertical - 1 == vert && horizontal + 1 == hor || vertical - 1 == vert && horizontal - 1 == hor))
+    if (Check(vert, hor) && ())
     {
         horizontal = hor;
         vertical = vert;
         didMove = true;
         return true;
     }
-    else if (this.getFirstMove() == false) //рокировка
+    else if (this->getFirstMove() == false) //рокировка
     {
         if (square[0][hor].getEmpty() == false && (square[0][hor].getPiece() == r1 || square[0][hor].getPiece() == r3) && square[0][hor].getPieceColor() == this.colour)
         {
@@ -44,9 +41,9 @@ bool King::move(int vert, int hor)
             }
             if (emptySquares)
             {
-                square[2][hor].setPieceAndColor(square[vert][hor].getPiece(), this.colour);
+                square[2][hor].setPieceAndColor(square[vert][hor].getPiece(), this->colour);
                 square[vert][hor].setEmpty();
-                square[3][hor].setPieceAndColor(square[0][hor].getPiece(), this.colour);
+                square[3][hor].setPieceAndColor(square[0][hor].getPiece(), this->colour);
                 square[0][hor].setEmpty();
             }
         }
@@ -63,9 +60,9 @@ bool King::move(int vert, int hor)
             }
             if (emptySquares)
             {
-                square[6][hor].setPieceAndColor(square[vert][hor].getPiece(), this.colour);
+                square[6][hor].setPieceAndColor(square[vert][hor].getPiece(), this->colour);
                 square[vert][hor].setEmpty();
-                square[5][hor].setPieceAndColor(square[0][hor].getPiece(), this.colour);
+                square[5][hor].setPieceAndColor(square[0][hor].getPiece(), this->colour);
                 square[0][hor].setEmpty();
             }
         }

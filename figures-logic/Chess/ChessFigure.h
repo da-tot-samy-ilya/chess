@@ -20,7 +20,7 @@ public:
         vertical = f.vertical;
         horizontal = f.horizontal;
     };
-    virtual bool move(int vert, int hor) { return false; };
+    virtual bool move(int vert, int hor, char col) { return false; };
     virtual bool cut_down(Piece& f) { return false; };
 
     char GetColour() { return this->colour; };
