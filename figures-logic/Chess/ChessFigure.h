@@ -1,9 +1,12 @@
 #pragma once
 #include <iostream>
 #include "CheckingForMove.h"
+#include "Board.h"
 
 class Piece
 {
+private:
+    TypePiece type_piece = EMPTY;
 protected:
     char colour; // цвет фигуры
     int vertical; // буквы
@@ -23,6 +26,7 @@ public:
     char GetColour() { return this->colour; };
     int GetVert() { return this->vertical; };
     int GetHor() { return this->horizontal; };
+    TypePiece GetName() { return this->type_piece; };
 };
 
 bool Check(int vert, int hor)

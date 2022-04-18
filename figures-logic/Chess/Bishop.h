@@ -3,31 +3,34 @@
 
 class Bishop : public Piece
 {
-
+private:
+    TypePiece type_piece = BISHOP;
 public:
     Bishop(char col, int vert, int hor) : Piece(col, vert, hor) {};
     Bishop(Bishop& f) : Piece(f.colour, f.vertical, f.horizontal) {};
     bool move(int vert, int hor) override;
     bool cut_down(Piece& f) override;
-    /*Bishop operator=(Piece& p)
-    {
-        colour = p.colour;
-        vertical = p.vertical;
-        horizontal = 
-    }*/
 };
 
-bool Bishop::move(int vert, int hor)
+bool Bishop::move(int vert, int hor, char col)
 {
-    if ( Check(vert, hor) && MovingBishop(vert, hor, vertical, horizontal))
+    if (col == 'n' && Check(vert, hor) && MovingBishop(vert, hor, vertical, horizontal) && PiecesAlongTheWayForBishop(vert, hor, vertical, horizontal))
     {
+        PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
         vertical = vert;
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }
 bool Bishop::cut_down(Piece& f)
 {
-    
+    if ( colour != f.GetColour() && MovingBishop(f.GetVert(), f.GetHor(), vertical, horizontal) && PiecesAlongTheWayForBishop(f.GetVert(), f.GetHor(), vertical, horizontal))
+    {
+        PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
+        horizontal = f.GetHor();
+        vertical = f.GetVert();
+        return true;
+    }
+    return false;
 }

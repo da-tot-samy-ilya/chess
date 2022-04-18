@@ -1,8 +1,11 @@
 #pragma once
 #include "ChessFigure.h"
+#include "Board.h"
 
 class Knight : public Piece
 {
+private:
+    TypePiece type_piece = KNIGHT;
 public:
     Knight(bool col, int vert, int hor) : Piece(col, vert, hor) {};
     Knight(Knight& f) : Piece(f.colour, f.vertical, f.horizontal) {};

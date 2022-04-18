@@ -4,9 +4,12 @@
 #include "Bishop.h"
 #include "Queen.h"
 #include "Knight.h"
+#include "Board.h"
 
 class Pawn : public Piece
 {
+private:
+    TypePiece type_piece = PAWN;
 private:
     bool didMove = false;
 public:
@@ -24,20 +27,8 @@ bool Pawn::move(int vert, int hor)
         didMove = true;
         if (vert == 7 || vert == 0)
         {
-            char a;
-            switch (a)
-            {
-            case('r'):
-                Rook(colour, vertical, horizontal); // будет похоже на срубание фигуры
-            case('b'):
-                Bishop(colour, vertical, horizontal);
-            case('q'):
-                Queen(colour, vertical, horizontal);
-            case('k'):
-                Knight(colour, vertical, horizontal);
-            }
+
         }
-            return 1;
     }
     return 0;
 }

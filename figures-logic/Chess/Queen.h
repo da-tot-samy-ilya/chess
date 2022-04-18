@@ -1,8 +1,11 @@
 #pragma once
 #include "ChessFigure.h"
+#include "Board.h"
 
 class Queen : public Piece
 {
+private:
+	TypePiece type_piece = QUEEN;
 public:
 	Queen(char col, int vert, int hor) : Piece(col, vert, hor) {};
 	Queen(Queen& f) : Piece(f.colour, f.vertical, f.horizontal) {};
@@ -13,8 +16,7 @@ public:
 
 bool Queen::move(int vert, int hor)
 {
-	if ((Check(vert, hor))&& ((((vert = vertical) && (hor != horizontal)) || ((vert != vertical) && (hor == horizontal))) ||
-		(abs((vert - vertical) == abs(hor - horizontal)) && (vert != vertical))))
+	if (Check(vert, hor))
 	{
 		horizontal = hor;
 		vertical = vert;

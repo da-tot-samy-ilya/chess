@@ -5,6 +5,8 @@
 class King : public Piece
 {
 private:
+    TypePiece type_piece = KING;
+private:
     bool didMove = false;
     bool haveCheck = false;
 public:

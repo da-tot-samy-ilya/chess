@@ -42,18 +42,9 @@
     <ClInclude Include="ChessGame.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Square.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="PieceCast.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CheckingForMove.h">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

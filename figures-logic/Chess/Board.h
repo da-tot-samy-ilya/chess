@@ -25,6 +25,7 @@ public:
 	Piece* square[8][8];
 	void SetBoard(); // изначальное положение доски
 	void SetPiece(char colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty
+	void PieceMoving(int vEnd, int hEnd, int vStart, int hStart);
 };
 
 
@@ -45,8 +46,14 @@ void Board::SetPiece(char colour, int hor, int vert, TypePiece type)
 	case(PAWN):
 		square[hor][vert] = new Pawn(colour, vert, hor);
 	case (EMPTY):
-		square[hor][vert] = new Pawn('n', vert, hor);
+		square[hor][vert] = new Piece('n', vert, hor);
 	}
+}
+
+void Board::PieceMoving(int vEnd, int hEnd, int vStart, int hStart)
+{
+	square[hEnd][vEnd] = square[hStart][vStart];
+	SetPiece('n', hStart, vStart, EMPTY);
 }
 
 void Board::SetBoard()
@@ -54,7 +61,7 @@ void Board::SetBoard()
 	for (int i = 0; i < 8; i++)
 	{
 		char colour = 'n';
-		if (i < 3) colour = 'w';
+		if (i < 2) colour = 'w';
 		if (i > 5) colour = 'b';
 		if (i == 0 || i == 7)
 		{
@@ -71,7 +78,10 @@ void Board::SetBoard()
 		else
 		{
 			for (int j = 0; j < 8; j++)
-				square[i][j] = new Pawn(colour, j, i);
+				if (i > 1 || i < 6)
+					square[i][j] = new Piece(colour, j, i);
+				else
+					square[i][j] = new Pawn(colour, j, i);
 		}
 	}
 	/*int counter = 0;

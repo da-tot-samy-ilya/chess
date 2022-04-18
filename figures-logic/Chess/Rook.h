@@ -1,8 +1,11 @@
 #pragma once
 #include "ChessFigure.h"
+#include "Board.h"
 
 class Rook : public Piece
 {
+private:
+    TypePiece type_piece = KNIGHT;
 public:
     Rook(char col, int vert, int hor) : Piece(col, vert, hor) {};
     Rook(Rook& f) : Piece(f.colour, f.vertical, f.horizontal) {};
@@ -12,7 +15,7 @@ public:
 
 bool Rook::move(int vert, int hor)
 {
-    if ((Check(vert, hor))&&(((vert = vertical) && (hor != horizontal)) || ((vert != vertical) && (hor == horizontal))))
+    if ( Check(vert, hor)&& )
     {
         horizontal = hor;
         vertical = vert;
