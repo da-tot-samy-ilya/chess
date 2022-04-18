@@ -1,17 +1,21 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <iostream>
 using namespace sf;
-//ABOBA
-Sprite figures[32];
+
+const int figures_count = 32;
+
+Sprite figures[figures_count];
+Sprite squares[64];
+
 int k = 0;
 int size = 56;
 int board[8][8] = {
 	{1,2,3,4,5,3,2,1},
 	{6,6,6,6,6,6,6,6},
-	{0,0,0,0,0,0},
-	{0,0,0,0,0,0},
-	{0,0,0,0,0,0},
-	{0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
+	{0,0,0,0,0,0,0,0},
 	{-6,-6,-6,-6,-6,-6,-6,-6},
 	{-1,-2,-3,-4,-5,-3,-2,-1},
 };
@@ -39,25 +43,78 @@ void setFigures() {
 	}
 }
 
-int main() {
-	RenderWindow window(VideoMode(456, 456), "Chess");
-	Texture board_texture, figure_texture;
+void setSquaresPositions() {
+	for (int i = 0; i < 8; ++i) {
+		for (int j = 0; j < 8; ++j) {
+			k = (k + 1) % 2;
+				squares[i * 8 + j].setTextureRect(IntRect(50, 50, size, size));
+				squares[i * 8 + j].setPosition(size * j, size * i);
 
-	board_texture.loadFromFile("images/board0.png");
+		}
+		k = (k + 1) % 2;
+	}
+	
+}
+
+int main() {
+	RenderWindow window(VideoMode(448, 448), "Chess");
+
+	Texture figure_texture, black_square, white_square;
 	figure_texture.loadFromFile("images/figures1.png");
 
-	Sprite sprite_board;
-	sprite_board.setTexture(board_texture);
-
-	for (int i = 0; i < 32; ++i) {
+	for (int i = 0; i < figures_count; ++i) {
 		figures[i].setTexture(figure_texture);
 	}
 	setFigures();
-	while (window.isOpen()) {
+	
+	black_square.loadFromFile("images/black_texture.jpg");
+	white_square.loadFromFile("images/white_texture.jpg");
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-			Vector2i localPosition = Mouse::getPosition(window);
-			std::cout << localPosition.x << " " << localPosition.y << "\n";
+	int k = 0;
+	for (int i = 0; i < 8; ++i) {
+		for (int j = 0; j < 8; ++j) {
+			k = (k + 1) % 2;
+			if (k == 1) {
+				squares[i * 8 + j].setTexture(black_square);
+			}
+			else {
+				squares[i * 8 + j].setTexture(white_square);
+			}
+
+		}
+		k = (k + 1) % 2;
+	}
+	setSquaresPositions();
+	
+	while (window.isOpen()) {
+		bool check_figure = false;
+		int temp_x = 0;
+		int temp_y = 0;
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !check_figure) {
+			Vector2i localPosition1 = Mouse::getPosition(window);
+			/*std::cout << localPosition.x/size << " " << localPosition.y/size << "\n";*/
+			/*std::cout << board[localPosition1.y / size][localPosition1.x / size];*/
+			int temp_x = localPosition1.x / size;
+			int temp_y = localPosition1.y / size;
+			check_figure = true;
+			/*for (int i = 0; i < 8; ++i) {
+				for (int j = 0; j < 8; ++j) {
+					std::cout << board[i][j] << " ";
+				}
+				std::cout << std::endl;
+			}*/
+		}
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && check_figure) {
+			Vector2i localPosition2 = Mouse::getPosition(window);
+			board[localPosition2.y / size][localPosition2.x / size] = board[temp_y][temp_x];
+			check_figure = false;
+			//std::cout << localPosition2.y / size << " " << localPosition2.x / size << " " << temp_y << " " << temp_x << "\n";
+			for (int i = 0; i < 8; ++i) {
+				for (int j = 0; j < 8; ++j) {
+					std::cout << board[i][j] << " ";
+				}
+				std::cout << std::endl;
+			}
 		}
 		Event event;
 		while (window.pollEvent(event)) {
@@ -68,8 +125,11 @@ int main() {
 		}
 
 		window.clear();
-		window.draw(sprite_board);
-		for (int i = 0; i < 32; ++i) {
+		for (int i = 0; i < 64; ++i) {
+			window.draw(squares[i]);
+		}
+		
+		for (int i = 0; i < figures_count; ++i) {
 			window.draw(figures[i]);
 		}
 
