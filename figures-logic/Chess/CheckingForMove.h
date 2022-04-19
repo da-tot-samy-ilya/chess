@@ -84,7 +84,7 @@ bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 		{
 			if (PiecesAlongTheWayForRook(vEnd + j, hEnd, i, hStart))
 			{
-				PieceMoving(vEnd + j, hEnd, i, hStart); //?
+				PieceMoving(vEnd + j, hEnd, i, hStart);
 				return true;
 			}
 		}
@@ -96,7 +96,7 @@ bool PiecesAlongTheWayForKing(int vEnd, int hEnd, int vStart, int hStart)
 {
 	return PiecesAlongTheWayForQueen(vEnd, hEnd, vStart, hStart);
 }
-bool HasShah(int vStart, int hStart, char kingColour)
+bool HasCheck(int vStart, int hStart, char kingColour) //шах
 {
 	Piece p;
 	KingLikeRook(p, vStart, 0, vStart, hStart, kingColour);
