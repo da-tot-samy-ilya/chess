@@ -29,11 +29,13 @@ bool Bishop::cut_down(Piece& f)
     int hsign = 1;
     if (f.GetVert() < vertical) vsign = -1;
     if (f.GetHor() < horizontal) hsign = -1;
-    if ( colour != f.GetColour() && MovingBishop(f.GetVert(), f.GetHor(), vertical, horizontal) && PiecesAlongTheWayForBishop(f.GetVert() + vsign, f.GetHor() + hsign, vertical, horizontal))// 0 1
+    if ( colour != f.GetColour() && MovingBishop(f.GetVert(), f.GetHor(), vertical, horizontal) && PiecesAlongTheWayForBishop(f.GetVert() + vsign, f.GetHor() + hsign, vertical, horizontal))
     {
+        int newHor = f.GetHor();
+        int newVert = f.GetVert();
         PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
-        horizontal = f.GetHor();
-        vertical = f.GetVert();
+        horizontal = newHor;
+        vertical = newVert;
         return true;
     }
     return false;
