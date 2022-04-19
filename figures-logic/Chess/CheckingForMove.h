@@ -23,7 +23,7 @@ bool PiecesAlongTheWayForBishop(int vEnd, int hEnd, int vStart, int hStart)
 
 bool MovingRook(int vEnd, int hEnd, int vStart, int hStart)
 {
-	return (((vEnd = vStart) && (hEnd != hStart)) || ((vEnd != vStart) && (hEnd == hStart));
+	return (((vEnd = vStart) && (hEnd != hStart)) || ((vEnd != vStart) && (hEnd == hStart)));
 }
 bool PiecesAlongTheWayForRook(int vEnd, int hEnd, int vStart, int hStart)
 {
@@ -70,6 +70,8 @@ bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 			i = 7;
 			j = -1;
 		}
+		else break;
+
 		if (square[i][hStart]->getFirstMove() == false)
 		{
 			if (PiecesAlongTheWayForRook(vEnd + j, hEnd, i, hStart))
@@ -81,6 +83,10 @@ bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 		else return false;
 	}
 	else return (abs(vEnd - vStart) < 2 && abs(hEnd - hStart) < 2 && (abs(hEnd - hStart) != 0 || abs(hEnd - hStart) != 0));
+}
+bool PiecesAlongTheWayForKing(int vEnd, int hEnd, int vStart, int hStart)
+{
+	return PiecesAlongTheWayForQueen(vEnd, hEnd, vStart, hStart);
 }
 
 bool MovingKnight(int vEnd, int hEnd, int vStart, int hStart)
@@ -94,4 +100,8 @@ bool MovingKnight(int vEnd, int hEnd, int vStart, int hStart)
 bool MovingPawn(int vEnd, int hEnd, int vStart, int hStart, bool didMove)
 {
 	return ((!didMove && vStart == vEnd - 2) || (vStart == vEnd- 1));
+}
+bool PiecesAlongTheWayForPawn(int vEnd, int hEnd, int vStart, int hStart)
+{
+	return PiecesAlongTheWayForRook(vEnd, hEnd, vStart, hStart);
 }
