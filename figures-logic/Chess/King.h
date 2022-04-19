@@ -19,7 +19,7 @@ public:
 
 bool King::move(int vert, int hor, char col)
 {
-    if (Check(vert, hor) && ())
+    if (Check(vert, hor))
     {
         horizontal = hor;
         vertical = vert;
