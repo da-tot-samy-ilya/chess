@@ -99,7 +99,7 @@ bool PiecesAlongTheWayForKing(int vEnd, int hEnd, int vStart, int hStart)
 bool HasShah(int vStart, int hStart, char kingColour)
 {
 	Piece p;
-	KingLikeRook(&p, vStart, 0, vStart, hStart, kingColour);
+	KingLikeRook(p, vStart, 0, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 		if (p.cut_down(square[vStart][vStart])) return true;
 	KingLikeRook(&p, vStart, 7, vStart, hStart, kingColour);
@@ -125,7 +125,7 @@ bool HasShah(int vStart, int hStart, char kingColour)
 		if (p.cut_down(square[vStart][vStart])) return true;
 	return false;
 }
-Piece KingLikeRook(Piece &p, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
+Piece* KingLikeRook(Piece &p, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
 {
 	int vsign = 1;
 	int hsign = 1;
@@ -136,7 +136,7 @@ Piece KingLikeRook(Piece &p, int vEnd, int hEnd, int vStart, int hStart, char ki
 	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
 	{
 		if (square[hStart][vStart]->GetColour() == kingColour)
-			return p;
+			return &p;
 		else return square[vStart][vStart];
 	}
 };
@@ -157,7 +157,6 @@ Piece* KingLikeBishop(Piece &p, int vEnd, int hEnd, int vStart, int hStart, char
 		if (square[Start][Start]->GetColour() == kingColour)
 			return new Piece;
 		else return square[Start][Start];
-
 	}
 };
 

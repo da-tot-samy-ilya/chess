@@ -20,7 +20,7 @@ enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 //7
 
 class Board
-{
+{ // Piece
 public:
 	Piece* square[8][8];
 	void SetBoard(); // изначальное положение доски

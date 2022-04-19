@@ -17,7 +17,7 @@ bool Bishop::move(int vert, int hor, char col)
     if (col == 'n' && Check(vert, hor) && MovingBishop(vert, hor, vertical, horizontal) && PiecesAlongTheWayForBishop(vert, hor, vertical, horizontal))
     {
         PieceMoving(vert, hor, vertical, horizontal);
-        horizontal = hor;
+        horizontal = hor; // 1, 2
         vertical = vert;
         return true;
     }
@@ -25,7 +25,7 @@ bool Bishop::move(int vert, int hor, char col)
 }
 bool Bishop::cut_down(Piece& f)
 {
-    if ( colour != f.GetColour() && MovingBishop(f.GetVert(), f.GetHor(), vertical, horizontal) && PiecesAlongTheWayForBishop(f.GetVert(), f.GetHor(), vertical, horizontal))
+    if ( colour != f.GetColour() && MovingBishop(f.GetVert(), f.GetHor(), vertical, horizontal) && PiecesAlongTheWayForBishop(f.GetVert(), f.GetHor(), vertical, horizontal))// 0 1
     {
         PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
         horizontal = f.GetHor();
