@@ -1,5 +1,13 @@
 #pragma once
 #include "Board.h"
+#include "ChessFigure.h"
+#include "Rook.h"
+#include "Knight.h"
+#include "Bishop.h"
+#include "Pawn.h"
+#include "Queen.h"
+#include "King.h"
+#include "Pawn.h"
 
 bool MovingBishop(int vEnd, int hEnd, int vStart, int hStart)
 {
@@ -56,7 +64,7 @@ bool PiecesAlongTheWayForQueen(int vEnd, int hEnd, int vStart, int hStart)
 
 bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 {
-	if (square[vStart][hStart]->getFirstMove() == false)
+	if (square[vStart][hStart]->getFirstMove() == false && square[vStart][hStart]->HasShah(vStart, hStart, square[vStart][hStart].GetColour()))
 	{
 		int i;
 		int j;
@@ -76,7 +84,7 @@ bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 		{
 			if (PiecesAlongTheWayForRook(vEnd + j, hEnd, i, hStart))
 			{
-				PieceMoving(vEnd + j, hEnd, i, hStart);
+				PieceMoving(vEnd + j, hEnd, i, hStart); //?
 				return true;
 			}
 		}
@@ -88,10 +96,70 @@ bool PiecesAlongTheWayForKing(int vEnd, int hEnd, int vStart, int hStart)
 {
 	return PiecesAlongTheWayForQueen(vEnd, hEnd, vStart, hStart);
 }
-bool HasChecking(int vStart, int hStart)
+bool HasShah(int vStart, int hStart, char kingColour)
 {
-	
+	Piece p;
+	KingLikeRook(&p, vStart, 0, vStart, hStart, kingColour);
+	if (p.GetName() != EMPTY)
+		if (p.cut_down(square[vStart][vStart])) return true;
+	KingLikeRook(&p, vStart, 7, vStart, hStart, kingColour);
+	if (p.GetName() != EMPTY)
+		if (p.cut_down(square[vStart][vStart])) return true;
+	KingLikeRook(&p, 0, hStart, vStart, hStart, kingColour);
+	if (p.GetName() != EMPTY)
+		if (p.cut_down(square[vStart][vStart])) return true;
+	KingLikeRook(&p, 7, hStart, vStart, hStart, kingColour);
+	if (p.GetName() != EMPTY)
+		if (p.cut_down(square[vStart][vStart])) return true;
+	KingLikeBishop(&p, vStart, 0, vStart, hStart, kingColour);
+	if (p.GetName() != EMPTY)
+		if (p.cut_down(square[vStart][vStart])) return true;
+	KingLikeBishop(&p, vStart, 7, vStart, hStart, kingColour);
+	if (p.GetName() != EMPTY)
+		if (p.cut_down(square[vStart][vStart])) return true;
+	KingLikeBishop(&p, 0, hStart, vStart, hStart, kingColour);
+	if (p.GetName() != EMPTY)
+		if (p.cut_down(square[vStart][vStart])) return true;
+	KingLikeBishop(&p, 7, hStart, vStart, hStart, kingColour);
+	if (p.GetName() != EMPTY)
+		if (p.cut_down(square[vStart][vStart])) return true;
+	return false;
 }
+Piece KingLikeRook(Piece &p, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
+{
+	int vsign = 1;
+	int hsign = 1;
+	if (vEnd < vStart) vsign = -1;
+	if (hEnd < hStart) hsign = -1;
+	vStart += vsign;
+	hStart += hsign;
+	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
+	{
+		if (square[hStart][vStart]->GetColour() == kingColour)
+			return p;
+		else return square[vStart][vStart];
+	}
+};
+Piece* KingLikeBishop(Piece &p, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
+{
+	int sign = 1;
+	int End = vEnd;
+	int Start = vStart;
+	if (vEnd == vStart)
+	{
+		int End = hEnd;
+		int Start = hStart;
+	}
+	if (End < Start) sign = -1;
+	Start += sign;
+	for (; abs(Start - End) > 0; Start += sign)
+	{
+		if (square[Start][Start]->GetColour() == kingColour)
+			return new Piece;
+		else return square[Start][Start];
+
+	}
+};
 
 bool MovingKnight(int vEnd, int hEnd, int vStart, int hStart)
 {
