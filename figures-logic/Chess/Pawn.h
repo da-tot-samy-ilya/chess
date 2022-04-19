@@ -21,18 +21,32 @@ public:
 
 bool Pawn::move(int vert, int hor, char col)
 {
-    if (Check(vert, hor) && )
+    if (col == 'n' && Check(vert, hor) && MovingPawn(vert, hor, vertical, horizontal, didMove) && PiecesAlongTheWayForPawn(vert, hor, vertical, horizontal))
     {
+        PieceMoving(vert, hor, vertical, horizontal);
         vertical = vert;
         didMove = true;
+        return true;
         if (vert == 7 || vert == 0)
         {
-
+            //переопределение пешки
         }
     }
     return 0;
 }
 bool Pawn::cut_down(Piece& f)
 {
-    //взятие на проходе, рубят по диагонали...
+    if (f.GetHor() < horizontal) return false;
+    if (colour != f.GetColour() && MovingPawn(f.GetVert(), f.GetHor(), vertical, horizontal, didMove))
+    {
+        int newHor = f.GetHor();
+        int newVert = f.GetVert();
+        PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
+        horizontal = newHor;
+        vertical = newVert;
+        return true;
+        //взятие на проходе
+    }
+    return false;
+   
 }
