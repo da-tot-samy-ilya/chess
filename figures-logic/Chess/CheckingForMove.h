@@ -88,6 +88,10 @@ bool PiecesAlongTheWayForKing(int vEnd, int hEnd, int vStart, int hStart)
 {
 	return PiecesAlongTheWayForQueen(vEnd, hEnd, vStart, hStart);
 }
+bool HasChecking(int vStart, int hStart)
+{
+	
+}
 
 bool MovingKnight(int vEnd, int hEnd, int vStart, int hStart)
 {

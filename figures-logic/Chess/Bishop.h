@@ -5,11 +5,13 @@ class Bishop : public Piece
 {
 private:
     TypePiece type_piece = BISHOP;
+    bool didMove = false;
 public:
     Bishop(char col, int vert, int hor) : Piece(col, vert, hor) {};
     Bishop(Bishop& f) : Piece(f.colour, f.vertical, f.horizontal) {};
     bool move(int vert, int hor, char col) override;
     bool cut_down(Piece& f) override;
+    bool getFirstMove() { return didMove; };
 };
 
 bool Bishop::move(int vert, int hor, char col)
@@ -19,6 +21,7 @@ bool Bishop::move(int vert, int hor, char col)
         PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
         vertical = vert;
+        didMove = true;
         return true;
     }
     return false;
