@@ -26,49 +26,6 @@ bool King::move(int vert, int hor, char col)
         didMove = true;
         return true;
     }
-    else if (this->getFirstMove() == false) //рокировка
-    {
-        if (square[0][hor].getEmpty() == false && (square[0][hor].getPiece() == r1 || square[0][hor].getPiece() == r3) && square[0][hor].getPieceColor() == this.colour)
-        {
-            bool emptySquares = true;
-            for (int i = 1; i < 3; ++i)
-            {
-                if (!square[i][hor].getEmpty())
-                {
-                    emptySquares = false;
-                    break;
-                }
-            }
-            if (emptySquares)
-            {
-                square[2][hor].setPieceAndColor(square[vert][hor].getPiece(), this->colour);
-                square[vert][hor].setEmpty();
-                square[3][hor].setPieceAndColor(square[0][hor].getPiece(), this->colour);
-                square[0][hor].setEmpty();
-            }
-        }
-        else if ((square[7][hor].getPiece() == r2 || square[7][hor].getPiece() == r4) && square[7][hor].getPieceColor() == c)
-        {
-            bool emptySquares = true;
-            for (int i = 5; i < 7; ++i)
-            {
-                if (!square[i][hor].getEmpty())
-                {
-                    emptySquares = false;
-                    break;
-                }
-            }
-            if (emptySquares)
-            {
-                square[6][hor].setPieceAndColor(square[vert][hor].getPiece(), this->colour);
-                square[vert][hor].setEmpty();
-                square[5][hor].setPieceAndColor(square[0][hor].getPiece(), this->colour);
-                square[0][hor].setEmpty();
-            }
-        }
-
-    }
-    return false;
 }
 bool King::cut_down(Piece& f)
 {

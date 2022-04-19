@@ -31,6 +31,7 @@ public:
 		//...
 	}
 	void gameStart(void) {
-		//...
+		Board board;
+		board.SetBoard();
 	}
 };

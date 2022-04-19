@@ -47,16 +47,40 @@ bool PiecesAlongTheWayForRook(int vEnd, int hEnd, int vStart, int hStart)
 
 bool MovingQueen(int vEnd, int hEnd, int vStart, int hStart)
 {
-	return MovingBishop(vEnd, hEnd, vStart, hStart) || MovingQueen(vEnd, hEnd, vStart, hStart);
+	return MovingBishop(vEnd, hEnd, vStart, hStart) || MovingRook(vEnd, hEnd, vStart, hStart);
 }
 bool PiecesAlongTheWayForQueen(int vEnd, int hEnd, int vStart, int hStart)
 {
-	return PiecesAlongTheWayForBishop(vEnd, hEnd, vStart, hStart) || PiecesAlongTheWayForQueen(vEnd, hEnd, vStart, hStart);
+	return PiecesAlongTheWayForBishop(vEnd, hEnd, vStart, hStart) || PiecesAlongTheWayForRook(vEnd, hEnd, vStart, hStart);
 }
 
 bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 {
-	return (abs(vEnd - vStart) < 2 && abs(hEnd - hStart) < 2 && (abs(hEnd - hStart) != 0 || abs(hEnd - hStart) != 0));
+	if (square[vStart][hStart]->getFirstMove() == false)
+	{
+		int i;
+		int j;
+		if (vEnd == 2)
+		{
+			i = 0;
+			j = 1;
+		}
+		else if (vEnd == 6)
+		{
+			i = 7;
+			j = -1;
+		}
+		if (square[i][hStart]->getFirstMove() == false)
+		{
+			if (PiecesAlongTheWayForRook(vEnd + j, hEnd, i, hStart))
+			{
+				PieceMoving(vEnd + j, hEnd, i, hStart);
+				return true;
+			}
+		}
+		else return false;
+	}
+	else return (abs(vEnd - vStart) < 2 && abs(hEnd - hStart) < 2 && (abs(hEnd - hStart) != 0 || abs(hEnd - hStart) != 0));
 }
 
 bool MovingKnight(int vEnd, int hEnd, int vStart, int hStart)
