@@ -15,15 +15,25 @@ public:
 
 bool Knight::move(int vert, int hor, char col)
 {
-    if ()
+    if (col == 'n' && Check(vert, hor) && MovingKnight(vert, hor, vertical, horizontal))
     {
+        PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
         vertical = vert;
-        return 1;
+        return true;
     }
-    return 0;
+    return false;
 }
 bool Knight::cut_down(Piece& f)
 {
-    
+    if (colour != f.GetColour() && MovingKnight(f.GetVert(), f.GetHor(), vertical, horizontal))
+    {
+        int newHor = f.GetHor();
+        int newVert = f.GetVert();
+        PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
+        horizontal = newHor;
+        vertical = newVert;
+        return true;
+    }
+    return false;
 }
