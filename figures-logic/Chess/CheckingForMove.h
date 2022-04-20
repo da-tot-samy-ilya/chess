@@ -55,7 +55,7 @@ bool PiecesAlongTheWayForQueen(int vEnd, int hEnd, int vStart, int hStart)
 }
 bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 {
-	if (square[vStart][hStart]->getFirstMove() == false && square[vStart][hStart]->HasShah(vStart, hStart, square[vStart][hStart].GetColour()))
+	if (square[hStart][vStart]->getFirstMove() == false && square[hStart][vStart]->HasShah(vStart, hStart, square[hStart][vStart].GetColour()))
 	{
 		int i;
 		int j;
@@ -71,7 +71,7 @@ bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 		}
 		else break;
 
-		if (square[i][hStart]->getFirstMove() == false)
+		if (square[hStart][i]->getFirstMove() == false)
 		{
 			if (PiecesAlongTheWayForRook(vEnd + j, hEnd, i, hStart))
 			{
@@ -93,42 +93,42 @@ bool HasCheck(int vStart, int hStart, char kingColour) //шах
 	KingLikeRook(p, vStart, 0, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[vStart][vStart])) return true;
+		if (p.cut_down(square[hStart][vStart])) return true;
 	}
 	KingLikeRook(p, vStart, 7, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[vStart][vStart])) return true;
+		if (p.cut_down(square[hStart][vStart])) return true;
 	}
 	KingLikeRook(p, 0, hStart, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[vStart][vStart])) return true;
+		if (p.cut_down(square[hStart][vStart])) return true;
 	}
 	KingLikeRook(p, 7, hStart, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[vStart][vStart])) return true;
+		if (p.cut_down(square[hStart][vStart])) return true;
 	}
 	KingLikeBishop(p, vStart, 0, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[vStart][vStart])) return true;
+		if (p.cut_down(square[hStart][vStart])) return true;
 	}
 	KingLikeBishop(p, vStart, 7, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[vStart][vStart])) return true;
+		if (p.cut_down(square[hStart][vStart])) return true;
 	}
 	KingLikeBishop(p, 0, hStart, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[vStart][vStart])) return true;
+		if (p.cut_down(square[hStart][vStart])) return true;
 	}
 	KingLikeBishop(p, 7, hStart, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[vStart][vStart])) return true;
+		if (p.cut_down(square[hStart][vStart])) return true;
 	}
 	if (KingLikeKnight(vStart, hStart, kingColour))
 		return true;
@@ -171,21 +171,21 @@ Piece* KingLikeBishop(Piece& p, int vEnd, int hEnd, int vStart, int hStart, char
 
 bool KingLikeKnight(int vStart, int hStart, char kingColour)
 {
-	if (square[vStart + 2][hStart + 1].GetName() == KNIGHT && square[vStart + 2][hStart + 1].GetColour() != kingColour && Check(vStart + 2, hStart + 1))
+	if (square[hStart + 2][vStart + 1].GetName() == KNIGHT && square[hStart + 2][vStart + 1].GetColour() != kingColour && Check(vStart + 2, hStart + 1))
 		return true;
-	if (square[vStart + 1][hStart + 2].GetName() == KNIGHT && square[vStart + 1][hStart + 2].GetColour() != kingColour && Check(vStart + 1, hStart + 2))
+	if (square[hStart + 1][vStart + 2].GetName() == KNIGHT && square[hStart + 1][vStart + 2].GetColour() != kingColour && Check(vStart + 1, hStart + 2))
 		return true;
-	if (square[vStart - 1][hStart + 2].GetName() == KNIGHT && square[vStart - 1][hStart + 2].GetColour() != kingColour && Check(vStart - 1, hStart + 2))
+	if (square[hStart - 1][vStart + 2].GetName() == KNIGHT && square[hStart - 1][vStart + 2].GetColour() != kingColour && Check(vStart - 1, hStart + 2))
 		return true;
-	if (square[vStart - 2][hStart + 1].GetName() == KNIGHT && square[vStart - 1][hStart + 2].GetColour() != kingColour && Check(vStart - 1, hStart + 2))
+	if (square[hStart - 2][vStart + 1].GetName() == KNIGHT && square[hStart - 1][vStart + 2].GetColour() != kingColour && Check(vStart - 1, hStart + 2))
 		return true;
-	if (square[vStart - 2][hStart - 1].GetName() == KNIGHT && square[vStart - 2][hStart - 1].GetColour() != kingColour && Check(vStart - 2, hStart - 1))
+	if (square[hStart - 2][vStart - 1].GetName() == KNIGHT && square[hStart - 2][vStart - 1].GetColour() != kingColour && Check(vStart - 2, hStart - 1))
 		return true;
-	if (square[vStart - 1][hStart - 2].GetName() == KNIGHT && square[vStart - 1][hStart - 2].GetColour() != kingColour && Check(vStart - 1, hStart - 2))
+	if (square[hStart - 1][vStart - 2].GetName() == KNIGHT && square[hStart - 1][vStart - 2].GetColour() != kingColour && Check(vStart - 1, hStart - 2))
 		return true;
-	if (square[vStart + 1][hStart - 2].GetName() == KNIGHT && square[vStart + 1][hStart - 2].GetColour() != kingColour && Check(vStart + 1, hStart - 2))
+	if (square[hStart + 1][vStart - 2].GetName() == KNIGHT && square[hStart + 1][vStart - 2].GetColour() != kingColour && Check(vStart + 1, hStart - 2))
 		return true;
-	if (square[vStart + 2][hStart - 1].GetName() == KNIGHT && square[vStart + 2][hStart - 1].GetColour() != kingColour && Check(vStart + 2, hStart - 1))
+	if (square[hStart + 2][vStart - 1].GetName() == KNIGHT && square[hStart + 2][vStart - 1].GetColour() != kingColour && Check(vStart + 2, hStart - 1))
 		return true;
 
 	return false;

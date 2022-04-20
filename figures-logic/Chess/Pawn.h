@@ -27,8 +27,10 @@ bool Pawn::move(int vert, int hor, char col)
         vertical = vert;
         didMove = true;
         return true;
-        if (vert == 7 || vert == 0)
+        if (horizontal == 7 || horizontal == 0)
         {
+            TypePiece type;
+            square[horizontal][vertical].SetPiece(colour, horizontal, vertical, type);
             //переопределение пешки
         }
     }
