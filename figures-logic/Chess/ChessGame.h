@@ -1,6 +1,7 @@
 #pragma once
 #include "Board.h"
 
+
 class Chess
 {
 protected:
@@ -13,14 +14,14 @@ class Chess_1 : public Chess
 {
 public:
 	void gameStart() {
-		//начало таймера
+		
 	}
 };
 
 class Chess_2 : public Chess_1
 {
 private:
-	unsigned PassTime; //время хода
+	unsigned PassTime; 
 public:
 	Chess_2(unsigned pass_time = 1200) : PassTime(pass_time) {}
 	void setTime(unsigned sec) {
