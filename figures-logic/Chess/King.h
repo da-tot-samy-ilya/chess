@@ -21,7 +21,7 @@ bool King::move(int vert, int hor, char col)
 {
     if (col == 'n'  && Check(vert, hor) && MovingKing(vert, hor, vertical, horizontal) && PiecesAlongTheWayForKing(vert, hor, vertical, horizontal) && HasCheck(vertical, horizontal, colour))
     {
-        PieceMoving(vert, hor, vertical, horizontal);
+        board->PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
         vertical = vert;
         didMove = true;
@@ -34,7 +34,7 @@ bool King::cut_down(Piece& f)
     {
         int newHor = f.GetHor();
         int newVert = f.GetVert();
-        PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
+        board->PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
         horizontal = newHor;
         vertical = newVert;
         return true;

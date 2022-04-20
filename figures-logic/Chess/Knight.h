@@ -17,7 +17,7 @@ bool Knight::move(int vert, int hor, char col)
 {
     if (col == 'n' && Check(vert, hor) && MovingKnight(vert, hor, vertical, horizontal))
     {
-        PieceMoving(vert, hor, vertical, horizontal);
+        board->PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
         vertical = vert;
         return true;
@@ -30,7 +30,7 @@ bool Knight::cut_down(Piece& f)
     {
         int newHor = f.GetHor();
         int newVert = f.GetVert();
-        PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
+        board->PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
         horizontal = newHor;
         vertical = newVert;
         return true;

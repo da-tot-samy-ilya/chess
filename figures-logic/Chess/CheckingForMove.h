@@ -40,7 +40,7 @@ bool PiecesAlongTheWayForRook(int vEnd, int hEnd, int vStart, int hStart)
 	Start += sign;
 	for (; abs(Start - End) > 0; Start += sign)
 	{
-		if (square[Start][Start]->GetColour() != 'n')
+		if (board->square[Start][Start]->GetColour() != 'n')
 			return false;
 	}
 	return true;
@@ -56,7 +56,7 @@ bool PiecesAlongTheWayForQueen(int vEnd, int hEnd, int vStart, int hStart)
 }
 bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 {
-	if (square[hStart][vStart]->getFirstMove() == false && square[hStart][vStart]->HasShah(vStart, hStart, square[hStart][vStart].GetColour()))
+	if (board->square[hStart][vStart]->getFirstMove() == false && board->square[hStart][vStart]->HasShah(vStart, hStart, board->square[hStart][vStart].GetColour()))
 	{
 		int i;
 		int j;
@@ -72,11 +72,11 @@ bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
 		}
 		else return (abs(vEnd - vStart) < 2 && abs(hEnd - hStart) < 2 && (abs(hEnd - hStart) != 0 || abs(hEnd - hStart) != 0));
 
-		if (square[hStart][i]->getFirstMove() == false)
+		if (board->square[hStart][i]->getFirstMove() == false)
 		{
 			if (PiecesAlongTheWayForRook(vEnd + j, hEnd, i, hStart))
 			{
-				PieceMoving(vEnd + j, hEnd, i, hStart);
+				board->PieceMoving(vEnd + j, hEnd, i, hStart);
 				return true;
 			}
 		}
@@ -95,22 +95,22 @@ bool HasCheck(int vStart, int hStart, char kingColour) //шах
 	KingLikeRook(p, vStart, 0, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[hStart][vStart])) return true;
+		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
 	KingLikeRook(p, vStart, 7, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[hStart][vStart])) return true;
+		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
 	KingLikeRook(p, 0, hStart, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[hStart][vStart])) return true;
+		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
 	KingLikeRook(p, 7, hStart, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[hStart][vStart])) return true;
+		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
 	
 	std::pair<int, int> Hor = GetHorEdge(vStart, hStart);
@@ -119,22 +119,22 @@ bool HasCheck(int vStart, int hStart, char kingColour) //шах
 	KingLikeBishop(p, vStart, leftHor, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[hStart][vStart])) return true;
+		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
 	KingLikeBishop(p, vStart, rightHor, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[hStart][vStart])) return true;
+		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
 	KingLikeBishop(p, leftVert, hStart, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[hStart][vStart])) return true;
+		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
 	KingLikeBishop(p, rightVert, hStart, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
-		if (p.cut_down(square[hStart][vStart])) return true;
+		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
 	if (KingLikeKnight(vStart, hStart, kingColour))
 		return true;
@@ -150,9 +150,9 @@ Piece* KingLikeRook(Piece& p, int vEnd, int hEnd, int vStart, int hStart, char k
 	hStart += hsign;
 	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
 	{
-		if (square[hStart][vStart]->GetColour() == kingColour)
+		if (board->square[hStart][vStart]->GetColour() == kingColour)
 			return &p;
-		else return square[vStart][vStart];
+		else return board->square[vStart][vStart];
 	}
 };
 Piece* KingLikeBishop(Piece& p, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
@@ -169,9 +169,9 @@ Piece* KingLikeBishop(Piece& p, int vEnd, int hEnd, int vStart, int hStart, char
 	Start += sign;
 	for (; abs(Start - End) > 0; Start += sign)
 	{
-		if (square[Start][Start]->GetColour() == kingColour)
+		if (board->square[Start][Start]->GetColour() == kingColour)
 			return &p;
-		else return square[Start][Start];
+		else return board->square[Start][Start];
 	}
 };
 
@@ -193,21 +193,21 @@ std::pair<int, int> GetVertEdge(int vStart, int hStart)
 
 bool KingLikeKnight(int vStart, int hStart, char kingColour)
 {
-	if (square[hStart + 2][vStart + 1].GetName() == KNIGHT && square[hStart + 2][vStart + 1].GetColour() != kingColour && Check(vStart + 2, hStart + 1))
+	if (board->square[hStart + 2][vStart + 1].GetName() == KNIGHT && board->square[hStart + 2][vStart + 1].GetColour() != kingColour && Check(vStart + 2, hStart + 1))
 		return true;
-	if (square[hStart + 1][vStart + 2].GetName() == KNIGHT && square[hStart + 1][vStart + 2].GetColour() != kingColour && Check(vStart + 1, hStart + 2))
+	if (board->square[hStart + 1][vStart + 2].GetName() == KNIGHT && board->square[hStart + 1][vStart + 2].GetColour() != kingColour && Check(vStart + 1, hStart + 2))
 		return true;
-	if (square[hStart - 1][vStart + 2].GetName() == KNIGHT && square[hStart - 1][vStart + 2].GetColour() != kingColour && Check(vStart - 1, hStart + 2))
+	if (board->square[hStart - 1][vStart + 2].GetName() == KNIGHT && board->square[hStart - 1][vStart + 2].GetColour() != kingColour && Check(vStart - 1, hStart + 2))
 		return true;
-	if (square[hStart - 2][vStart + 1].GetName() == KNIGHT && square[hStart - 1][vStart + 2].GetColour() != kingColour && Check(vStart - 1, hStart + 2))
+	if (board->square[hStart - 2][vStart + 1].GetName() == KNIGHT && board->square[hStart - 1][vStart + 2].GetColour() != kingColour && Check(vStart - 1, hStart + 2))
 		return true;
-	if (square[hStart - 2][vStart - 1].GetName() == KNIGHT && square[hStart - 2][vStart - 1].GetColour() != kingColour && Check(vStart - 2, hStart - 1))
+	if (board->square[hStart - 2][vStart - 1].GetName() == KNIGHT && board->square[hStart - 2][vStart - 1].GetColour() != kingColour && Check(vStart - 2, hStart - 1))
 		return true;
-	if (square[hStart - 1][vStart - 2].GetName() == KNIGHT && square[hStart - 1][vStart - 2].GetColour() != kingColour && Check(vStart - 1, hStart - 2))
+	if (board->square[hStart - 1][vStart - 2].GetName() == KNIGHT && board->square[hStart - 1][vStart - 2].GetColour() != kingColour && Check(vStart - 1, hStart - 2))
 		return true;
-	if (square[hStart + 1][vStart - 2].GetName() == KNIGHT && square[hStart + 1][vStart - 2].GetColour() != kingColour && Check(vStart + 1, hStart - 2))
+	if (board->square[hStart + 1][vStart - 2].GetName() == KNIGHT && board->square[hStart + 1][vStart - 2].GetColour() != kingColour && Check(vStart + 1, hStart - 2))
 		return true;
-	if (square[hStart + 2][vStart - 1].GetName() == KNIGHT && square[hStart + 2][vStart - 1].GetColour() != kingColour && Check(vStart + 2, hStart - 1))
+	if (board->square[hStart + 2][vStart - 1].GetName() == KNIGHT && board->square[hStart + 2][vStart - 1].GetColour() != kingColour && Check(vStart + 2, hStart - 1))
 		return true;
 
 	return false;

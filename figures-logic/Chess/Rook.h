@@ -19,7 +19,7 @@ bool Rook::move(int vert, int hor, char col)
 {
     if (col == 'n' && Check(vert, hor) && MovingRook(vert, hor, vertical, horizontal) && PiecesAlongTheWayForRook(vert, hor, vertical, horizontal))
     {
-        PieceMoving(vert, hor, vertical, horizontal);
+        board->PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
         vertical = vert;
         return true;
@@ -38,7 +38,7 @@ bool Rook::cut_down(Piece& f)
     {
         int newHor = f.GetHor();
         int newVert = f.GetVert();
-        PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
+        board->PieceMoving(f.GetVert(), f.GetHor(), vertical, horizontal);
         horizontal = newHor;
         vertical = newVert;
         return true;
