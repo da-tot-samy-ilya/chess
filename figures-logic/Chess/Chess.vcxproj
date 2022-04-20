@@ -154,6 +154,7 @@
     <ClCompile Include="CheckingForMove.h" />
     <ClCompile Include="LocalServer.cpp" />
     <ClCompile Include="Logic.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
