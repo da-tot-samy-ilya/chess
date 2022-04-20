@@ -2,7 +2,7 @@
 #include "LocalServer.h"
 using namespace std;
 
-int main()
+void Mymain()
 {
 	while (windows.isOpen())
 	{

@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CheckingForMove.h" />
+    <ClCompile Include="graphic.cpp" />
     <ClCompile Include="LocalServer.cpp" />
     <ClCompile Include="Logic.cpp" />
     <ClCompile Include="Main.cpp" />
