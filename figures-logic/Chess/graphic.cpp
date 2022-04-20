@@ -1,4 +1,5 @@
 ﻿#include <SFML/Graphics.hpp>
+#include "Board.h"
 #include <iostream>
 using namespace sf;
 
@@ -87,6 +88,8 @@ int main() {
 	setSquaresPositions();
 	
 	while (window.isOpen()) {
+		Board* board = CreateBoard();
+		board->SetBoard();
 		bool check_figure = false;
 		int temp_x = 0;
 		int temp_y = 0;
@@ -106,12 +109,12 @@ int main() {
 		}
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && check_figure) {
 			Vector2i localPosition2 = Mouse::getPosition(window);
-			board[localPosition2.y / size][localPosition2.x / size] = board[temp_y][temp_x];
+			board->square[localPosition2.y / size][localPosition2.x / size] = board->square[temp_y][temp_x];
 			check_figure = false;
 			//std::cout << localPosition2.y / size << " " << localPosition2.x / size << " " << temp_y << " " << temp_x << "\n";
 			for (int i = 0; i < 8; ++i) {
 				for (int j = 0; j < 8; ++j) {
-					std::cout << board[i][j] << " ";
+					std::cout << board->square[i][j] << " ";
 				}
 				std::cout << std::endl;
 			}

@@ -102,3 +102,8 @@ void Board::SetBoard()
 				counter = 0;
 		}*/
 }
+Board* CreateBoard()
+{
+	Board board;
+	return &board;
+}

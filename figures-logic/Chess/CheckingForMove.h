@@ -1,6 +1,7 @@
 #pragma once
 #include "Board.h"
 
+Board* board = CreateBoard();
 bool MovingBishop(int vEnd, int hEnd, int vStart, int hStart)
 {
 	return (abs((vEnd - vStart) == abs(hEnd - hStart)) && (vEnd != vStart));
@@ -15,7 +16,7 @@ bool PiecesAlongTheWayForBishop(int vEnd, int hEnd, int vStart, int hStart)
 	hStart += hsign;
 	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
 	{
-		if (square[hStart][vStart]->GetColour() != 'n')
+		if (board->square[hStart][vStart]->GetColour() != 'n')
 			return false;
 	}
 	return true;
