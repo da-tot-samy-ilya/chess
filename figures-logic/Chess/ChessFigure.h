@@ -8,9 +8,9 @@ class Piece
 private:
     TypePiece type_piece = EMPTY;
 protected:
-    char colour; // öâåò ôèãóðû
-    int vertical; // áóêâû
-    int horizontal;// öèôðû
+    char colour; // цвет фигуры
+    int vertical; // буквы
+    int horizontal;// цифры
 public:
     Piece() : colour('n'), vertical(-1), horizontal(-1) {};
     Piece(char colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};

@@ -23,8 +23,8 @@ class Board
 { // Piece
 public:
 	Piece* square[8][8];
-	void SetBoard(); // èçíà÷àëüíîå ïîëîæåíèå äîñêè
-	void SetPiece(char colour, int hor, int vert, TypePiece type); // ïîñòàâèòü ôèãóðó, ëèáî óäàëèòü å¸, åñëè Empty
+	void SetBoard(); // изначальное положение доски
+	void SetPiece(char colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty
 	void PieceMoving(int vEnd, int hEnd, int vStart, int hStart);
 	void SetSquare();
 };

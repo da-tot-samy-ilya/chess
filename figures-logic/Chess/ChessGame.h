@@ -27,7 +27,7 @@ public:
 	void setTime(unsigned sec) {
 		PassTime = sec;
 	}
-	//âðåìÿ õîäà âûøëî
+	//время хода вышло
 	int timeEnd(void) {
 		//...
 	}
