@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "Board.h"
 
 
@@ -14,20 +14,20 @@ class Chess_1 : public Chess
 {
 public:
 	void gameStart() {
-		
+
 	}
 };
 
 class Chess_2 : public Chess_1
 {
 private:
-	unsigned PassTime; 
+	unsigned PassTime;
 public:
 	Chess_2(unsigned pass_time = 1200) : PassTime(pass_time) {}
 	void setTime(unsigned sec) {
 		PassTime = sec;
 	}
-	//время хода вышло
+	//ГўГ°ГҐГ¬Гї ГµГ®Г¤Г  ГўГ»ГёГ«Г®
 	int timeEnd(void) {
 		//...
 	}

@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "ChessFigure.h"
 #include "Rook.h"
 #include "Knight.h"
@@ -23,8 +23,8 @@ class Board
 { // Piece
 public:
 	Piece* square[8][8];
-	void SetBoard(); // изначальное положение доски
-	void SetPiece(char colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty
+	void SetBoard(); // ГЁГ§Г­Г Г·Г Г«ГјГ­Г®ГҐ ГЇГ®Г«Г®Г¦ГҐГ­ГЁГҐ Г¤Г®Г±ГЄГЁ
+	void SetPiece(char colour, int hor, int vert, TypePiece type); // ГЇГ®Г±ГІГ ГўГЁГІГј ГґГЁГЈГіГ°Гі, Г«ГЁГЎГ® ГіГ¤Г Г«ГЁГІГј ГҐВё, ГҐГ±Г«ГЁ Empty
 	void PieceMoving(int vEnd, int hEnd, int vStart, int hStart);
 	void SetSquare();
 };

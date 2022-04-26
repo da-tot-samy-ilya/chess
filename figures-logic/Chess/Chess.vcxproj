@@ -143,6 +143,7 @@
     <ClInclude Include="Board.h" />
     <ClInclude Include="ChessFigure.h" />
     <ClInclude Include="ChessGame.h" />
+    <ClInclude Include="CreateBoard.h" />
     <ClInclude Include="King.h" />
     <ClInclude Include="Knight.h" />
     <ClInclude Include="LocalServer.h" />

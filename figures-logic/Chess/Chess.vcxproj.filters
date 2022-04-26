@@ -45,6 +45,9 @@
     <ClInclude Include="LocalServer.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
+    <ClInclude Include="CreateBoard.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CheckingForMove.h">
