@@ -211,7 +211,7 @@ void CreateIpWindow() {
 
 			else if (event1.type == sf::Event::KeyPressed) {
 
-				if (event1.key.code >= 26 && event1.key.code <= 35 || event1.key.code == 50 || event1.key.code == 59) {
+				if (event1.key.code >= '0' && event1.key.code <= '9' || event1.key.code == 50 || event1.key.code == 59) {
 
 					if (event1.key.code == 50 && count < 15) {
 						text.setString(t + ".");
