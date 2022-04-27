@@ -418,14 +418,15 @@ int main() {
 		window.draw(numbers.sprite);
 		window.draw(letters.sprite);
 
-		for (int i = 0; i < 64; ++i) {
-			window.draw(squares[i]);
+		for (int i = 0; i < 8; ++i) {
+			for (int j = 0; j < 8; ++j) {
+				Piece* piece = board->square[i][j];
+				window.draw(piece->figure_sprite);
+				window.draw(piece->square_sprite);
+			}
 		}
 		for (int i = 0; i < buttons_main_window.size(); ++i) {
 			window.draw(buttons_main_window[i].sprite);
-		}
-		for (int i = 0; i < board->figures_count; ++i) {
-			window.draw(figures[i]);
 		}
 
 		window.display();

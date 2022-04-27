@@ -42,6 +42,12 @@ public:
     TypePiece GetName() { 
         return this->type_piece; 
     };
+    Sprite GetSpriteFigure() {
+        return this->figure_sprite;
+    }
+    Sprite GetSpriteSquare() {
+        return this->square_sprite;
+    }
     void SetTextureFigures(Texture& texture) {
         figure_sprite.setTexture(texture);
     }
