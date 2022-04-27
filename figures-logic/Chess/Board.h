@@ -9,7 +9,7 @@
 #include "King.h"
 #include "Pawn.h"
 
-enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
+enum TypePiece { EMPTY, KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN };
 //  a b c d e f g h - vertical
 //0 - hor
 //1
@@ -23,6 +23,7 @@ enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 class Board
 { // Piece
 public:
+	int figures_count = 0;
 	Piece* square[8][8];
 	void SetBoard(); // изначальное положение доски
 	void SetPiece(char colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty

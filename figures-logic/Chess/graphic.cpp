@@ -4,19 +4,14 @@
 #include <vector>
 #include <functional>
 #include <string>
-
 #include "ChessFigure.h"
-
 using namespace sf;
-
-
-const int figures_count = 32;
 
 const int board_offset_x = 187;
 const int board_offset_y = 20;
 
-Sprite figures[figures_count];
-Sprite squares[64];
+//Sprite figures[figures_count];
+//Sprite squares[64];
 
 class Button {
 public:
@@ -35,7 +30,21 @@ public:
 	}
 	std::function<void()> onClick = []() {
 		
-	};;
+	};
+};
+class InterfaceElement {
+public:
+	Vector2f bPosition;
+	IntRect bSprite;
+	Sprite sprite;
+
+	InterfaceElement(Texture& texture, Vector2f bPosition, IntRect bSprite) {
+		sprite.setTexture(texture);
+		this->bPosition = bPosition;
+		this->bSprite = bSprite;
+		sprite.setTextureRect(bSprite);
+		sprite.setPosition(bPosition);
+	}
 };
 
 std::vector<Button> buttons_main_window;
@@ -59,99 +68,42 @@ std::string  t = "";
 //};
 
 void setFigures() {
-	int n;
+	int n, x, y;
+	char color;
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
-			n = board->square[i][j].type_piece;
-
-			if (n != 0) {
-				int x = abs(n) - 1;
-				int y;
-				if (n < 0) {
+			Piece* piece = board->square[i][j];
+			n = piece->GetName();
+			color = piece->GetColour();
+			if (n != EMPTY) {
+				x = n - 1;
+				if (color == 'w') {
 					y = 0;
 				}
 				else {
 					y = 1;
 				}
-				figures[k].setTextureRect(IntRect(size * x, size * y, size, size));
-				figures[k].setPosition(board_offset_x + size * j, board_offset_y - 2 + size * i);
+				piece->setVisualFigures(Vector2f(board_offset_x + size * j, board_offset_y - 2 + size * i), IntRect(size * x, size * y, size, size));
 				k++;
 			}
 		}
 	}
 }
+
 void setSquaresPositions() {
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
+			Piece* piece = board->square[i][j];
 			k = (k + 1) % 2;
-			squares[i * 8 + j].setTextureRect(IntRect(50, 50, size, size));
-			squares[i * 8 + j].setPosition(board_offset_x + size * j, board_offset_y + size * i);
-
+			piece->setVisualSquares(Vector2f(board_offset_x + size * j, board_offset_y + size * i), IntRect(50, 50, size, size));
+			/*squares[i * 8 + j].setTextureRect(IntRect(50, 50, size, size));
+			squares[i * 8 + j].setPosition(board_offset_x + size * j, board_offset_y + size * i);*/
 		}
 		k = (k + 1) % 2;
 	}
 
 }
-
-void setInterface() {
-	//Aside
-	Texture aside_texture;
-	aside_texture.loadFromFile("images/aside_background.png");
-	Sprite aside;
-	aside.setTexture(aside_texture);
-	aside.setTextureRect(IntRect(0, 0, 167, 488));
-	aside.setPosition(0, 0);
-
-	//Main_background
-	Texture main_background_texture;
-	main_background_texture.loadFromFile("images/grey_texture.png");
-	Sprite main_background;
-	main_background.setTexture(main_background_texture);
-	main_background.setTextureRect(IntRect(0, 0, 488, 488));
-	main_background.setPosition(167, 0);
-
-	//Numbers
-	Texture numbers_texture;
-	numbers_texture.loadFromFile("images/numbers.png");
-	Sprite numbers;
-	numbers.setTexture(numbers_texture);
-	numbers.setTextureRect(IntRect(0, 0, 20, 488));
-	numbers.setPosition(167, 0);
-
-	//Letters
-	Texture letters_texture;
-	letters_texture.loadFromFile("images/letters.png");
-	Sprite letters;
-	letters.setTexture(letters_texture);
-	letters.setTextureRect(IntRect(0, 0, 488, 20));
-	letters.setPosition(167, 468);
-
-	//Buttons
-	Texture first_button, second_button, third_button;
-	first_button.loadFromFile("images/button1.png");
-	second_button.loadFromFile("images/button2.png");
-	third_button.loadFromFile("images/button3.png");
-	Button button1(first_button, Vector2f(10, 200), IntRect(0, 0, 146, 36));
-	button1.onClick = []() {
-		std::cout << "Create server\n";
-	};
-	button1.hasOnClick = true;
-	buttons_main_window.push_back(button1);
-	Button button2(second_button, Vector2f(26, 250), IntRect(0, 0, 110, 36));
-	button2.onClick = []() {
-		std::cout << "Play again\n";
-	};
-	button2.hasOnClick = true;
-	buttons_main_window.push_back(button2);
-	Button button3(third_button, Vector2f(40, 438), IntRect(0, 0, 88, 30));
-	//Create window for enter ip
-	button3.onClick = []() {
-		CreateIpWindow();
-	};
-	button3.hasOnClick = true;
-	buttons_main_window.push_back(button3);
-}
-
+//использовать class InterfaceElement
 void CreateIpWindow() {
 	
 	RenderWindow window1(VideoMode(200, 100), "Question", Style::Default);
@@ -273,20 +225,74 @@ void CreateIpWindow() {
 int main() {
 	Board* board = CreateBoard();
 	board->SetBoard();
-	
-	
+
+	//count figures
+	for (int i = 0; i < 64; ++i) {
+		for (int j = 0; j < 64; ++j) {
+			Piece* piece = board->square[i][j];
+			if (piece->GetName() != EMPTY) {
+				board->figures_count++;
+			}
+		}
+ 	}
+
 	RenderWindow window(VideoMode(655, 488), "Chess");
 	
-	//Background, buttons
-	setInterface();
+	//Interface elements
+	Texture aside_texture, main_background_texture, numbers_texture, letters_texture;
+	aside_texture.loadFromFile("images/aside_background.png");
+	main_background_texture.loadFromFile("images/grey_texture.png");
+	numbers_texture.loadFromFile("images/numbers.png");
+	letters_texture.loadFromFile("images/letters.png");
+	InterfaceElement aside(aside_texture, Vector2f(0, 0), IntRect(0, 0, 167, 488));
+	InterfaceElement main_background(main_background_texture, Vector2f(167, 0), IntRect(0, 0, 488, 488));
+	InterfaceElement numbers(numbers_texture, Vector2f(167, 0), IntRect(0, 0, 20, 488));
+	InterfaceElement letters(letters_texture, Vector2f(167, 468), IntRect(0, 0, 488, 20));
+	
+	//Buttons
+	Texture first_button, second_button, third_button;
+	first_button.loadFromFile("images/button1.png");
+	second_button.loadFromFile("images/button2.png");
+	third_button.loadFromFile("images/button3.png");
+
+	Button button1(first_button, Vector2f(10, 200), IntRect(0, 0, 146, 36));
+	button1.onClick = []() {
+		std::cout << "Create server\n";
+	};
+	button1.hasOnClick = true;
+	buttons_main_window.push_back(button1);
+
+	Button button2(second_button, Vector2f(26, 250), IntRect(0, 0, 110, 36));
+	button2.onClick = []() {
+		std::cout << "Play again\n";
+	};
+	button2.hasOnClick = true;
+	buttons_main_window.push_back(button2);
+
+	Button button3(third_button, Vector2f(40, 438), IntRect(0, 0, 88, 30));
+	button3.onClick = []() {
+		CreateIpWindow();
+	};
+	button3.hasOnClick = true;
+	buttons_main_window.push_back(button3);
 
 	//Figures
 	Texture figure_texture;
 	figure_texture.loadFromFile("images/figures.png");
 
-	for (int i = 0; i < figures_count; ++i) {
-		figures[i].setTexture(figure_texture);
+	//set textures for figures
+	for (int i = 0; i < 64; ++i) {
+		for (int j = 0; j < 64; ++j) {
+			Piece* piece = board->square[i][j];
+			if (piece->GetName() != EMPTY) {
+				piece->SetTextureFigures(figure_texture);
+			}
+		}
 	}
+	/*for (int i = 0; i < board->figures_count; ++i) {
+
+		figures[i].setTexture(figure_texture);
+	}*/
 	setFigures();
 
 	//Squares
@@ -307,18 +313,22 @@ int main() {
 	int k = 0;
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
+			Piece* piece = board->square[i][j];
 			k = (k + 1) % 2;
 			if (k == 1) {
-				squares[i * 8 + j].setTexture(black_square);
+				piece->SetTextureSquares(black_square);
+				/*squares[i * 8 + j].setTexture(black_square);*/
 			}
 			else {
-				squares[i * 8 + j].setTexture(white_square);
+				piece->SetTextureSquares(white_square);
+				//squares[i * 8 + j].setTexture(white_square);
 			}
 
 		}
 		k = (k + 1) % 2;
 	}
 	setSquaresPositions();
+	
 	//for mouse_move
 	int mouse_x = 0;
 	int mouse_y = 0;
@@ -403,10 +413,10 @@ int main() {
 
 		window.clear();
 		
-		window.draw(aside);
-		window.draw(main_background);
-		window.draw(numbers);
-		window.draw(letters);
+		window.draw(aside.sprite);
+		window.draw(main_background.sprite);
+		window.draw(numbers.sprite);
+		window.draw(letters.sprite);
 
 		for (int i = 0; i < 64; ++i) {
 			window.draw(squares[i]);
@@ -414,7 +424,7 @@ int main() {
 		for (int i = 0; i < buttons_main_window.size(); ++i) {
 			window.draw(buttons_main_window[i].sprite);
 		}
-		for (int i = 0; i < figures_count; ++i) {
+		for (int i = 0; i < board->figures_count; ++i) {
 			window.draw(figures[i]);
 		}
 
