@@ -4,7 +4,11 @@
 #include <vector>
 #include <functional>
 #include <string>
+
+#include "ChessFigure.h"
+
 using namespace sf;
+
 
 const int figures_count = 32;
 
@@ -34,7 +38,8 @@ public:
 	};;
 };
 
-
+std::vector<Button> buttons_main_window;
+std::vector<Button> buttons_ip_window;
 
 int k = 0;
 int size = 56;
@@ -42,22 +47,22 @@ int size = 56;
 std::string IP = "";
 std::string  t = "";
 
-int board[8][8] = {
-	{5,4,3,2,1,3,4,5},
-	{6,6,6,6,6,6,6,6},
-	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
-	{0,0,0,0,0,0,0,0},
-	{-6,-6,-6,-6,-6,-6,-6,-6},
-	{-5,-4,-3,-2,-1,-3,-4,-5},
-};
+//int board[8][8] = {
+//	{5,4,3,2,1,3,4,5},
+//	{6,6,6,6,6,6,6,6},
+//	{0,0,0,0,0,0,0,0},
+//	{0,0,0,0,0,0,0,0},
+//	{0,0,0,0,0,0,0,0},
+//	{0,0,0,0,0,0,0,0},
+//	{-6,-6,-6,-6,-6,-6,-6,-6},
+//	{-5,-4,-3,-2,-1,-3,-4,-5},
+//};
 
 void setFigures() {
 	int n;
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
-			n = board[i][j];
+			n = board->square[i][j].type_piece;
 
 			if (n != 0) {
 				int x = abs(n) - 1;
@@ -88,8 +93,67 @@ void setSquaresPositions() {
 
 }
 
+void setInterface() {
+	//Aside
+	Texture aside_texture;
+	aside_texture.loadFromFile("images/aside_background.png");
+	Sprite aside;
+	aside.setTexture(aside_texture);
+	aside.setTextureRect(IntRect(0, 0, 167, 488));
+	aside.setPosition(0, 0);
+
+	//Main_background
+	Texture main_background_texture;
+	main_background_texture.loadFromFile("images/grey_texture.png");
+	Sprite main_background;
+	main_background.setTexture(main_background_texture);
+	main_background.setTextureRect(IntRect(0, 0, 488, 488));
+	main_background.setPosition(167, 0);
+
+	//Numbers
+	Texture numbers_texture;
+	numbers_texture.loadFromFile("images/numbers.png");
+	Sprite numbers;
+	numbers.setTexture(numbers_texture);
+	numbers.setTextureRect(IntRect(0, 0, 20, 488));
+	numbers.setPosition(167, 0);
+
+	//Letters
+	Texture letters_texture;
+	letters_texture.loadFromFile("images/letters.png");
+	Sprite letters;
+	letters.setTexture(letters_texture);
+	letters.setTextureRect(IntRect(0, 0, 488, 20));
+	letters.setPosition(167, 468);
+
+	//Buttons
+	Texture first_button, second_button, third_button;
+	first_button.loadFromFile("images/button1.png");
+	second_button.loadFromFile("images/button2.png");
+	third_button.loadFromFile("images/button3.png");
+	Button button1(first_button, Vector2f(10, 200), IntRect(0, 0, 146, 36));
+	button1.onClick = []() {
+		std::cout << "Create server\n";
+	};
+	button1.hasOnClick = true;
+	buttons_main_window.push_back(button1);
+	Button button2(second_button, Vector2f(26, 250), IntRect(0, 0, 110, 36));
+	button2.onClick = []() {
+		std::cout << "Play again\n";
+	};
+	button2.hasOnClick = true;
+	buttons_main_window.push_back(button2);
+	Button button3(third_button, Vector2f(40, 438), IntRect(0, 0, 88, 30));
+	//Create window for enter ip
+	button3.onClick = []() {
+		CreateIpWindow();
+	};
+	button3.hasOnClick = true;
+	buttons_main_window.push_back(button3);
+}
+
 void CreateIpWindow() {
-	std::vector<Button> buttons_ip_window;
+	
 	RenderWindow window1(VideoMode(200, 100), "Question", Style::Default);
 
 	//background
@@ -207,67 +271,14 @@ void CreateIpWindow() {
 }
 
 int main() {
-	std::vector<Button> buttons_main_window;
-	/*Board* board = CreateBoard();
-	board->SetBoard();*/
+	Board* board = CreateBoard();
+	board->SetBoard();
+	
+	
 	RenderWindow window(VideoMode(655, 488), "Chess");
 	
-	//Aside
-	Texture aside_texture;
-	aside_texture.loadFromFile("images/aside_background.png");
-	Sprite aside;
-	aside.setTexture(aside_texture);
-	aside.setTextureRect(IntRect(0, 0, 167, 488));
-	aside.setPosition(0, 0);
-
-	//Main_background
-	Texture main_background_texture;
-	main_background_texture.loadFromFile("images/grey_texture.png");
-	Sprite main_background;
-	main_background.setTexture(main_background_texture);
-	main_background.setTextureRect(IntRect(0, 0, 488, 488));
-	main_background.setPosition(167, 0);
-
-	//Numbers
-	Texture numbers_texture;
-	numbers_texture.loadFromFile("images/numbers.png");
-	Sprite numbers;
-	numbers.setTexture(numbers_texture);
-	numbers.setTextureRect(IntRect(0, 0, 20, 488));
-	numbers.setPosition(167, 0);
-
-	//Letters
-	Texture letters_texture;
-	letters_texture.loadFromFile("images/letters.png");
-	Sprite letters;
-	letters.setTexture(letters_texture);
-	letters.setTextureRect(IntRect(0, 0, 488, 20));
-	letters.setPosition(167, 468);
-
-	//Buttons
-	Texture first_button, second_button, third_button;
-	first_button.loadFromFile("images/button1.png");
-	second_button.loadFromFile("images/button2.png");
-	third_button.loadFromFile("images/button3.png");
-	Button button1(first_button, Vector2f(10, 200), IntRect(0, 0, 146, 36));
-	button1.onClick = []() {
-		std::cout << "Create server\n";
-	};
-	button1.hasOnClick = true;
-	buttons_main_window.push_back(button1);
-	Button button2(second_button, Vector2f(26, 250), IntRect(0, 0, 110, 36));
-	button2.onClick = []() {
-		std::cout << "Play again\n";
-	};
-	button2.hasOnClick = true;
-	buttons_main_window.push_back(button2);
-	Button button3(third_button, Vector2f(40, 438), IntRect(0, 0, 88, 30));
-	//Create window for enter ip
-	button3.onClick = []() {
-		CreateIpWindow();
-	};
-	button3.hasOnClick = true;
-	buttons_main_window.push_back(button3);
+	//Background, buttons
+	setInterface();
 
 	//Figures
 	Texture figure_texture;
@@ -392,12 +403,11 @@ int main() {
 
 		window.clear();
 		
-		
-		
 		window.draw(aside);
 		window.draw(main_background);
 		window.draw(numbers);
 		window.draw(letters);
+
 		for (int i = 0; i < 64; ++i) {
 			window.draw(squares[i]);
 		}

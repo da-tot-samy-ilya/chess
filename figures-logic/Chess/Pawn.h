@@ -31,7 +31,7 @@ bool Pawn::move(int vert, int hor, char col)
         {
             TypePiece type;
             board->square[horizontal][vertical].SetPiece(colour, horizontal, vertical, type);
-            //ïåðåîïðåäåëåíèå ïåøêè
+            //переопределение пешки
         }
     }
     return 0;
@@ -47,7 +47,7 @@ bool Pawn::cut_down(Piece& f)
         horizontal = newHor;
         vertical = newVert;
         return true;
-        //âçÿòèå íà ïðîõîäå
+        //взятие на проходе
     }
     return false;
 

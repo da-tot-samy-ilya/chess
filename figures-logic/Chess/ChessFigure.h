@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <SFML/Graphics.hpp>
 #include <iostream>
 #include "CheckingForMove.h"
 #include "Board.h"
@@ -11,6 +12,10 @@ protected:
     char colour; // цвет фигуры
     int vertical; // буквы
     int horizontal;// цифры
+
+    Sprite figure_sprite;
+    Sprite square_sprite;
+
 public:
     Piece() : colour('n'), vertical(-1), horizontal(-1) {};
     Piece(char colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};

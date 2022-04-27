@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include <SFML/Graphics.hpp>
 #include "ChessFigure.h"
 #include "Rook.h"
 #include "Knight.h"
