@@ -113,25 +113,25 @@ bool HasCheck(int vStart, int hStart, char kingColour) //шах
 		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
 	
-	std::pair<int, int> Hor = GetHorEdge(vStart, hStart);
-	std::pair<int, int> Vert = GetVertEdge(vStart, hStart);
+	std::pair<int, int> Up = GetEdge(vStart, hStart, 7);
+	std::pair<int, int> Down = GetEdge(vStart, hStart, 0);
 
-	KingLikeBishop(p, vStart, leftHor, vStart, hStart, kingColour);
+	KingLikeBishop(p, Down.first, 0, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
 		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
-	KingLikeBishop(p, vStart, rightHor, vStart, hStart, kingColour);
+	KingLikeBishop(p, Down.second, 0, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
 		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
-	KingLikeBishop(p, leftVert, hStart, vStart, hStart, kingColour);
+	KingLikeBishop(p, Up.first, 7, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
 		if (p.cut_down(board->square[hStart][vStart])) return true;
 	}
-	KingLikeBishop(p, rightVert, hStart, vStart, hStart, kingColour);
+	KingLikeBishop(p, Up.second, 7, vStart, hStart, kingColour);
 	if (p.GetName() != EMPTY)
 	{
 		if (p.cut_down(board->square[hStart][vStart])) return true;
@@ -175,14 +175,17 @@ Piece* KingLikeBishop(Piece& p, int vEnd, int hEnd, int vStart, int hStart, char
 	}
 };
 
-std::pair<int, int> GetHorEdge(int vStart, int hStart)
+std::pair<int, int> GetEdge(int vStart, int hStart, int hor)
 {
-	int hStart1 = hStart;
-	int hStart2 = hStart;
-	for (; vStart != 0; vStart -= 1, hStart1 += 1, hStart2 -= 1)
-		return std::make_pair(hStart1, hStart2);
+	int vStartLeft = vStart;
+	int vStartRight = vStart;
+	int sign = 1;
+	if (hor == 0)
+		sign = -1;
+	for (; hStart != hor; hStart += sign, vStartRight += 1, vStartLeft -= 1)
+		return std::make_pair(vStartRight, vStartLeft);
 }
-
+/*
 std::pair<int, int> GetVertEdge(int vStart, int hStart)
 {
 	int vStart1 = vStart;
@@ -190,6 +193,8 @@ std::pair<int, int> GetVertEdge(int vStart, int hStart)
 	for (; vStart != 0; hStart -= 1, vStart1 += 1, vStart2 -= 1)
 		return std::make_pair(vStart1, vStart2);
 }
+*/
+
 
 bool KingLikeKnight(int vStart, int hStart, char kingColour)
 {
