@@ -1,7 +1,7 @@
-#pragma once
-#include "Board.h"
-
-Board* GetBoard(Board& board)
-{
-	return &board;
-}
+//#pragma once
+//#include "Board.h"
+//
+//Board* GetBoard(Board& board)
+//{
+//	return &board;
+//}
