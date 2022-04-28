@@ -1,5 +1,6 @@
 #pragma once
 #include "Board.h"
+using namespace std;
 Board* CreateBoard()
 {
 	Board board;
@@ -94,66 +95,41 @@ bool PiecesAlongTheWayForKing(int vEnd, int hEnd, int vStart, int hStart)
 {
 	return PiecesAlongTheWayForQueen(vEnd, hEnd, vStart, hStart);
 }
-bool HasCheck(int vStart, int hStart, char kingColour) //шах
+
+bool CanCut(pair<int, int> coord, Piece* CheckingPiece)
 {
-	Piece p;
-	/*
-	* std::pair<int, int> coord;
-	KingLikeRook(coord, vStart, 0, vStart, hStart, kingColour);
 	if (coord.first != -1)
 	{
-		if (p.cut_down(board->square[hStart][vStart])) return true;
+		return board->square[coord.first][coord.second]->cut_down(*CheckingPiece);
 	}
-	*/
-	KingLikeRook(p, vStart, 0, vStart, hStart, kingColour);
-	if (p.GetName() != EMPTY)
-	{
-		if (p.cut_down(board->square[hStart][vStart])) return true;
-	}
-	KingLikeRook(p, vStart, 7, vStart, hStart, kingColour);
-	if (p.GetName() != EMPTY)
-	{
-		if (p.cut_down(board->square[hStart][vStart])) return true;
-	}
-	KingLikeRook(p, 0, hStart, vStart, hStart, kingColour);
-	if (p.GetName() != EMPTY)
-	{
-		if (p.cut_down(board->square[hStart][vStart])) return true;
-	}
-	KingLikeRook(p, 7, hStart, vStart, hStart, kingColour);
-	if (p.GetName() != EMPTY)
-	{
-		if (p.cut_down(board->square[hStart][vStart])) return true;
-	}
-	
+}
+
+bool HasCheck(int vStart, int hStart, char kingColour) //шах
+{
+	std::pair<int, int> coord(-1, -1);
+	Piece* CheckingPiece = board->square[hStart][vStart];
+
+	pair<int, int> coord1 = KingLikeRook(coord, vStart, 7, vStart, hStart, kingColour);
+	pair<int, int> coord2 = KingLikeRook(coord, vStart, 0, vStart, hStart, kingColour);
+	pair<int, int> coord3 = KingLikeRook(coord, 0, hStart, vStart, hStart, kingColour);
+	pair<int, int> coord4 = KingLikeRook(coord, 7, hStart, vStart, hStart, kingColour);
+
 	std::pair<int, int> Up = GetEdge(vStart, hStart, 7);
 	std::pair<int, int> Down = GetEdge(vStart, hStart, 0);
 
-	KingLikeBishop(p, Down.first, 0, vStart, hStart, kingColour);
-	if (p.GetName() != EMPTY)
-	{
-		if (p.cut_down(board->square[hStart][vStart])) return true;
-	}
-	KingLikeBishop(p, Down.second, 0, vStart, hStart, kingColour);
-	if (p.GetName() != EMPTY)
-	{
-		if (p.cut_down(board->square[hStart][vStart])) return true;
-	}
-	KingLikeBishop(p, Up.first, 7, vStart, hStart, kingColour);
-	if (p.GetName() != EMPTY)
-	{
-		if (p.cut_down(board->square[hStart][vStart])) return true;
-	}
-	KingLikeBishop(p, Up.second, 7, vStart, hStart, kingColour);
-	if (p.GetName() != EMPTY)
-	{
-		if (p.cut_down(board->square[hStart][vStart])) return true;
-	}
-	if (KingLikeKnight(vStart, hStart, kingColour))
-		return true;
+	pair<int, int> coord5 = KingLikeBishop(coord, Down.first, 0, vStart, hStart, kingColour);
+	pair<int, int> coord6 = KingLikeBishop(coord, Down.second, 0, vStart, hStart, kingColour);
+	pair<int, int> coord7 = KingLikeBishop(coord, Up.first, 7, vStart, hStart, kingColour);
+	pair<int, int> coord8 = KingLikeBishop(coord, Up.second, 7, vStart, hStart, kingColour);
+
+	if (CanCut(coord1, CheckingPiece) || CanCut(coord2, CheckingPiece) || CanCut(coord3, CheckingPiece) 
+		|| CanCut(coord4, CheckingPiece) || CanCut(coord5, CheckingPiece) || CanCut(coord6, CheckingPiece)
+		|| CanCut(coord7, CheckingPiece) || CanCut(coord8, CheckingPiece) || KingLikeKnight(vStart, hStart, kingColour)) return true;
+
 	return false;
 }
-Piece* KingLikeRook(Piece& p, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
+
+pair<int, int> KingLikeRook(std::pair<int, int> coord, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
 {
 	int vsign = 1;
 	int hsign = 1;
@@ -163,12 +139,21 @@ Piece* KingLikeRook(Piece& p, int vEnd, int hEnd, int vStart, int hStart, char k
 	hStart += hsign;
 	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
 	{
-		if (board->square[hStart][vStart]->GetColour() == kingColour)
-			return &p;
-		else return board->square[vStart][vStart];
+		if (board->square[hStart][vStart]->GetColour() == kingColour || board->square[hStart][vStart]->GetName() == EMPTY)
+		{
+			coord.first = -1;
+			coord.second = -1;
+			return coord;
+		}
+		else
+		{
+			coord.first = hStart;
+			coord.second = vStart;
+			return coord;
+		}
 	}
-};
-Piece* KingLikeBishop(Piece& p, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
+}
+pair<int, int> KingLikeBishop(std::pair<int, int> coord, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
 {
 	int sign = 1;
 	int End = vEnd;
@@ -182,11 +167,20 @@ Piece* KingLikeBishop(Piece& p, int vEnd, int hEnd, int vStart, int hStart, char
 	Start += sign;
 	for (; abs(Start - End) > 0; Start += sign)
 	{
-		if (board->square[Start][Start]->GetColour() == kingColour)
-			return &p;
-		else return board->square[Start][Start];
+		if (board->square[Start][Start]->GetColour() == kingColour || board->square[hStart][vStart]->GetName() == EMPTY)
+		{
+			coord.first = -1;
+			coord.second = -1;
+			return coord;
+		}
+		else
+		{
+			coord.first = hStart;
+			coord.second = vStart;
+			return coord;
+		}
 	}
-};
+}
 
 std::pair<int, int> GetEdge(int vStart, int hStart, int hor)
 {
@@ -198,7 +192,6 @@ std::pair<int, int> GetEdge(int vStart, int hStart, int hor)
 	for (; hStart != hor; hStart += sign, vStartRight += 1, vStartLeft -= 1)
 		return std::make_pair(vStartRight, vStartLeft);
 }
-
 
 bool KingLikeKnight(int vStart, int hStart, char kingColour)
 {
