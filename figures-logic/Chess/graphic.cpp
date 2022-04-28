@@ -279,21 +279,20 @@ int main() {
 	//Figures
 	Texture figure_texture;
 	figure_texture.loadFromFile("images/figures.png");
-
-	//set textures for figures
-	for (int i = 0; i < 64; ++i) {
-		for (int j = 0; j < 64; ++j) {
+	for (int i = 0; i < 8; ++i) {
+		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
 			if (piece->GetName() != EMPTY) {
 				piece->SetTextureFigures(figure_texture);
 			}
 		}
 	}
+	setFigures();
 	/*for (int i = 0; i < board->figures_count; ++i) {
 
 		figures[i].setTexture(figure_texture);
 	}*/
-	setFigures();
+	
 
 	//Squares
 	Texture black_square, white_square,
@@ -363,13 +362,35 @@ int main() {
 					//find squares
 					int cursor_x_for_board = (cursor_x - board_offset_x) / size;
 					int cursor_y_for_board = (cursor_y - board_offset_y) / size;
+					Piece* piece = board->square[cursor_y_for_board][cursor_x_for_board];
+
+					//squares backlight red with onclick
 					if (cursor_x_for_board <= 7 && cursor_x_for_board >= 0 &&
 						cursor_y_for_board <= 7 && cursor_y_for_board >= 0) {
 						if ((cursor_y_for_board + cursor_x_for_board) % 2 == 0) {
-							squares[cursor_y_for_board * 8 + cursor_x_for_board].setTexture(red_black_square);
+							piece->square_sprite.setTexture(red_black_square);
+							//use new methods
+							piece->SetIsChosenForMove
+							//squares backlight greeen with possible moves
+							for (int i = 0; i < 8; ++i) {
+								for (int j = 0; j < 8; ++j) {
+									Piece* to_move_piece = board->square[i][j];
+									char to_move_color = to_move_piece->GetColour();
+									if (piece->move(j, i,to_move_color)) {
+										if ((i + j) % 2 == 0) {
+											piece->square_sprite.setTexture(green_black_square);
+										}
+										else {
+											piece->square_sprite.setTexture(green_white_square);
+										}
+										piece->SetTextureFigures(figure_texture);
+									}
+								}
+							}
+							/*squares[cursor_y_for_board * 8 + cursor_x_for_board].setTexture(red_black_square);*/
 						}
 						else {
-							squares[cursor_y_for_board * 8 + cursor_x_for_board].setTexture(red_white_square);
+							piece->square_sprite.setTexture(red_white_square);
 						}
 						
 					}
@@ -378,32 +399,37 @@ int main() {
 			else if (event.type == Event::MouseMoved) {
 				mouse_x = (event.mouseMove.x - board_offset_x) / size;
 				mouse_y = (event.mouseMove.y - board_offset_y) / size;
+				Piece* piece = board->square[mouse_y][mouse_x];
+				Piece* piece_temp = board->square[temp_mouse_y][temp_mouse_x];
 				
 				if ((temp_mouse_x != mouse_x || temp_mouse_y != mouse_y) &&
 					mouse_x <= 7 && mouse_x >= 0 && mouse_y <= 7 && mouse_y >= 0 &&
 					event.mouseMove.x - board_offset_x > 0 && event.mouseMove.y - board_offset_y > 0) {
+
+					//squares backlight yellow with hover
 					if ((temp_mouse_y + temp_mouse_x) % 2 == 0) {
-						squares[temp_mouse_y * 8 + temp_mouse_x].setTexture(black_square);
+						piece_temp->square_sprite.setTexture(black_square);
 					}
 					else {
-						squares[temp_mouse_y * 8 + temp_mouse_x].setTexture(white_square);
+						piece_temp->square_sprite.setTexture(white_square);
 					}
 					if ((mouse_y + mouse_x) % 2 == 0) {
-						squares[mouse_y * 8 + mouse_x].setTexture(yellow_black_square);
+						piece->square_sprite.setTexture(yellow_black_square);
 					}
 					else {
-						squares[mouse_y * 8 + mouse_x].setTexture(yellow_white_square);
+						piece->square_sprite.setTexture(yellow_white_square);
 					}
 					
 					temp_mouse_x = mouse_x;
 					temp_mouse_y = mouse_y;
 				}
+				//backlight black/white with moving mous out of board
 				if (mouse_x > 7 || event.mouseMove.x - board_offset_x < 0 || mouse_y > 7 || event.mouseMove.y - board_offset_y < 0) {
 					if ((temp_mouse_y + temp_mouse_x) % 2 == 0) {
-						squares[temp_mouse_y * 8 + temp_mouse_x].setTexture(black_square);
+						piece_temp->square_sprite.setTexture(black_square);
 					}
 					else {
-						squares[temp_mouse_y * 8 + temp_mouse_x].setTexture(white_square);
+						piece_temp->square_sprite.setTexture(white_square);
 					}
 				}
 				//std::cout << mouse_x << " " << mouse_y <<  " "<< event.mouseMove.x - board_offset_x << " " << event.mouseMove.y - board_offset_y <<"\n";

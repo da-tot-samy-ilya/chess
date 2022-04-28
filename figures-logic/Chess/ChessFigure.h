@@ -4,21 +4,23 @@
 #include "CheckingForMove.h"
 #include "Board.h"
 
+enum IsChosenForMove { NOT_CHOSEN, CHOSEN };
+
 class Piece {
 private:
     TypePiece type_piece = EMPTY;
+    IsChosenForMove is_choosen_for_move = NOT_CHOSEN;
 protected:
     char colour; // цвет фигуры
     int vertical; // буквы
     int horizontal;// цифры
-
+    
 public:
     Vector2f bPosition;
     IntRect bSprite;
 
     Sprite figure_sprite;
     Sprite square_sprite;
-
 
     Piece() : colour('n'), vertical(-1), horizontal(-1) {};
     Piece(char colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};
@@ -42,6 +44,12 @@ public:
     TypePiece GetName() { 
         return this->type_piece; 
     };
+    IsChosenForMove GetIsChosenForMove() {
+        return is_choosen_for_move;
+    }
+    void SetIsChosenForMove(IsChosenForMove is_choosen_for_move) {
+        this->is_choosen_for_move = is_choosen_for_move;
+    }
     Sprite GetSpriteFigure() {
         return this->figure_sprite;
     }
