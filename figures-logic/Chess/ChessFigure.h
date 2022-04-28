@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <vector>
 enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 
 class Piece
@@ -11,6 +12,7 @@ protected:
     int vertical; // буквы
     int horizontal;// цифры
     bool canMove = true;
+    std::vector<std::pair<int, int>> PossibleMoves;
 public:
     Piece() : colour('n'), vertical(-1), horizontal(-1) {};
     Piece(char colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};

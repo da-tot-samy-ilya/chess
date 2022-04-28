@@ -10,11 +10,71 @@ Board* CreateBoard()
 Board* board = CreateBoard();
 
 
-bool MovingBishop(int vEnd, int hEnd, int vStart, int hStart)
+//bool MovingBishop(int vEnd, int hEnd, int vStart, int hStart) //не нужна
+//{
+//	return (abs((vEnd - vStart) == abs(hEnd - hStart)) && (vEnd != vStart));
+//};
+//bool PiecesAlongTheWayForBishop(int vEnd, int hEnd, int vStart, int hStart) // тоже говно
+//{
+//	int vsign = 1;
+//	int hsign = 1;
+//	if (vEnd < vStart) vsign = -1;
+//	if (hEnd < hStart) hsign = -1;
+//	vStart += vsign;
+//	hStart += hsign;
+//	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
+//	{
+//		if (board->square[hStart][vStart]->GetColour() != 'n')
+//			return false;
+//	}
+//	return true;
+//}
+//
+//bool MovingRook(int vEnd, int hEnd, int vStart, int hStart) // трееш
+//{
+//	return (((vEnd = vStart) && (hEnd != hStart)) || ((vEnd != vStart) && (hEnd == hStart)));
+//}
+//bool PiecesAlongTheWayForRook(int vEnd, int hEnd, int vStart, int hStart) // хз, пока только в MovingKing
+//{
+//	int sign = 1;
+//	int End = vEnd;
+//	int Start = vStart;
+//	if (vEnd == vStart)
+//	{
+//		int End = hEnd;
+//		int Start = hStart;
+//	}
+//	if (End < Start) sign = -1;
+//	Start += sign;
+//	for (; abs(Start - End) > 0; Start += sign)
+//	{
+//		if (board->square[Start][Start]->GetColour() != 'n')
+//			return false;
+//	}
+//	return true;
+//}
+//
+//bool MovingQueen(int vEnd, int hEnd, int vStart, int hStart) // не нужна
+//{
+//	return MovingBishop(vEnd, hEnd, vStart, hStart) || MovingRook(vEnd, hEnd, vStart, hStart);
+//}
+//bool PiecesAlongTheWayForQueen(int vEnd, int hEnd, int vStart, int hStart) // для PiecesAlongTheWayForKing
+//{
+//	return PiecesAlongTheWayForBishop(vEnd, hEnd, vStart, hStart) || PiecesAlongTheWayForRook(vEnd, hEnd, vStart, hStart);
+//}
+
+bool CanCut(pair<int, int> coords, Piece* CheckingPiece)
 {
-	return (abs((vEnd - vStart) == abs(hEnd - hStart)) && (vEnd != vStart));
-};
-bool PiecesAlongTheWayForBishop(int vEnd, int hEnd, int vStart, int hStart)
+	if (coords.first != -1)
+	{
+		return board->square[coords.first][coords.second]->cut_down(*CheckingPiece);
+	}
+	return false;
+}
+
+
+
+pair<int, int> KingLikeRook(std::pair<int, int> coords, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
 {
 	int vsign = 1;
 	int hsign = 1;
@@ -24,17 +84,17 @@ bool PiecesAlongTheWayForBishop(int vEnd, int hEnd, int vStart, int hStart)
 	hStart += hsign;
 	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
 	{
-		if (board->square[hStart][vStart]->GetColour() != 'n')
-			return false;
+		if (board->square[hStart][vStart]->GetColour() != kingColour && board->square[hStart][vStart]->GetName() != EMPTY)
+		{
+			coords.first = hStart;
+			coords.second = vStart;
+			return coords;
+		}
 	}
-	return true;
+	return coords;
 }
 
-bool MovingRook(int vEnd, int hEnd, int vStart, int hStart)
-{
-	return (((vEnd = vStart) && (hEnd != hStart)) || ((vEnd != vStart) && (hEnd == hStart)));
-}
-bool PiecesAlongTheWayForRook(int vEnd, int hEnd, int vStart, int hStart)
+pair<int, int> KingLikeBishop(std::pair<int, int> coords, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
 {
 	int sign = 1;
 	int End = vEnd;
@@ -48,81 +108,14 @@ bool PiecesAlongTheWayForRook(int vEnd, int hEnd, int vStart, int hStart)
 	Start += sign;
 	for (; abs(Start - End) > 0; Start += sign)
 	{
-		if (board->square[Start][Start]->GetColour() != 'n')
-			return false;
-	}
-	return true;
-}
-
-bool MovingQueen(int vEnd, int hEnd, int vStart, int hStart)
-{
-	return MovingBishop(vEnd, hEnd, vStart, hStart) || MovingRook(vEnd, hEnd, vStart, hStart);
-}
-bool PiecesAlongTheWayForQueen(int vEnd, int hEnd, int vStart, int hStart)
-{
-	return PiecesAlongTheWayForBishop(vEnd, hEnd, vStart, hStart) || PiecesAlongTheWayForRook(vEnd, hEnd, vStart, hStart);
-}
-
-bool CanCut(pair<int, int> coord, Piece* CheckingPiece)
-{
-	if (coord.first != -1)
-	{
-		return board->square[coord.first][coord.second]->cut_down(*CheckingPiece);
-	}
-}
-
-
-pair<int, int> KingLikeRook(std::pair<int, int> coord, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
-{
-	int vsign = 1;
-	int hsign = 1;
-	if (vEnd < vStart) vsign = -1;
-	if (hEnd < hStart) hsign = -1;
-	vStart += vsign;
-	hStart += hsign;
-	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
-	{
-		if (board->square[hStart][vStart]->GetColour() == kingColour || board->square[hStart][vStart]->GetName() == EMPTY)
+		if (board->square[Start][Start]->GetColour() != kingColour && board->square[hStart][vStart]->GetName() != EMPTY)
 		{
-			coord.first = -1;
-			coord.second = -1;
-			return coord;
-		}
-		else
-		{
-			coord.first = hStart;
-			coord.second = vStart;
-			return coord;
+			coords.first = hStart;
+			coords.second = vStart;
+			return coords;
 		}
 	}
-}
-pair<int, int> KingLikeBishop(std::pair<int, int> coord, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
-{
-	int sign = 1;
-	int End = vEnd;
-	int Start = vStart;
-	if (vEnd == vStart)
-	{
-		int End = hEnd;
-		int Start = hStart;
-	}
-	if (End < Start) sign = -1;
-	Start += sign;
-	for (; abs(Start - End) > 0; Start += sign)
-	{
-		if (board->square[Start][Start]->GetColour() == kingColour || board->square[hStart][vStart]->GetName() == EMPTY)
-		{
-			coord.first = -1;
-			coord.second = -1;
-			return coord;
-		}
-		else
-		{
-			coord.first = hStart;
-			coord.second = vStart;
-			return coord;
-		}
-	}
+	return coords;
 }
 
 std::pair<int, int> GetEdge(int vStart, int hStart, int hor)
@@ -160,21 +153,21 @@ bool KingLikeKnight(int vStart, int hStart, char kingColour)
 
 bool HasCheck(int vStart, int hStart, char kingColour) //шах
 {
-	std::pair<int, int> coord(-1, -1);
+	std::pair<int, int> coords(-1, -1);
 	Piece* CheckingPiece = board->square[hStart][vStart];
 
-	pair<int, int> coord1 = KingLikeRook(coord, vStart, 7, vStart, hStart, kingColour);
-	pair<int, int> coord2 = KingLikeRook(coord, vStart, 0, vStart, hStart, kingColour);
-	pair<int, int> coord3 = KingLikeRook(coord, 0, hStart, vStart, hStart, kingColour);
-	pair<int, int> coord4 = KingLikeRook(coord, 7, hStart, vStart, hStart, kingColour);
+	pair<int, int> coord1 = KingLikeRook(coords, vStart, 7, vStart, hStart, kingColour);
+	pair<int, int> coord2 = KingLikeRook(coords, vStart, 0, vStart, hStart, kingColour);
+	pair<int, int> coord3 = KingLikeRook(coords, 0, hStart, vStart, hStart, kingColour);
+	pair<int, int> coord4 = KingLikeRook(coords, 7, hStart, vStart, hStart, kingColour);
 
 	std::pair<int, int> Up = GetEdge(vStart, hStart, 7);
 	std::pair<int, int> Down = GetEdge(vStart, hStart, 0);
 
-	pair<int, int> coord5 = KingLikeBishop(coord, Down.first, 0, vStart, hStart, kingColour);
-	pair<int, int> coord6 = KingLikeBishop(coord, Down.second, 0, vStart, hStart, kingColour);
-	pair<int, int> coord7 = KingLikeBishop(coord, Up.first, 7, vStart, hStart, kingColour);
-	pair<int, int> coord8 = KingLikeBishop(coord, Up.second, 7, vStart, hStart, kingColour);
+	pair<int, int> coord5 = KingLikeBishop(coords, Down.first, 0, vStart, hStart, kingColour);
+	pair<int, int> coord6 = KingLikeBishop(coords, Down.second, 0, vStart, hStart, kingColour);
+	pair<int, int> coord7 = KingLikeBishop(coords, Up.first, 7, vStart, hStart, kingColour);
+	pair<int, int> coord8 = KingLikeBishop(coords, Up.second, 7, vStart, hStart, kingColour);
 
 	if (CanCut(coord1, CheckingPiece) || CanCut(coord2, CheckingPiece) || CanCut(coord3, CheckingPiece)
 		|| CanCut(coord4, CheckingPiece) || CanCut(coord5, CheckingPiece) || CanCut(coord6, CheckingPiece)
@@ -183,57 +176,58 @@ bool HasCheck(int vStart, int hStart, char kingColour) //шах
 	return false;
 }
 
-bool MovingKing(int vEnd, int hEnd, int vStart, int hStart)
-{
-	if (board->square[hStart][vStart]->getFirstMove() == false && HasCheck(vStart, hStart, board->square[hStart][vStart]->GetColour()))
-	{
-		int i;
-		int j;
-		if (vEnd == 2)
-		{
-			i = 0;
-			j = 1;
-		}
-		else if (vEnd == 6)
-		{
-			i = 7;
-			j = -1;
-		}
-		else return (abs(vEnd - vStart) < 2 && abs(hEnd - hStart) < 2 && (abs(hEnd - hStart) != 0 || abs(hEnd - hStart) != 0));
-
-		if (board->square[hStart][i]->getFirstMove() == false)
-		{
-			if (PiecesAlongTheWayForRook(vEnd + j, hEnd, i, hStart))
-			{
-				board->PieceMoving(vEnd + j, hEnd, i, hStart);
-				return true;
-			}
-		}
-		return false;
-	}
- 
-}
-
-bool PiecesAlongTheWayForKing(int vEnd, int hEnd, int vStart, int hStart)
-{
-	return PiecesAlongTheWayForQueen(vEnd, hEnd, vStart, hStart);
-}
 
 
-
-bool MovingKnight(int vEnd, int hEnd, int vStart, int hStart)
-{
-	return (vStart + 2 == vEnd && hStart + 1 == hEnd || vStart + 1 == vEnd && hStart + 2 == hEnd ||
-		vStart - 1 == vEnd && hStart + 2 == hEnd || vStart - 2 == vEnd && hStart + 1 == hEnd ||
-		vStart - 2 == vEnd && hStart - 1 == hEnd || vStart - 1 == vEnd && hStart - 2 == hEnd ||
-		vStart + 1 == vEnd && hStart - 2 == hEnd || vStart + 2 == vEnd && hStart - 1 == hEnd);
-}
-
-bool MovingPawn(int vEnd, int hEnd, int vStart, int hStart, bool didMove)
-{
-	return ((!didMove && vStart == vEnd - 2) || (vStart == vEnd - 1));
-}
-bool PiecesAlongTheWayForPawn(int vEnd, int hEnd, int vStart, int hStart)
-{
-	return PiecesAlongTheWayForRook(vEnd, hEnd, vStart, hStart);
-}
+//bool MovingKing(int vEnd, int hEnd, int vStart, int hStart) // хз
+//{
+//	if (board->square[hStart][vStart]->getFirstMove() == false && HasCheck(vStart, hStart, board->square[hStart][vStart]->GetColour()))
+//	{
+//		int i;
+//		int j;
+//		if (vEnd == 2)
+//		{
+//			i = 0;
+//			j = 1;
+//		}
+//		else if (vEnd == 6)
+//		{
+//			i = 7;
+//			j = -1;
+//		}
+//		else return (abs(vEnd - vStart) < 2 && abs(hEnd - hStart) < 2 && (abs(hEnd - hStart) != 0 || abs(hEnd - hStart) != 0));
+//
+//		if (board->square[hStart][i]->getFirstMove() == false)
+//		{
+//			if (PiecesAlongTheWayForRook(vEnd + j, hEnd, i, hStart))
+//			{
+//				board->PieceMoving(vEnd + j, hEnd, i, hStart);
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
+// 
+//}
+//bool PiecesAlongTheWayForKing(int vEnd, int hEnd, int vStart, int hStart) // хз
+//{
+//	return PiecesAlongTheWayForQueen(vEnd, hEnd, vStart, hStart);
+//}
+//
+//
+//
+//bool MovingKnight(int vEnd, int hEnd, int vStart, int hStart)
+//{
+//	return (vStart + 2 == vEnd && hStart + 1 == hEnd || vStart + 1 == vEnd && hStart + 2 == hEnd ||
+//		vStart - 1 == vEnd && hStart + 2 == hEnd || vStart - 2 == vEnd && hStart + 1 == hEnd ||
+//		vStart - 2 == vEnd && hStart - 1 == hEnd || vStart - 1 == vEnd && hStart - 2 == hEnd ||
+//		vStart + 1 == vEnd && hStart - 2 == hEnd || vStart + 2 == vEnd && hStart - 1 == hEnd);
+//}
+//
+//bool MovingPawn(int vEnd, int hEnd, int vStart, int hStart, bool didMove)
+//{
+//	return ((!didMove && vStart == vEnd - 2) || (vStart == vEnd - 1));
+//}
+//bool PiecesAlongTheWayForPawn(int vEnd, int hEnd, int vStart, int hStart)
+//{
+//	return PiecesAlongTheWayForRook(vEnd, hEnd, vStart, hStart);
+//}
