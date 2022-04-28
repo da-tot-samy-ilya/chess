@@ -86,16 +86,5 @@ void Board::SetBoard()
 					square[i][j] = new Pawn(colour, j, i);
 		}
 	}
-	/*int counter = 0;
-	for (int i = 0; i < 8; i++)
-		for (int j = 0; j < 8; j++)
-		{
-			if (counter == 0)
-			{
-				square[i][j]->setSquareColor(black);
-				counter = 1;
-			}
-			else
-				counter = 0;
-		}*/
 }
+

@@ -10,6 +10,7 @@ protected:
     char colour; // цвет фигуры
     int vertical; // буквы
     int horizontal;// цифры
+    bool canMove = true;
 public:
     Piece() : colour('n'), vertical(-1), horizontal(-1) {};
     Piece(char colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};

@@ -1,7 +1,7 @@
 #include "CheckingForMove.h"
 bool Rook::move(int vert, int hor, char col)
 {
-    if (col == 'n' && Check(vert, hor) && MovingRook(vert, hor, vertical, horizontal) && PiecesAlongTheWayForRook(vert, hor, vertical, horizontal))
+    if (canMove && col == 'n' && Check(vert, hor) && MovingRook(vert, hor, vertical, horizontal) && PiecesAlongTheWayForRook(vert, hor, vertical, horizontal))
     {
         board->PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
