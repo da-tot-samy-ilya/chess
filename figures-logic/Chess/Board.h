@@ -19,6 +19,7 @@
 class Board
 { // Piece
 public:
+	int figures_count = 0;
 	Piece* square[8][8];
 	void SetBoard(); // изначальное положение доски
 	void SetPiece(char colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty
