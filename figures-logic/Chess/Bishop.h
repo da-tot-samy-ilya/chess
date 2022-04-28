@@ -10,6 +10,7 @@ public:
     Bishop(Bishop& f) : Piece(f.colour, f.vertical, f.horizontal) {};
     bool move(int vert, int hor, char col) override;
     bool cut_down(Piece& f) override;
+    bool getFirstMove() override { return false; };
 };
 
 bool Bishop::move(int vert, int hor, char col)

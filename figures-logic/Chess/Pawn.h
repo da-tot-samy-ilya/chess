@@ -1,10 +1,5 @@
 #pragma once
 #include "ChessFigure.h"
-#include "Rook.h"
-#include "Bishop.h"
-#include "Queen.h"
-#include "Knight.h"
-#include "Board.h"
 
 class Pawn : public Piece
 {
@@ -17,6 +12,7 @@ public:
     Pawn(Pawn& f) : Piece(f.colour, f.vertical, f.horizontal) {};
     bool move(int vert, int hor, char col) override;
     bool cut_down(Piece& f) override;
+    bool getFirstMove() override { return didMove; };
 };
 
 bool Pawn::move(int vert, int hor, char col)

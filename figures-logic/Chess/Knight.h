@@ -1,6 +1,5 @@
 #pragma once
 #include "ChessFigure.h"
-#include "Board.h"
 
 class Knight : public Piece
 {
@@ -11,6 +10,7 @@ public:
     Knight(Knight& f) : Piece(f.colour, f.vertical, f.horizontal) {};
     bool move(int vert, int hor, char col) override;
     bool cut_down(Piece& f) override;
+    bool getFirstMove() override { return false; };
 };
 
 bool Knight::move(int vert, int hor, char col)

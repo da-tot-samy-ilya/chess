@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
-#include "CheckingForMove.h"
-#include "Board.h"
+enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 
 class Piece
 {
@@ -22,11 +21,13 @@ public:
     };
     virtual bool move(int vert, int hor, char col) { return false; };
     virtual bool cut_down(Piece& f) { return false; };
+    virtual bool getFirstMove() { return false; }
 
     char GetColour() { return this->colour; };
     int GetVert() { return this->vertical; };
     int GetHor() { return this->horizontal; };
     TypePiece GetName() { return this->type_piece; };
+    
 };
 
 bool Check(int vert, int hor)

@@ -1,5 +1,4 @@
 #pragma once
-#include "ChessFigure.h"
 #include "Rook.h"
 #include "Knight.h"
 #include "Bishop.h"
@@ -7,8 +6,6 @@
 #include "Queen.h"
 #include "King.h"
 #include "Pawn.h"
-
-enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 //  a b c d e f g h - vertical
 //0 - hor
 //1
@@ -101,9 +98,4 @@ void Board::SetBoard()
 			else
 				counter = 0;
 		}*/
-}
-Board* CreateBoard()
-{
-	Board board;
-	return &board;
 }
