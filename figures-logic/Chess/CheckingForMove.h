@@ -73,7 +73,6 @@ bool CanCut(pair<int, int> coords, Piece* CheckingPiece)
 }
 
 
-
 pair<int, int> KingLikeRook(std::pair<int, int> coords, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
 {
 	int vsign = 1;
