@@ -142,8 +142,6 @@
     <ClInclude Include="Bishop.h" />
     <ClInclude Include="Board.h" />
     <ClInclude Include="ChessFigure.h" />
-    <ClInclude Include="ChessGame.h" />
-    <ClInclude Include="CreateBoard.h" />
     <ClInclude Include="King.h" />
     <ClInclude Include="Knight.h" />
     <ClInclude Include="LocalServer.h" />
@@ -152,11 +150,16 @@
     <ClInclude Include="Rook.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bishop.cpp" />
     <ClCompile Include="CheckingForMove.h" />
     <ClCompile Include="graphic.cpp" />
+    <ClCompile Include="King.cpp" />
+    <ClCompile Include="Knight.cpp" />
     <ClCompile Include="LocalServer.cpp" />
     <ClCompile Include="Logic.cpp" />
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Pawn.cpp" />
+    <ClCompile Include="Queen.cpp" />
+    <ClCompile Include="Rook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

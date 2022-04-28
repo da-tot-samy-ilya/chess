@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include <SFML/Graphics.hpp>
-#include "ChessFigure.h"
 #include "Rook.h"
 #include "Knight.h"
 #include "Bishop.h"
@@ -8,8 +6,6 @@
 #include "Queen.h"
 #include "King.h"
 #include "Pawn.h"
-
-enum TypePiece { EMPTY, KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN };
 //  a b c d e f g h - vertical
 //0 - hor
 //1
@@ -25,8 +21,8 @@ class Board
 public:
 	int figures_count = 0;
 	Piece* square[8][8];
-	void SetBoard(); // изначальное положение доски
-	void SetPiece(char colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty
+	void SetBoard(); // èçíà÷àëüíîå ïîëîæåíèå äîñêè
+	void SetPiece(char colour, int hor, int vert, TypePiece type); // ïîñòàâèòü ôèãóðó, ëèáî óäàëèòü å¸, åñëè Empty
 	void PieceMoving(int vEnd, int hEnd, int vStart, int hStart);
 	void SetSquare();
 };
@@ -91,21 +87,5 @@ void Board::SetBoard()
 					square[i][j] = new Pawn(colour, j, i);
 		}
 	}
-	/*int counter = 0;
-	for (int i = 0; i < 8; i++)
-		for (int j = 0; j < 8; j++)
-		{
-			if (counter == 0)
-			{
-				square[i][j]->setSquareColor(black);
-				counter = 1;
-			}
-			else
-				counter = 0;
-		}*/
 }
-Board* CreateBoard()
-{
-	Board board;
-	return &board;
-}
+

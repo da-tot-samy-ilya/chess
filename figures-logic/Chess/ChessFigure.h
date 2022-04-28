@@ -1,20 +1,18 @@
 ﻿#pragma once
-#include <SFML/Graphics.hpp>
 #include <iostream>
-#include "CheckingForMove.h"
-#include "Board.h"
-
+enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 enum IsChosenForMove { NOT_CHOSEN, CHOSEN };
 
-class Piece {
+class Piece
+{
 private:
     TypePiece type_piece = EMPTY;
     IsChosenForMove is_choosen_for_move = NOT_CHOSEN;
 protected:
-    char colour; // цвет фигуры
-    int vertical; // буквы
-    int horizontal;// цифры
-    
+    char colour; // öâåò ôèãóðû
+    int vertical; // áóêâû
+    int horizontal;// öèôðû
+    bool canMove = true;
 public:
     Vector2f bPosition;
     IntRect bSprite;
@@ -24,26 +22,21 @@ public:
 
     Piece() : colour('n'), vertical(-1), horizontal(-1) {};
     Piece(char colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};
-    Piece(Piece& f) {
+    Piece(Piece& f)
+    {
         colour = f.colour;
         vertical = f.vertical;
         horizontal = f.horizontal;
     };
     virtual bool move(int vert, int hor, char col) { return false; };
     virtual bool cut_down(Piece& f) { return false; };
+    virtual bool getFirstMove() { return false; }
 
-    char GetColour() { 
-        return this->colour; 
-    };
-    int GetVert() { 
-        return this->vertical; 
-    };
-    int GetHor() { 
-        return this->horizontal; 
-    };
-    TypePiece GetName() { 
-        return this->type_piece; 
-    };
+    char GetColour() { return this->colour; };
+    int GetVert() { return this->vertical; };
+    int GetHor() { return this->horizontal; };
+    TypePiece GetName() { return this->type_piece; };
+
     IsChosenForMove GetIsChosenForMove() {
         return is_choosen_for_move;
     }

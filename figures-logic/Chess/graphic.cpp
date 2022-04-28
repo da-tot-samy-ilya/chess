@@ -4,14 +4,11 @@
 #include <vector>
 #include <functional>
 #include <string>
-#include "ChessFigure.h"
+#include "CheckingForMove.h"
 using namespace sf;
 
 const int board_offset_x = 187;
 const int board_offset_y = 20;
-
-//Sprite figures[figures_count];
-//Sprite squares[64];
 
 class Button {
 public:
@@ -51,23 +48,12 @@ std::vector<Button> buttons_main_window;
 std::vector<Button> buttons_ip_window;
 
 int k = 0;
-int size = 56;
+const int square_size = 56;
 
 std::string IP = "";
 std::string  t = "";
 
-//int board[8][8] = {
-//	{5,4,3,2,1,3,4,5},
-//	{6,6,6,6,6,6,6,6},
-//	{0,0,0,0,0,0,0,0},
-//	{0,0,0,0,0,0,0,0},
-//	{0,0,0,0,0,0,0,0},
-//	{0,0,0,0,0,0,0,0},
-//	{-6,-6,-6,-6,-6,-6,-6,-6},
-//	{-5,-4,-3,-2,-1,-3,-4,-5},
-//};
-
-void setFigures() {
+void setFigures(Board* board) {
 	int n, x, y;
 	char color;
 	for (int i = 0; i < 8; ++i) {
@@ -83,19 +69,18 @@ void setFigures() {
 				else {
 					y = 1;
 				}
-				piece->setVisualFigures(Vector2f(board_offset_x + size * j, board_offset_y - 2 + size * i), IntRect(size * x, size * y, size, size));
-				k++;
+				piece->setVisualFigures(Vector2f(board_offset_x + square_size * j, board_offset_y - 2 + square_size * i), IntRect(square_size * x, square_size * y, square_size, square_size));
 			}
 		}
 	}
 }
 
-void setSquaresPositions() {
+void setSquaresPositions(Board* board) {
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
 			k = (k + 1) % 2;
-			piece->setVisualSquares(Vector2f(board_offset_x + size * j, board_offset_y + size * i), IntRect(50, 50, size, size));
+			piece->setVisualSquares(Vector2f(board_offset_x + square_size * j, board_offset_y + square_size * i), IntRect(50, 50, square_size, square_size));
 			/*squares[i * 8 + j].setTextureRect(IntRect(50, 50, size, size));
 			squares[i * 8 + j].setPosition(board_offset_x + size * j, board_offset_y + size * i);*/
 		}
@@ -236,7 +221,7 @@ int main() {
 		}
  	}
 
-	RenderWindow window(VideoMode(655, 488), "Chess");
+	RenderWindow window(VideoMode(655, 488), "ABOBA");
 	
 	//Interface elements
 	Texture aside_texture, main_background_texture, numbers_texture, letters_texture;
@@ -287,7 +272,7 @@ int main() {
 			}
 		}
 	}
-	setFigures();
+	setFigures(board);
 	/*for (int i = 0; i < board->figures_count; ++i) {
 
 		figures[i].setTexture(figure_texture);
@@ -326,7 +311,7 @@ int main() {
 		}
 		k = (k + 1) % 2;
 	}
-	setSquaresPositions();
+	setSquaresPositions(board);
 	
 	//for mouse_move
 	int mouse_x = 0;
@@ -360,8 +345,8 @@ int main() {
 					}
 
 					//find squares
-					int cursor_x_for_board = (cursor_x - board_offset_x) / size;
-					int cursor_y_for_board = (cursor_y - board_offset_y) / size;
+					int cursor_x_for_board = (cursor_x - board_offset_x) / square_size;
+					int cursor_y_for_board = (cursor_y - board_offset_y) / square_size;
 					Piece* piece = board->square[cursor_y_for_board][cursor_x_for_board];
 
 					//squares backlight red with onclick
@@ -369,24 +354,24 @@ int main() {
 						cursor_y_for_board <= 7 && cursor_y_for_board >= 0) {
 						if ((cursor_y_for_board + cursor_x_for_board) % 2 == 0) {
 							piece->square_sprite.setTexture(red_black_square);
-							//use new methods
-							piece->SetIsChosenForMove
-							//squares backlight greeen with possible moves
-							for (int i = 0; i < 8; ++i) {
-								for (int j = 0; j < 8; ++j) {
-									Piece* to_move_piece = board->square[i][j];
-									char to_move_color = to_move_piece->GetColour();
-									if (piece->move(j, i,to_move_color)) {
-										if ((i + j) % 2 == 0) {
-											piece->square_sprite.setTexture(green_black_square);
-										}
-										else {
-											piece->square_sprite.setTexture(green_white_square);
-										}
-										piece->SetTextureFigures(figure_texture);
-									}
-								}
-							}
+							//use new methods later
+							//piece->SetIsChosenForMove
+							////squares backlight greeen with possible moves
+							//for (int i = 0; i < 8; ++i) {
+							//	for (int j = 0; j < 8; ++j) {
+							//		Piece* to_move_piece = board->square[i][j];
+							//		char to_move_color = to_move_piece->GetColour();
+							//		if (piece->move(j, i,to_move_color)) {
+							//			if ((i + j) % 2 == 0) {
+							//				piece->square_sprite.setTexture(green_black_square);
+							//			}
+							//			else {
+							//				piece->square_sprite.setTexture(green_white_square);
+							//			}
+							//			piece->SetTextureFigures(figure_texture);
+							//		}
+							//	}
+							//}
 							/*squares[cursor_y_for_board * 8 + cursor_x_for_board].setTexture(red_black_square);*/
 						}
 						else {
@@ -397,8 +382,8 @@ int main() {
 				}
 			}
 			else if (event.type == Event::MouseMoved) {
-				mouse_x = (event.mouseMove.x - board_offset_x) / size;
-				mouse_y = (event.mouseMove.y - board_offset_y) / size;
+				mouse_x = (event.mouseMove.x - board_offset_x) / square_size;
+				mouse_y = (event.mouseMove.y - board_offset_y) / square_size;
 				Piece* piece = board->square[mouse_y][mouse_x];
 				Piece* piece_temp = board->square[temp_mouse_y][temp_mouse_x];
 				
