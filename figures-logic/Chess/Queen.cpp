@@ -1,7 +1,9 @@
 #include "CheckingForMove.h"
 bool Queen::move(int vert, int hor, char col)
 {
-	if (col == 'n' && Check(vert, hor) && MovingQueen(vert, hor, vertical, horizontal) && PiecesAlongTheWayForQueen(vert, hor, vertical, horizontal))
+	PossibleMoves.clear();
+	FindPossibleMovesForQueen(PossibleMoves, vertical, horizontal, colour);
+	if (col == 'n' && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
 	{
 		board->PieceMoving(vert, hor, vertical, horizontal);
 		horizontal = hor;
@@ -18,7 +20,8 @@ bool Queen::cut_down(Piece& f)
 	if (f.GetVert() == vertical) vsign = 0;
 	if (f.GetHor() < horizontal) hsign = -1;
 	if (f.GetHor() == horizontal) hsign = 0;
-	if (colour != f.GetColour() && MovingQueen(f.GetVert(), f.GetHor(), vertical, horizontal) && PiecesAlongTheWayForQueen(f.GetVert() - vsign, f.GetHor() - hsign, vertical, horizontal))
+	FindPossibleMovesForQueen(PossibleMoves, vertical, horizontal, colour);
+	if (colour != f.GetColour() && CanMakeMove(PossibleMoves, canMove, make_pair(f.GetHor(), f.GetVert())))
 	{
 		int newHor = f.GetHor();
 		int newVert = f.GetVert();

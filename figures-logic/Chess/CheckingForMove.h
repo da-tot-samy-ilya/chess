@@ -120,7 +120,7 @@ void funkRook(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, int vSt
 	}
 }
 
-void MakeVectorForRook(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour)
+void FindPossibleMovesForRook(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour)
 {
 	funkRook(PossibleMoves, vStart, 7, vStart, hStart, colour);
 	funkRook(PossibleMoves, vStart, 0, vStart, hStart, colour);
@@ -128,7 +128,7 @@ void MakeVectorForRook(vector<pair<int, int>>& PossibleMoves, int vStart, int hS
 	funkRook(PossibleMoves, 7, hStart, vStart, hStart, colour);
 }
 
-void MakeVectorForBishop(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour)
+void FindPossibleMovesForBishop(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour)
 {
 	std::pair<int, int> Up = GetEdge(vStart, hStart, 7);
 	std::pair<int, int> Down = GetEdge(vStart, hStart, 0);
@@ -139,10 +139,10 @@ void MakeVectorForBishop(vector<pair<int, int>>& PossibleMoves, int vStart, int 
 	funkBishop(PossibleMoves, Up.second, 7, vStart, hStart, colour);
 }
 
-void MakeVectorForQueen(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour)
+void FindPossibleMovesForQueen(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour)
 {
-	MakeVectorForRook(PossibleMoves, vStart, hStart, colour);
-	MakeVectorForBishop(PossibleMoves, vStart, hStart, colour);
+	FindPossibleMovesForRook(PossibleMoves, vStart, hStart, colour);
+	FindPossibleMovesForBishop(PossibleMoves, vStart, hStart, colour);
 }
 
 bool CanMakeMove(vector<pair<int, int>>& PossibleMoves, bool& CanMove, pair<int, int> coords)

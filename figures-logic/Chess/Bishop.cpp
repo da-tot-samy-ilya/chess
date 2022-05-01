@@ -1,7 +1,9 @@
 #include "CheckingForMove.h"
 bool Bishop::move(int vert, int hor, char col)
 {
-    if (col == 'n' && Check(vert, hor) && MovingBishop(vert, hor, vertical, horizontal) && PiecesAlongTheWayForBishop(vert, hor, vertical, horizontal))
+    PossibleMoves.clear();
+    MakeVectorForRook(PossibleMoves, vertical, horizontal, colour);
+    if (col == 'n' && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
     {
         board->PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
@@ -16,7 +18,9 @@ bool Bishop::cut_down(Piece& f)
     int hsign = 1;
     if (f.GetVert() < vertical) vsign = -1;
     if (f.GetHor() < horizontal) hsign = -1;
-    if (colour != f.GetColour() && MovingBishop(f.GetVert(), f.GetHor(), vertical, horizontal) && PiecesAlongTheWayForBishop(f.GetVert() - vsign, f.GetHor() - hsign, vertical, horizontal))
+    //PossibleMoves.clear();
+    MakeVectorForRook(PossibleMoves, vertical, horizontal, colour);
+    if (colour != f.GetColour() && CanMakeMove(PossibleMoves, canMove, make_pair(f.GetHor(), f.GetVert())))
     {
         int newHor = f.GetHor();
         int newVert = f.GetVert();
