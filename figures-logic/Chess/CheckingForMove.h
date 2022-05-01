@@ -1,5 +1,8 @@
 #pragma once
 #include "Board.h"
+#include <vector>
+#include <algorithm>
+#include <iostream>
 using namespace std;
 Board* CreateBoard()
 {
@@ -72,8 +75,91 @@ bool CanCut(pair<int, int> coords, Piece* CheckingPiece)
 	return false;
 }
 
+void funkBishop(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, int vStart, int hStart, char colour)
+{
+	int vsign = 1;
+	int hsign = 1;
+	if (vEnd < vStart) vsign = -1;
+	if (hEnd < hStart) hsign = -1;
+	vStart += vsign;
+	hStart += hsign;
+	std::pair<int, int> coords;
+	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
+	{
+		if (board->square[hStart][vStart]->GetName() == EMPTY)
+			PossibleMoves.push_back(make_pair(hStart, vStart));
+		else
+		{
+			if (board->square[hStart][vStart]->GetColour() != colour && board->square[hStart][vStart]->GetName() != KING)
+				PossibleMoves.push_back(make_pair(hStart, vStart));
+		}
+	}
+}
 
-pair<int, int> KingLikeRook(std::pair<int, int> coords, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
+void funkRook(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, int vStart, int hStart, char colour)
+{
+	int sign = 1;
+	int End = vEnd;
+	int Start = vStart;
+	if (vEnd == vStart)
+	{
+		int End = hEnd;
+		int Start = hStart;
+	}
+	if (End < Start) sign = -1;
+	Start += sign;
+	for (; abs(Start - End) > 0; Start += sign)
+	{
+		if (board->square[hStart][vStart]->GetName() == EMPTY)
+			PossibleMoves.push_back(make_pair(hStart, vStart));
+		else
+		{
+			if (board->square[hStart][vStart]->GetColour() != colour && board->square[hStart][vStart]->GetName() != KING)
+				PossibleMoves.push_back(make_pair(hStart, vStart));
+		}
+	}
+}
+
+void MakeVectorForRook(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour)
+{
+	funkRook(PossibleMoves, vStart, 7, vStart, hStart, colour);
+	funkRook(PossibleMoves, vStart, 0, vStart, hStart, colour);
+	funkRook(PossibleMoves, 0, hStart, vStart, hStart, colour);
+	funkRook(PossibleMoves, 7, hStart, vStart, hStart, colour);
+}
+
+void MakeVectorForBishop(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour)
+{
+	std::pair<int, int> Up = GetEdge(vStart, hStart, 7);
+	std::pair<int, int> Down = GetEdge(vStart, hStart, 0);
+
+	funkBishop(PossibleMoves, Down.first, 0, vStart, hStart, colour);
+	funkBishop(PossibleMoves, Down.second, 0, vStart, hStart, colour);
+	funkBishop(PossibleMoves, Up.first, 7, vStart, hStart, colour);
+	funkBishop(PossibleMoves, Up.second, 7, vStart, hStart, colour);
+}
+
+void MakeVectorForQueen(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour)
+{
+	MakeVectorForRook(PossibleMoves, vStart, hStart, colour);
+	MakeVectorForBishop(PossibleMoves, vStart, hStart, colour);
+}
+
+bool CanMakeMove(vector<pair<int, int>>& PossibleMoves, bool& CanMove, pair<int, int> coords)
+{
+	if (PossibleMoves.empty())
+	{
+		return false;
+		CanMove = false;
+	}
+	CanMove = true;
+	if (std::find(PossibleMoves.begin(), PossibleMoves.end(), coords) != PossibleMoves.end())
+		return true;
+	return false;
+
+}
+
+pair<int, int> KingLikeBishop(pair<int, int> coords, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
 {
 	int vsign = 1;
 	int hsign = 1;
@@ -93,7 +179,7 @@ pair<int, int> KingLikeRook(std::pair<int, int> coords, int vEnd, int hEnd, int 
 	return coords;
 }
 
-pair<int, int> KingLikeBishop(std::pair<int, int> coords, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
+pair<int, int> KingLikeRook(pair<int, int> coords, int vEnd, int hEnd, int vStart, int hStart, char kingColour)
 {
 	int sign = 1;
 	int End = vEnd;
@@ -117,7 +203,7 @@ pair<int, int> KingLikeBishop(std::pair<int, int> coords, int vEnd, int hEnd, in
 	return coords;
 }
 
-std::pair<int, int> GetEdge(int vStart, int hStart, int hor)
+pair<int, int> GetEdge(int vStart, int hStart, int hor)
 {
 	int vStartLeft = vStart;
 	int vStartRight = vStart;
@@ -175,8 +261,6 @@ bool HasCheck(int vStart, int hStart, char kingColour) //øàõ
 	return false;
 }
 
-
-
 bool MovingKing(int vEnd, int hEnd, int vStart, int hStart) // õç
 {
 	if (board->square[hStart][vStart]->getFirstMove() == false && HasCheck(vStart, hStart, board->square[hStart][vStart]->GetColour()))
@@ -212,14 +296,12 @@ bool PiecesAlongTheWayForKing(int vEnd, int hEnd, int vStart, int hStart) // õç
 	return PiecesAlongTheWayForQueen(vEnd, hEnd, vStart, hStart);
 }
 
-
-
 bool MovingKnight(int vEnd, int hEnd, int vStart, int hStart)
 {
 	return (vStart + 2 == vEnd && hStart + 1 == hEnd || vStart + 1 == vEnd && hStart + 2 == hEnd ||
-		vStart - 1 == vEnd && hStart + 2 == hEnd || vStart - 2 == vEnd && hStart + 1 == hEnd ||
-		vStart - 2 == vEnd && hStart - 1 == hEnd || vStart - 1 == vEnd && hStart - 2 == hEnd ||
-		vStart + 1 == vEnd && hStart - 2 == hEnd || vStart + 2 == vEnd && hStart - 1 == hEnd);
+			vStart - 1 == vEnd && hStart + 2 == hEnd || vStart - 2 == vEnd && hStart + 1 == hEnd ||
+			vStart - 2 == vEnd && hStart - 1 == hEnd || vStart - 1 == vEnd && hStart - 2 == hEnd ||
+			vStart + 1 == vEnd && hStart - 2 == hEnd || vStart + 2 == vEnd && hStart - 1 == hEnd);
 }
 
 bool MovingPawn(int vEnd, int hEnd, int vStart, int hStart, bool didMove)
