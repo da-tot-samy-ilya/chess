@@ -20,7 +20,7 @@ bool Queen::cut_down(Piece& f)
 	if (f.GetVert() == vertical) vsign = 0;
 	if (f.GetHor() < horizontal) hsign = -1;
 	if (f.GetHor() == horizontal) hsign = 0;
-	FindPossibleMovesForQueen(PossibleMoves, vertical, horizontal, colour);
+	//FindPossibleMovesForQueen(PossibleMoves, vertical, horizontal, colour);
 	if (colour != f.GetColour() && CanMakeMove(PossibleMoves, canMove, make_pair(f.GetHor(), f.GetVert())))
 	{
 		int newHor = f.GetHor();

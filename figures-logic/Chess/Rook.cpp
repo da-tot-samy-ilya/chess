@@ -21,7 +21,7 @@ bool Rook::cut_down(Piece& f)
     if (f.GetHor() < horizontal) hsign = -1;
     if (f.GetHor() == horizontal) hsign = 0;
     //PossibleMoves.clear();
-    FindPossibleMovesForRook(PossibleMoves, vertical, horizontal, colour);
+    //FindPossibleMovesForRook(PossibleMoves, vertical, horizontal, colour);
     if (colour != f.GetColour() && CanMakeMove(PossibleMoves, canMove, make_pair(f.GetHor(), f.GetVert())))
     {
         int newHor = f.GetHor();

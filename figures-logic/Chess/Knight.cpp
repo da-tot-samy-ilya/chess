@@ -1,7 +1,9 @@
 #include "CheckingForMove.h"
 bool Knight::move(int vert, int hor, char col)
 {
-    if (col == 'n' && Check(vert, hor) && MovingKnight(vert, hor, vertical, horizontal))
+    PossibleMoves.clear();
+    FindPossibleMovesForKnight(PossibleMoves, vertical, horizontal, colour);
+    if (col == 'n' && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
     {
         board->PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
@@ -12,7 +14,7 @@ bool Knight::move(int vert, int hor, char col)
 }
 bool Knight::cut_down(Piece& f)
 {
-    if (colour != f.GetColour() && MovingKnight(f.GetVert(), f.GetHor(), vertical, horizontal))
+    if (colour != f.GetColour() && CanMakeMove(PossibleMoves, canMove, make_pair(f.GetHor(), f.GetVert())))
     {
         int newHor = f.GetHor();
         int newVert = f.GetVert();

@@ -312,3 +312,14 @@ bool PiecesAlongTheWayForPawn(int vEnd, int hEnd, int vStart, int hStart)
 {
 	return PiecesAlongTheWayForRook(vEnd, hEnd, vStart, hStart);
 }
+
+void FindPossibleMovesForPawn(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, char colour, bool didMove)
+{
+	int tmp = 1;
+	if (didMove == false)
+		tmp = 2;
+	funkRook(PossibleMoves, vStart, vStart+tmp, vStart, hStart, colour);
+	FindPossibleMovesForBishop(PossibleMoves, vStart+1, hStart+1, colour);
+	FindPossibleMovesForBishop(PossibleMoves, vStart-1, hStart+1, colour);
+
+}
