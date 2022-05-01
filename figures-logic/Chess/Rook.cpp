@@ -8,6 +8,7 @@ bool Rook::move(int vert, int hor, char col)
         board->PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
         vertical = vert;
+        didMove = true;
         return true;
     }
     return false;

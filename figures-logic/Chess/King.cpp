@@ -1,8 +1,11 @@
 #include "CheckingForMove.h"
 bool King::move(int vert, int hor, char col)
 {
-    if (col == 'n' && Check(vert, hor) && MovingKing(vert, hor, vertical, horizontal) && PiecesAlongTheWayForKing(vert, hor, vertical, horizontal) && HasCheck(vertical, horizontal, colour))
+    PossibleMoves.clear();
+    FindPossibleMovesForKing(PossibleMoves, vertical, horizontal, colour);
+    if (col == 'n' && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
     {
+        //добавить перемещение ладьи при рокировке
         board->PieceMoving(vert, hor, vertical, horizontal);
         horizontal = hor;
         vertical = vert;
@@ -12,7 +15,7 @@ bool King::move(int vert, int hor, char col)
 }
 bool King::cut_down(Piece& f)
 {
-    if (colour != f.GetColour() && MovingKing(f.GetVert(), f.GetHor(), vertical, horizontal) && PiecesAlongTheWayForKing(f.GetVert(), f.GetHor(), vertical, horizontal))
+    if (colour != f.GetColour() && CanMakeMove(PossibleMoves, canMove, make_pair(f.GetHor(), f.GetVert())))
     {
         int newHor = f.GetHor();
         int newVert = f.GetVert();
