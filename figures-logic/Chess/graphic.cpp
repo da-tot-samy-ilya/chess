@@ -221,7 +221,7 @@ int main() {
 		}
  	}
 
-	RenderWindow window(VideoMode(655, 488), "ABOBA");
+	RenderWindow window(VideoMode(655, 488), "ABOBUS");
 	
 	//Interface elements
 	Texture aside_texture, main_background_texture, numbers_texture, letters_texture;
