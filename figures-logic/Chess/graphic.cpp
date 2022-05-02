@@ -1,11 +1,10 @@
 ﻿#pragma once
-#include <SFML/Graphics.hpp>
 #include <iostream>
-#include <vector>
 #include <functional>
 #include <string>
 #include "CheckingForMove.h"
 using namespace sf;
+using namespace std;
 
 const int board_offset_x = 187;
 const int board_offset_y = 20;

@@ -24,10 +24,16 @@ public:
 	void SetBoard(); // изначальное положение доски
 	void SetPiece(char colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty
 	void PieceMoving(int vEnd, int hEnd, int vStart, int hStart);
-	void SetSquare();
+	void Move();
+	void SetSquare(int hor, int vert);
 };
 
-void SetSquare(int hor, int vert)
+void Board::SetSquare(int hor, int vert)
+{
+
+}
+
+void Board::Move()
 {
 
 }

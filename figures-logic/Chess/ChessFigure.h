@@ -1,6 +1,9 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <SFML/Graphics.hpp>
+
+
 enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 enum IsChosenForMove { NOT_CHOSEN, CHOSEN };
 
@@ -16,11 +19,11 @@ protected:
     bool canMove = true;
     std::vector<std::pair<int, int>> PossibleMoves;
 public:
-    Vector2f bPosition;
-    IntRect bSprite;
+    sf::Vector2f bPosition;
+    sf::IntRect bSprite;
 
-    Sprite figure_sprite;
-    Sprite square_sprite;
+    sf::Sprite figure_sprite;
+    sf::Sprite square_sprite;
     Piece() : colour('n'), vertical(-1), horizontal(-1) {};
     Piece(char colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};
     Piece(Piece& f)
@@ -31,7 +34,7 @@ public:
     };
     virtual bool move(int vert, int hor, char col) { return false; };
     virtual bool cut_down(Piece& f) { return false; };
-    virtual bool getFirstMove() { return false; }
+    virtual bool getFirstMove() { return false; }// move(Piece &t) in Board
 
     char GetColour() { return this->colour; };
     int GetVert() { return this->vertical; };
@@ -43,25 +46,25 @@ public:
     void SetIsChosenForMove(IsChosenForMove is_choosen_for_move) {
         this->is_choosen_for_move = is_choosen_for_move;
     }
-    Sprite GetSpriteFigure() {
+    sf::Sprite GetSpriteFigure() {
         return this->figure_sprite;
     }
-    Sprite GetSpriteSquare() {
+    sf::Sprite GetSpriteSquare() {
         return this->square_sprite;
     }
-    void SetTextureFigures(Texture& texture) {
+    void SetTextureFigures(sf::Texture& texture) {
         figure_sprite.setTexture(texture);
     }
-    void SetTextureSquares(Texture& texture) {
+    void SetTextureSquares(sf::Texture& texture) {
         square_sprite.setTexture(texture);
     }
-    void setVisualFigures(Vector2f bPosition, IntRect bSprite) {
+    void setVisualFigures(sf::Vector2f bPosition, sf::IntRect bSprite) {
         this->bPosition = bPosition;
         this->bSprite = bSprite;
         figure_sprite.setTextureRect(bSprite);
         figure_sprite.setPosition(bPosition);
     }
-    void setVisualSquares(Vector2f bPosition, IntRect bSprite) {
+    void setVisualSquares(sf::Vector2f bPosition, sf::IntRect bSprite) {
         this->bPosition = bPosition;
         this->bSprite = bSprite;
         square_sprite.setTextureRect(bSprite);

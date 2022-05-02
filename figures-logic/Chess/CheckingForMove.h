@@ -1,6 +1,8 @@
 #pragma once
 #include "Board.h"
+
 using namespace std;
+
 Board* CreateBoard()
 {
 	Board board;
