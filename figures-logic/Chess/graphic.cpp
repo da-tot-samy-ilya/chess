@@ -2,7 +2,8 @@
 #include <iostream>
 #include <functional>
 #include <string>
-#include "CheckingForMove.h"
+#include <SFML/Graphics.hpp>
+#include "Board.h"
 using namespace sf;
 using namespace std;
 
@@ -208,7 +209,6 @@ void CreateIpWindow() {
 
 int main() {
 	Board* board = CreateBoard();
-	board->SetBoard();
 
 	//count figures
 	for (int i = 0; i < 64; ++i) {

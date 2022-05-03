@@ -6,6 +6,7 @@
 
 enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 enum IsChosenForMove { NOT_CHOSEN, CHOSEN };
+enum Colour { WHITE, BLACK, NONE };
 
 class Piece
 {
@@ -13,10 +14,11 @@ private:
     TypePiece type_piece = EMPTY;
     IsChosenForMove is_choosen_for_move = NOT_CHOSEN;
 protected:
-    char colour; // цвет фигуры
+    Colour colour = NONE; // цвет фигуры
     int vertical; // буквы
     int horizontal;// цифры
     bool canMove = true;
+    bool didMove = false;
     std::vector<std::pair<int, int>> PossibleMoves;
 public:
     sf::Vector2f bPosition;
@@ -24,25 +26,29 @@ public:
 
     sf::Sprite figure_sprite;
     sf::Sprite square_sprite;
-    Piece() : colour('n'), vertical(-1), horizontal(-1) {};
-    Piece(char colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};
+    Piece() : colour(NONE), vertical(-1), horizontal(-1) {};
+    Piece(Colour colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};
     Piece(Piece& f)
     {
         colour = f.colour;
         vertical = f.vertical;
         horizontal = f.horizontal;
     };
-    virtual bool move(int vert, int hor, char col) { return false; };
-    virtual bool cut_down(Piece& f) { return false; };
+    /*virtual bool move(int vert, int hor, char col) { return false; };
+    virtual bool cut_down(Piece& f) { return false; };*/
     virtual bool getFirstMove() { return false; }// move(Piece &t) in Board
 
-    char GetColour() { return this->colour; };
+    Colour GetColour() { return this->colour; };
     int GetVert() { return this->vertical; };
     int GetHor() { return this->horizontal; };
     TypePiece GetName() { return this->type_piece; };
     IsChosenForMove GetIsChosenForMove() {
         return is_choosen_for_move;
     }
+
+    bool GetCanMove() { return this->canMove; };
+    std::vector<std::pair<int, int>>* GetVector() { return &PossibleMoves; };
+    bool* GetDidMove() { return &didMove; };
     void SetIsChosenForMove(IsChosenForMove is_choosen_for_move) {
         this->is_choosen_for_move = is_choosen_for_move;
     }
