@@ -2,7 +2,8 @@
 #include <iostream>
 #include <vector>
 #include <SFML/Graphics.hpp>
-
+using namespace sf;
+using namespace std;
 
 enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
 enum IsChosenForMove { NOT_CHOSEN, CHOSEN };
@@ -21,11 +22,10 @@ protected:
     bool didMove = false;
     std::vector<std::pair<int, int>> PossibleMoves;
 public:
-    sf::Vector2f bPosition;
-    sf::IntRect bSprite;
-
-    sf::Sprite figure_sprite;
-    sf::Sprite square_sprite;
+    Vector2f bPosition;
+    IntRect bSprite;
+    Sprite figure_sprite;
+    Sprite square_sprite;
     Piece() : colour(NONE), vertical(-1), horizontal(-1) {};
     Piece(Colour colour, int vert, int hor) : colour(colour), vertical(vert), horizontal(hor) {};
     Piece(Piece& f)
@@ -49,7 +49,8 @@ public:
     bool GetCanMove() { return this->canMove; };
     std::vector<std::pair<int, int>>* GetVector() { return &PossibleMoves; };
     bool* GetDidMove() { return &didMove; };
-    void SetIsChosenForMove(IsChosenForMove is_choosen_for_move) {
+
+    /*void SetIsChosenForMove(IsChosenForMove is_choosen_for_move) {
         this->is_choosen_for_move = is_choosen_for_move;
     }
     sf::Sprite GetSpriteFigure() {
@@ -75,7 +76,7 @@ public:
         this->bSprite = bSprite;
         square_sprite.setTextureRect(bSprite);
         square_sprite.setPosition(bPosition);
-    }
+    }*/
     
 };
 
