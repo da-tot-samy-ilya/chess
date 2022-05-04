@@ -60,16 +60,15 @@ std::string IP = "";
 std::string  t = "";
 
 void setFigures(Board* board) {
-	int n, x, y;
-	char color;
+	int x, y;
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
-			n = piece->GetName();
-			color = piece->GetColour();
+			TypePiece n = piece->GetName();
+			Colour color = piece->GetColour();
 			if (n != EMPTY) {
 				x = n - 1;
-				if (color == 'w') {
+				if (color == BLACK) {
 					y = 0;
 				}
 				else {
@@ -85,12 +84,8 @@ void setSquaresPositions(Board* board) {
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
-			k = (k + 1) % 2;
 			piece->setVisualSquares(Vector2f(board_offset_x + square_size * j, board_offset_y + square_size * i), IntRect(50, 50, square_size, square_size));
-			/*squares[i * 8 + j].setTextureRect(IntRect(50, 50, size, size));
-			squares[i * 8 + j].setPosition(board_offset_x + size * j, board_offset_y + size * i);*/
 		}
-		k = (k + 1) % 2;
 	}
 
 }
@@ -123,12 +118,8 @@ void CreateIpWindow() {
 	Text text;
 	text.setFont(font);
 	if (IP != "") {
-		std::cout << IP << std::endl;
 		text.setString(IP);
 	}
-	/*else {
-		std::cout << "IP is empty\n" << std::endl;
-	}*/
 
 	text.setCharacterSize(20);
 	text.setFillColor(Color::Blue);
@@ -154,7 +145,7 @@ void CreateIpWindow() {
 
 			else if (event1.type == sf::Event::KeyPressed) {
 
-				if (event1.key.code >= '0' && event1.key.code <= '9' || event1.key.code == 50 || event1.key.code == 59) {
+				if (event1.key.code >= 26 && event1.key.code <= 35 || event1.key.code == 50 || event1.key.code == 59) {
 
 					if (event1.key.code == 50 && count < 15) {
 						text.setString(t + ".");
@@ -171,7 +162,6 @@ void CreateIpWindow() {
 
 				}
 				t = text.getString();
-				//std::cout << count << " " << t << "\n";
 			}
 			else if (event1.type == Event::MouseButtonPressed) {
 				if (event1.mouseButton.button == Mouse::Left) {
@@ -184,7 +174,6 @@ void CreateIpWindow() {
 							if (cursor_x > buttons_ip_window[i].bPosition.x && cursor_x < buttons_ip_window[i].bPosition.x + buttons_ip_window[i].bSprite.width &&
 								cursor_y > buttons_ip_window[i].bPosition.y && cursor_y < buttons_ip_window[i].bPosition.y + buttons_ip_window[i].bSprite.height) {
 								if (buttons_ip_window[i].buttonName == "close_ok") {
-									/*std::cout << "ip was entered: " << t << "\n";*/
 									IP = t;
 									window1.close();
 								}
@@ -217,8 +206,8 @@ int main() {
 	Board* board = CreateBoard();
 
 	//count figures
-	for (int i = 0; i < 64; ++i) {
-		for (int j = 0; j < 64; ++j) {
+	for (int i = 0; i < 8; ++i) {
+		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
 			if (piece->GetName() != EMPTY) {
 				board->figures_count++;
@@ -226,7 +215,7 @@ int main() {
 		}
 	}
 
-	RenderWindow window(VideoMode(655, 488), "ABOBA");
+	RenderWindow window(VideoMode(655, 488), "Chess GAYme");
 
 	//Interface elements
 	Texture aside_texture, main_background_texture, numbers_texture, letters_texture;
@@ -278,12 +267,6 @@ int main() {
 		}
 	}
 	setFigures(board);
-	/*for (int i = 0; i < board->figures_count; ++i) {
-
-		figures[i].setTexture(figure_texture);
-	}*/
-
-
 	//Squares
 	Texture black_square, white_square,
 		red_black_square, red_white_square,
@@ -306,11 +289,9 @@ int main() {
 			k = (k + 1) % 2;
 			if (k == 1) {
 				piece->SetTextureSquares(black_square);
-				/*squares[i * 8 + j].setTexture(black_square);*/
 			}
 			else {
 				piece->SetTextureSquares(white_square);
-				//squares[i * 8 + j].setTexture(white_square);
 			}
 
 		}
@@ -359,30 +340,21 @@ int main() {
 						cursor_y_for_board <= 7 && cursor_y_for_board >= 0) {
 						if ((cursor_y_for_board + cursor_x_for_board) % 2 == 0) {
 							piece->square_sprite.setTexture(red_black_square);
-							//use new methods later
-							//piece->SetIsChosenForMove
-							////squares backlight greeen with possible moves
-							//for (int i = 0; i < 8; ++i) {
-							//	for (int j = 0; j < 8; ++j) {
-							//		Piece* to_move_piece = board->square[i][j];
-							//		char to_move_color = to_move_piece->GetColour();
-							//		if (piece->move(j, i,to_move_color)) {
-							//			if ((i + j) % 2 == 0) {
-							//				piece->square_sprite.setTexture(green_black_square);
-							//			}
-							//			else {
-							//				piece->square_sprite.setTexture(green_white_square);
-							//			}
-							//			piece->SetTextureFigures(figure_texture);
-							//		}
-							//	}
-							//}
-							/*squares[cursor_y_for_board * 8 + cursor_x_for_board].setTexture(red_black_square);*/
 						}
 						else {
 							piece->square_sprite.setTexture(red_white_square);
 						}
 
+						std::vector<std::pair<int, int>>* pieceGetPossibleMoves = MakePossibleMoves(*piece);
+						
+						/*cout << "a" << (*pieceGetPossibleMoves).size();*/
+						/*cout << piece->GetName();*/
+
+						/*for (int i = 0; i < (*pieceGetPossibleMoves).size(); ++i) {
+							cout << "b";
+							cout << "(" << (*pieceGetPossibleMoves)[i].first << "," << (*pieceGetPossibleMoves)[i].second << ")" << " ";
+						}*/
+						
 					}
 				}
 			}
@@ -437,8 +409,9 @@ int main() {
 		for (int i = 0; i < 8; ++i) {
 			for (int j = 0; j < 8; ++j) {
 				Piece* piece = board->square[i][j];
-				window.draw(piece->figure_sprite);
 				window.draw(piece->square_sprite);
+				window.draw(piece->figure_sprite);
+				
 			}
 		}
 		for (int i = 0; i < buttons_main_window.size(); ++i) {
@@ -451,46 +424,3 @@ int main() {
 
 	return 0;
 }
-
-
-
-
-//#include <SFML/Graphics.hpp>
-//#include "Board.h"
-//#include "Rook.h"
-//#include "Knight.h"
-//#include "Bishop.h"
-//#include "Pawn.h"
-//#include "Queen.h"
-//#include "King.h"
-//#include "Pawn.h"
-//
-//int main()
-//{
-//    Board* board = CreateBoard();
-//    for (int i = 0; i < 8; i++) {
-//        for (int j = 0; j < 8; j++) {
-//            cout << board->square[i][j]->GetName() << " ";
-//        }
-//        cout << "\n";
-//    }
-//    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-//    sf::CircleShape shape(100.f);
-//    shape.setFillColor(sf::Color::Green);
-//
-//    while (window.isOpen())
-//    {
-//        sf::Event event;
-//        while (window.pollEvent(event))
-//        {
-//            if (event.type == sf::Event::Closed)
-//                window.close();
-//        }
-//
-//        window.clear();
-//        window.draw(shape);
-//        window.display();
-//    }
-//
-//    return 0;
-//}

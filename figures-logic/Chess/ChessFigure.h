@@ -5,7 +5,7 @@
 using namespace sf;
 using namespace std;
 
-enum TypePiece { KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, EMPTY };
+enum TypePiece { EMPTY, KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN };
 enum IsChosenForMove { NOT_CHOSEN, CHOSEN };
 enum Colour { WHITE, BLACK, NONE };
 
@@ -41,13 +41,18 @@ public:
     Colour GetColour() { return this->colour; };
     int GetVert() { return this->vertical; };
     int GetHor() { return this->horizontal; };
-    TypePiece GetName() { return type_piece; };
+    TypePiece GetName() { return this->type_piece; };
     IsChosenForMove GetIsChosenForMove() {
         return is_choosen_for_move;
     }
 
     bool GetCanMove() { return this->canMove; };
-    std::vector<std::pair<int, int>>* GetVector() { return &PossibleMoves; };
+
+    std::vector<std::pair<int, int>>* GetPossibleMoves() { 
+        return &PossibleMoves; 
+    };
+
+
     bool* GetDidMove() { return &didMove; };
 
     void SetIsChosenForMove(IsChosenForMove is_choosen_for_move) {
