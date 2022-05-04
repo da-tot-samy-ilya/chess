@@ -31,11 +31,7 @@ public:
 	void SetSquare(int hor, int vert);
 };
 
-Board* CreateBoard()
-{
-	Board* board = new Board();
-	return board;
-}
+
 
 Board::Board() { SetBoard(); }
 
@@ -96,7 +92,11 @@ void Board::PieceMoving(int vEnd, int hEnd, int vStart, int hStart)
 	SetPiece(NONE, hStart, vStart, EMPTY);
 }
 
-Board* board = CreateBoard();
+Board board;
+Board* CreateBoard()
+{
+	return &board;
+}
 
 bool CanCut(pair<int, int> coords, Piece* CheckingPiece)
 {
@@ -119,11 +119,11 @@ void funkBishop(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, int v
 	std::pair<int, int> coords;
 	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
 	{
-		if (board->square[hStart][vStart]->GetName() == EMPTY)
+		if (board.square[hStart][vStart]->GetName() == EMPTY)
 			PossibleMoves.push_back(make_pair(hStart, vStart));
 		else
 		{
-			if (board->square[hStart][vStart]->GetColour() != colour && board->square[hStart][vStart]->GetName() != KING)
+			if (board.square[hStart][vStart]->GetColour() != colour && board.square[hStart][vStart]->GetName() != KING)
 				PossibleMoves.push_back(make_pair(hStart, vStart));
 		}
 	}
@@ -143,11 +143,11 @@ void funkRook(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, int vSt
 	Start += sign;
 	for (; abs(Start - End) > 0; Start += sign)
 	{
-		if (board->square[hStart][vStart]->GetName() == EMPTY)
+		if (board.square[hStart][vStart]->GetName() == EMPTY)
 			PossibleMoves.push_back(make_pair(hStart, vStart));
 		else
 		{
-			if (board->square[hStart][vStart]->GetColour() != colour && board->square[hStart][vStart]->GetName() != KING)
+			if (board.square[hStart][vStart]->GetColour() != colour && board.square[hStart][vStart]->GetName() != KING)
 				PossibleMoves.push_back(make_pair(hStart, vStart));
 		}
 	}
@@ -213,7 +213,7 @@ pair<int, int> KingLikeBishop(pair<int, int> coords, int vEnd, int hEnd, int vSt
 	hStart += hsign;
 	for (; abs(vStart - vEnd) > 0; vStart += vsign, hStart += hsign)
 	{
-		if (board->square[hStart][vStart]->GetColour() != kingColour && board->square[hStart][vStart]->GetName() != EMPTY)
+		if (board.square[hStart][vStart]->GetColour() != kingColour && board.square[hStart][vStart]->GetName() != EMPTY)
 		{
 			coords.first = hStart;
 			coords.second = vStart;
@@ -237,7 +237,7 @@ pair<int, int> KingLikeRook(pair<int, int> coords, int vEnd, int hEnd, int vStar
 	Start += sign;
 	for (; abs(Start - End) > 0; Start += sign)
 	{
-		if (board->square[Start][Start]->GetColour() != kingColour && board->square[hStart][vStart]->GetName() != EMPTY)
+		if (board.square[Start][Start]->GetColour() != kingColour && board.square[hStart][vStart]->GetName() != EMPTY)
 		{
 			coords.first = hStart;
 			coords.second = vStart;
@@ -249,21 +249,21 @@ pair<int, int> KingLikeRook(pair<int, int> coords, int vEnd, int hEnd, int vStar
 
 bool KingLikeKnight(int vStart, int hStart, char kingColour)
 {
-	if (board->square[hStart + 2][vStart + 1]->GetName() == KNIGHT && board->square[hStart + 2][vStart + 1]->GetColour() != kingColour && Check(vStart + 2, hStart + 1))
+	if (board.square[hStart + 2][vStart + 1]->GetName() == KNIGHT && board.square[hStart + 2][vStart + 1]->GetColour() != kingColour && Check(vStart + 2, hStart + 1))
 		return true;
-	if (board->square[hStart + 1][vStart + 2]->GetName() == KNIGHT && board->square[hStart + 1][vStart + 2]->GetColour() != kingColour && Check(vStart + 1, hStart + 2))
+	if (board.square[hStart + 1][vStart + 2]->GetName() == KNIGHT && board.square[hStart + 1][vStart + 2]->GetColour() != kingColour && Check(vStart + 1, hStart + 2))
 		return true;
-	if (board->square[hStart - 1][vStart + 2]->GetName() == KNIGHT && board->square[hStart - 1][vStart + 2]->GetColour() != kingColour && Check(vStart - 1, hStart + 2))
+	if (board.square[hStart - 1][vStart + 2]->GetName() == KNIGHT && board.square[hStart - 1][vStart + 2]->GetColour() != kingColour && Check(vStart - 1, hStart + 2))
 		return true;
-	if (board->square[hStart - 2][vStart + 1]->GetName() == KNIGHT && board->square[hStart - 1][vStart + 2]->GetColour() != kingColour && Check(vStart - 1, hStart + 2))
+	if (board.square[hStart - 2][vStart + 1]->GetName() == KNIGHT && board.square[hStart - 1][vStart + 2]->GetColour() != kingColour && Check(vStart - 1, hStart + 2))
 		return true;
-	if (board->square[hStart - 2][vStart - 1]->GetName() == KNIGHT && board->square[hStart - 2][vStart - 1]->GetColour() != kingColour && Check(vStart - 2, hStart - 1))
+	if (board.square[hStart - 2][vStart - 1]->GetName() == KNIGHT && board.square[hStart - 2][vStart - 1]->GetColour() != kingColour && Check(vStart - 2, hStart - 1))
 		return true;
-	if (board->square[hStart - 1][vStart - 2]->GetName() == KNIGHT && board->square[hStart - 1][vStart - 2]->GetColour() != kingColour && Check(vStart - 1, hStart - 2))
+	if (board.square[hStart - 1][vStart - 2]->GetName() == KNIGHT && board.square[hStart - 1][vStart - 2]->GetColour() != kingColour && Check(vStart - 1, hStart - 2))
 		return true;
-	if (board->square[hStart + 1][vStart - 2]->GetName() == KNIGHT && board->square[hStart + 1][vStart - 2]->GetColour() != kingColour && Check(vStart + 1, hStart - 2))
+	if (board.square[hStart + 1][vStart - 2]->GetName() == KNIGHT && board.square[hStart + 1][vStart - 2]->GetColour() != kingColour && Check(vStart + 1, hStart - 2))
 		return true;
-	if (board->square[hStart + 2][vStart - 1]->GetName() == KNIGHT && board->square[hStart + 2][vStart - 1]->GetColour() != kingColour && Check(vStart + 2, hStart - 1))
+	if (board.square[hStart + 2][vStart - 1]->GetName() == KNIGHT && board.square[hStart + 2][vStart - 1]->GetColour() != kingColour && Check(vStart + 2, hStart - 1))
 		return true;
 
 	return false;
@@ -272,7 +272,7 @@ bool KingLikeKnight(int vStart, int hStart, char kingColour)
 bool HasCheck(int vStart, int hStart, char kingColour) //шах
 {
 	std::pair<int, int> coords(-1, -1);
-	Piece* CheckingPiece = board->square[hStart][vStart];
+	Piece* CheckingPiece = board.square[hStart][vStart];
 
 	pair<int, int> coord1 = KingLikeRook(coords, vStart, 7, vStart, hStart, kingColour);
 	pair<int, int> coord2 = KingLikeRook(coords, vStart, 0, vStart, hStart, kingColour);
@@ -299,14 +299,14 @@ void MakeCastling(vector<pair<int, int>>& PossibleMoves, int vEnd, int vStart, i
 	int sign = -2;
 	if (vEnd > vStart)
 		sign = 2;
-	if (board->square[hStart][vEnd]->GetName() == ROOK)
+	if (board.square[hStart][vEnd]->GetName() == ROOK)
 	{
-		if (board->square[hStart][vEnd]->getFirstMove() == false)
+		if (board.square[hStart][vEnd]->getFirstMove() == false)
 		{
 			bool allClear = true;
 			for (int i = min(vEnd, vStart) + 1; i < max(vEnd, vStart) && allClear; ++i)
 			{
-				if (board->square[hStart][i]->GetName() != EMPTY)
+				if (board.square[hStart][i]->GetName() != EMPTY)
 					allClear = false;
 			}
 			if (allClear)
@@ -334,7 +334,7 @@ void FindPossibleMovesForKing(vector<pair<int, int>>& PossibleMoves, int vStart,
 	if (!HasCheck(vStart - 1, hStart - 1, colour))
 		funkBishop(PossibleMoves, vStart - 1, hStart - 1, vStart, hStart, colour);
 	//рокировка
-	if (board->square[hStart][vStart]->getFirstMove() == false && !HasCheck(vStart, hStart, colour))
+	if (board.square[hStart][vStart]->getFirstMove() == false && !HasCheck(vStart, hStart, colour))
 	{
 		if (!HasCheck(2, hStart, colour))
 			MakeCastling(PossibleMoves, 0, vStart, hStart);
@@ -345,7 +345,7 @@ void FindPossibleMovesForKing(vector<pair<int, int>>& PossibleMoves, int vStart,
 
 void funkKnight(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, char colour)
 {
-	if (Check(vEnd, hEnd) && board->square[hEnd][vEnd]->GetColour() != colour && board->square[hEnd][vEnd]->GetName() != KING)
+	if (Check(vEnd, hEnd) && board.square[hEnd][vEnd]->GetColour() != colour && board.square[hEnd][vEnd]->GetName() != KING)
 		PossibleMoves.push_back(make_pair(hEnd, vEnd));
 }
 
@@ -395,7 +395,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 		if (col == NONE && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
 		{
 			//добавить перемещение ладьи при рокировке
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = hor;
 			vertical = vert;
 			*didMove = true;
@@ -407,7 +407,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 		FindPossibleMovesForQueen(PossibleMoves, vertical, horizontal, colour);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
 		{
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = hor;
 			vertical = vert;
 			return true;
@@ -418,7 +418,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 		FindPossibleMovesForBishop(PossibleMoves, vertical, horizontal, colour);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
 		{
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = hor;
 			vertical = vert;
 			return true;
@@ -429,7 +429,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 		FindPossibleMovesForKnight(PossibleMoves, vertical, horizontal, colour);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
 		{
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = hor;
 			vertical = vert;
 			return true;
@@ -440,7 +440,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 		FindPossibleMovesForRook(PossibleMoves, piece->GetVert(), piece->GetHor(), colour);
 		if (canMove && col == NONE && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
 		{
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = hor;
 			vertical = vert;
 			*didMove = true;
@@ -452,7 +452,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 		FindPossibleMovesForPawn(PossibleMoves, vertical, horizontal, colour, didMove);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(PossibleMoves, canMove, make_pair(hor, vert)))
 		{
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			vertical = vert;
 			*didMove = true;
 			return true;
@@ -460,7 +460,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			if (horizontal == 7 || horizontal == 0)
 			{
 				TypePiece type;
-				board->SetPiece(colour, horizontal, vertical, type);
+				board.SetPiece(colour, horizontal, vertical, type);
 			}
 		}
 		return 0;
@@ -487,7 +487,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 		{
 			int newHor = hor;
 			int newVert = vert;
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = newHor;
 			vertical = newVert;
 			return true;
@@ -503,7 +503,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 		{
 			int newHor = hor;
 			int newVert = vert;
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = newHor;
 			vertical = newVert;
 			return true;
@@ -518,7 +518,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 		{
 			int newHor = hor;
 			int newVert = vert;
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = newHor;
 			vertical = newVert;
 			return true;
@@ -529,7 +529,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 		{
 			int newHor = hor;
 			int newVert = vert;
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = newHor;
 			vertical = newVert;
 			return true;
@@ -546,7 +546,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 		{
 			int newHor = hor;
 			int newVert = vert;
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = newHor;
 			vertical = newVert;
 			return true;
@@ -558,7 +558,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 		{
 			int newHor = hor;
 			int newVert = vert;
-			board->PieceMoving(vert, hor, vertical, horizontal);
+			board.PieceMoving(vert, hor, vertical, horizontal);
 			horizontal = newHor;
 			vertical = newVert;
 			return true;
@@ -569,7 +569,3 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 		return false;
 	}
 }
-
-
-
-
