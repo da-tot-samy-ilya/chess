@@ -345,15 +345,13 @@ int main() {
 							piece->square_sprite.setTexture(red_white_square);
 						}
 
-						std::vector<std::pair<int, int>>* pieceGetPossibleMoves = MakePossibleMoves(*piece);
-						
-						/*cout << "a" << (*pieceGetPossibleMoves).size();*/
-						/*cout << piece->GetName();*/
+						std::vector<std::pair<int, int>>* pieceGetPossibleMoves = MakePossibleMoves(piece);
+						cout << "a" << (*pieceGetPossibleMoves).size();
 
-						/*for (int i = 0; i < (*pieceGetPossibleMoves).size(); ++i) {
+						for (int i = 0; i < (*pieceGetPossibleMoves).size(); ++i) {
 							cout << "b";
 							cout << "(" << (*pieceGetPossibleMoves)[i].first << "," << (*pieceGetPossibleMoves)[i].second << ")" << " ";
-						}*/
+						}
 						
 					}
 				}

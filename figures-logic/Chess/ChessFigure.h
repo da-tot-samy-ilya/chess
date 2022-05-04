@@ -87,7 +87,7 @@ public:
 
 bool Check(int vert, int hor)
 {
-    if (vert != -1 && vert != 8 && hor != -1 && hor != 8)
+    if (vert <= -1 || vert >= 8 || hor <= -1 || hor >= 8)
         return false;
     return true;
 }
