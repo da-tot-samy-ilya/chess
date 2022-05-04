@@ -8,8 +8,8 @@ private:
 private:
     bool didMove = false;
 public:
-    Pawn(Colour col, int vert, int hor) : Piece(col, vert, hor) {};
-    Pawn(Pawn& f) : Piece(f.colour, f.vertical, f.horizontal) {};
+    Pawn(Colour col, int vert, int hor, TypePiece type) : Piece(col, vert, hor, type) {};
+    Pawn(Pawn& f) : Piece(f.colour, f.vertical, f.horizontal, f.type_piece) {};
     /*bool move(int vert, int hor, char col) override;
     bool cut_down(Piece& f) override;*/
     bool getFirstMove() override { return didMove; };

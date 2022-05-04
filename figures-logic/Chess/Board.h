@@ -22,7 +22,8 @@ class Board
 public:
 	int figures_count = 0;
 	Piece* square[8][8];
-	Board(); // изначальное положение доски
+	Board();
+	void SetBoard(); // изначальное положение доски
 	void SetPiece(Colour colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty
 	void PieceMoving(int vEnd, int hEnd, int vStart, int hStart); 
 	bool move(int vert, int hor, Colour col, Piece* piece);
@@ -36,7 +37,9 @@ Board* CreateBoard()
 	return board;
 }
 
-Board::Board()
+Board::Board() { SetBoard(); }
+
+void Board::SetBoard()
 {
 	for (int i = 0; i < 8; i++)
 	{
@@ -46,22 +49,22 @@ Board::Board()
 		if (i == 0 || i == 7)
 		{
 
-			square[i][0] = new Rook(colour, 0, i);
-			square[i][1] = new Knight(colour, 1, i);
-			square[i][2] = new Bishop(colour, 2, i);
-			square[i][3] = new Queen(colour, 3, i);
-			square[i][4] = new King(colour, 4, i);
-			square[i][5] = new Bishop(colour, 5, i);
-			square[i][6] = new Knight(colour, 6, i);
-			square[i][7] = new Rook(colour, 7, i);
+			square[i][0] = new Rook(colour, 0, i, ROOK);
+			square[i][1] = new Knight(colour, 1, i, KNIGHT);
+			square[i][2] = new Bishop(colour, 2, i, BISHOP);
+			square[i][3] = new Queen(colour, 3, i, QUEEN);
+			square[i][4] = new King(colour, 4, i, KING);
+			square[i][5] = new Bishop(colour, 5, i, BISHOP);
+			square[i][6] = new Knight(colour, 6, i, KNIGHT);
+			square[i][7] = new Rook(colour, 7, i, ROOK);
 		}
 		else
 		{
 			for (int j = 0; j < 8; j++)
-				if (i > 1 || i < 6)
-					square[i][j] = new Piece(colour, j, i);
+				if (i == 1 || i == 6)
+					square[i][j] = new Pawn(colour, j, i, PAWN);
 				else
-					square[i][j] = new Pawn(colour, j, i);
+					square[i][j] = new Piece(colour, j, i, EMPTY);
 		}
 	}
 }
@@ -71,19 +74,19 @@ void Board::SetPiece(Colour colour, int hor, int vert, TypePiece type)
 	switch (type)
 	{
 	case (KING):
-		square[hor][vert] = new King(colour, vert, hor);
+		square[hor][vert] = new King(colour, vert, hor, KING);
 	case (QUEEN):
-		square[hor][vert] = new Queen(colour, vert, hor);
+		square[hor][vert] = new Queen(colour, vert, hor, QUEEN);
 	case(BISHOP):
-		square[hor][vert] = new Bishop(colour, vert, hor);
+		square[hor][vert] = new Bishop(colour, vert, hor, BISHOP);
 	case(KNIGHT):
-		square[hor][vert] = new Knight(colour, vert, hor);
+		square[hor][vert] = new Knight(colour, vert, hor, KNIGHT);
 	case(ROOK):
-		square[hor][vert] = new Rook(colour, vert, hor);
+		square[hor][vert] = new Rook(colour, vert, hor, ROOK);
 	case(PAWN):
-		square[hor][vert] = new Pawn(colour, vert, hor);
+		square[hor][vert] = new Pawn(colour, vert, hor, PAWN);
 	case (EMPTY):
-		square[hor][vert] = new Piece(NONE, vert, hor);
+		square[hor][vert] = new Piece(NONE, vert, hor, EMPTY);
 	}
 }
 

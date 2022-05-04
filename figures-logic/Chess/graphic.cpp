@@ -445,11 +445,43 @@
 //	return 0;
 //}
 //
-#include <iostream>
+#include <SFML/Graphics.hpp>
 #include "Board.h"
-using namespace std;
+#include "Rook.h"
+#include "Knight.h"
+#include "Bishop.h"
+#include "Pawn.h"
+#include "Queen.h"
+#include "King.h"
+#include "Pawn.h"
 
 int main()
 {
-	return 0;
+    Board* board = CreateBoard();
+
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            cout << board->square[i][j]->GetName() << " ";
+        }
+        cout << "\n";
+    }
+    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+    sf::CircleShape shape(100.f);
+    shape.setFillColor(sf::Color::Green);
+
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear();
+        window.draw(shape);
+        window.display();
+    }
+
+    return 0;
 }
