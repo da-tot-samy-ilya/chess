@@ -207,6 +207,7 @@ int main() {
 	//Global statuses
 	IsChoosingMove IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 	std::vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
+	Piece* piece_wants_to_move = nullptr;
 
 	//count figures
 	for (int i = 0; i < 8; ++i) {
@@ -247,6 +248,7 @@ int main() {
 	Button button2(second_button, Vector2f(26, 250), IntRect(0, 0, 110, 36));
 	button2.onClick = []() {
 		std::cout << "Play again\n";
+		
 	};
 	button2.hasOnClick = true;
 	buttons_main_window.push_back(button2);
@@ -319,6 +321,13 @@ int main() {
 			}
 			else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
+					/*for (int i = 0; i < 8; ++i) {
+						for (int j = 0; j < 8; ++j) {
+							cout << board->square[i][j]->GetName() << " ";
+						}
+						cout << "\n";
+					}
+					cout << "\n";*/
 					int cursor_x = Mouse::getPosition(window).x;
 					int cursor_y = Mouse::getPosition(window).y;
 
@@ -338,54 +347,94 @@ int main() {
 					int cursor_y_for_board = (cursor_y - board_offset_y) / square_size;
 					Piece* piece = board->square[cursor_y_for_board][cursor_x_for_board];
 
-					//squares backlight red with onclick
-					if (cursor_x_for_board <= 7 && cursor_x_for_board >= 0 &&
-						cursor_y_for_board <= 7 && cursor_y_for_board >= 0) {
-						if ((cursor_y_for_board + cursor_x_for_board) % 2 == 0) {
-							piece->square_sprite.setTexture(red_black_square);
-						}
-						else {
-							piece->square_sprite.setTexture(red_white_square);
-						}
+					pair<int, int> click_square = make_pair(cursor_y_for_board, cursor_x_for_board);
+					auto is_found = find(temp_pieceGetPossibleMoves.begin(), temp_pieceGetPossibleMoves.end(), click_square);
+					if (is_found != temp_pieceGetPossibleMoves.end()) {
+						//move figure
+						board->move(cursor_x_for_board, cursor_y_for_board, piece->GetColour(), piece_wants_to_move);
+						setFigures(board);
 
-						std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece);
-						if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
-							for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
-								int possible_move_x = temp_pieceGetPossibleMoves[i].first;
-								int possible_move_y = temp_pieceGetPossibleMoves[i].second;
-								Piece* piece = board->square[possible_move_x][possible_move_y];
-								if ((possible_move_x + possible_move_y) % 2 == 0) {
-									piece->square_sprite.setTexture(black_square);
-								}
-								else {
-									piece->square_sprite.setTexture(white_square);
-								}
-							}
-						}
-						if (pieceGetPossibleMoves.size() == 0) {
-							cout << "none\n";
-						}
-						else {
-							for (int i = 0; i < pieceGetPossibleMoves.size(); ++i) {
-								int possible_move_x = pieceGetPossibleMoves[i].first;
-								int possible_move_y = pieceGetPossibleMoves[i].second;
-								Piece* piece = board->square[possible_move_x][possible_move_y];
-
-								cout << "(" << possible_move_x << "," << possible_move_y << ")" << " ";
-
-								if ((possible_move_x + possible_move_y) % 2 == 0) {
-									piece->square_sprite.setTexture(green_black_square);
-								}
-								else {
-									piece->square_sprite.setTexture(green_white_square);
-								}
+						for (int i = 0; i < 8; ++i) {
+							for (int j = 0; j < 8; ++j) {
+								cout << board->square[i][j]->GetColour() << " ";
 							}
 							cout << "\n";
-							temp_pieceGetPossibleMoves = pieceGetPossibleMoves;
-							IS_CHOOSING_MOVE = CHOOSING_MOVE;
+						}
+						cout << "\n";
+						
+						pair<int, int> old_square = make_pair(piece_wants_to_move->GetHor(), piece_wants_to_move->GetVert());
+						temp_pieceGetPossibleMoves.push_back(old_square);
+						for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
+							int x = temp_pieceGetPossibleMoves[i].first;
+							int y = temp_pieceGetPossibleMoves[i].second;
+							Piece* piece = board->square[x][y];
+							if ((y + x) % 2 == 0) {
+								piece->square_sprite.setTexture(black_square);
+							}
+							else {
+								piece->square_sprite.setTexture(white_square);
+							}
+							
 						}
 						
+						piece_wants_to_move = nullptr;
+						IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
+						temp_pieceGetPossibleMoves.clear();
 					}
+					else {
+						//squares backlight red with onclick
+						piece_wants_to_move = piece;
+						if (cursor_x_for_board <= 7 && cursor_x_for_board >= 0 &&
+							cursor_y_for_board <= 7 && cursor_y_for_board >= 0) {
+							if ((cursor_y_for_board + cursor_x_for_board) % 2 == 0) {
+								piece->square_sprite.setTexture(red_black_square);
+							}
+							else {
+								piece->square_sprite.setTexture(red_white_square);
+							}
+
+							std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece);
+							if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
+								for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
+									int possible_move_x = temp_pieceGetPossibleMoves[i].first;
+									int possible_move_y = temp_pieceGetPossibleMoves[i].second;
+									Piece* piece = board->square[possible_move_x][possible_move_y];
+									if ((possible_move_x + possible_move_y) % 2 == 0) {
+										piece->square_sprite.setTexture(black_square);
+									}
+									else {
+										piece->square_sprite.setTexture(white_square);
+									}
+								}
+							}
+							
+							else {
+								for (int i = 0; i < pieceGetPossibleMoves.size(); ++i) {
+									
+									int possible_move_x = pieceGetPossibleMoves[i].first;
+									int possible_move_y = pieceGetPossibleMoves[i].second;
+
+									cout << "(" << possible_move_x << "," << possible_move_y << ") ";
+									Piece* piece = board->square[possible_move_x][possible_move_y];
+
+									
+									if ((possible_move_x + possible_move_y) % 2 == 0) {
+										piece->square_sprite.setTexture(green_black_square);
+									}
+									else {
+										piece->square_sprite.setTexture(green_white_square);
+									}
+								}
+								cout << "\n";
+								
+								temp_pieceGetPossibleMoves = pieceGetPossibleMoves;
+								IS_CHOOSING_MOVE = CHOOSING_MOVE;
+							}
+
+						}
+					}
+					
+					
 				}
 			}
 			else if (event.type == Event::MouseMoved) {
