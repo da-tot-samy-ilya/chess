@@ -145,10 +145,10 @@ void funkRook(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, int vSt
 		Start = hStart;
 		StartisV = false;
 	}
-	cout << Start << " " << End << endl;
+	/*cout << Start << " " << End << endl;*/
 	if (End < Start) sign = -1;
 	Start += sign;
-	cout << hStart << " " << vStart << endl;
+	/*cout << hStart << " " << vStart << endl;*/
 	for (; abs(Start - End) >= 0 && Start < 8 && Start > -1; Start += sign)
 	{
 		
@@ -156,7 +156,7 @@ void funkRook(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, int vSt
 		{
 			if (board.square[hStart][Start]->GetName() != EMPTY)
 			{
-				cout << hStart << " " << vStart << endl;
+				/*cout << hStart << " " << vStart << endl;*/
 				if (board.square[hStart][Start]->GetColour() != colour)
 					PossibleMoves.push_back(make_pair(hStart, Start));
 				break;

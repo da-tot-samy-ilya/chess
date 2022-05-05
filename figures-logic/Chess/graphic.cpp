@@ -52,7 +52,7 @@ public:
 
 std::vector<Button> buttons_main_window;
 std::vector<Button> buttons_ip_window;
-
+enum IsChoosingMove{CHOOSING_MOVE, NOT_CHOOSING_MOVE};
 int k = 0;
 const int square_size = 56;
 
@@ -204,6 +204,9 @@ void CreateIpWindow() {
 
 int main() {
 	Board* board = CreateBoard();
+	//Global statuses
+	IsChoosingMove IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
+	std::vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
 
 	//count figures
 	for (int i = 0; i < 8; ++i) {
@@ -345,12 +348,41 @@ int main() {
 							piece->square_sprite.setTexture(red_white_square);
 						}
 
-						std::vector<std::pair<int, int>>* pieceGetPossibleMoves = MakePossibleMoves(piece);
-						cout << "a" << (*pieceGetPossibleMoves).size();
+						std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece);
+						if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
+							for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
+								int possible_move_x = temp_pieceGetPossibleMoves[i].first;
+								int possible_move_y = temp_pieceGetPossibleMoves[i].second;
+								Piece* piece = board->square[possible_move_x][possible_move_y];
+								if ((possible_move_x + possible_move_y) % 2 == 0) {
+									piece->square_sprite.setTexture(black_square);
+								}
+								else {
+									piece->square_sprite.setTexture(white_square);
+								}
+							}
+						}
+						if (pieceGetPossibleMoves.size() == 0) {
+							cout << "none\n";
+						}
+						else {
+							for (int i = 0; i < pieceGetPossibleMoves.size(); ++i) {
+								int possible_move_x = pieceGetPossibleMoves[i].first;
+								int possible_move_y = pieceGetPossibleMoves[i].second;
+								Piece* piece = board->square[possible_move_x][possible_move_y];
 
-						for (int i = 0; i < (*pieceGetPossibleMoves).size(); ++i) {
-							cout << "b";
-							cout << "(" << (*pieceGetPossibleMoves)[i].first << "," << (*pieceGetPossibleMoves)[i].second << ")" << " ";
+								cout << "(" << possible_move_x << "," << possible_move_y << ")" << " ";
+
+								if ((possible_move_x + possible_move_y) % 2 == 0) {
+									piece->square_sprite.setTexture(green_black_square);
+								}
+								else {
+									piece->square_sprite.setTexture(green_white_square);
+								}
+							}
+							cout << "\n";
+							temp_pieceGetPossibleMoves = pieceGetPossibleMoves;
+							IS_CHOOSING_MOVE = CHOOSING_MOVE;
 						}
 						
 					}
@@ -359,6 +391,12 @@ int main() {
 			else if (event.type == Event::MouseMoved) {
 				mouse_x = (event.mouseMove.x - board_offset_x) / square_size;
 				mouse_y = (event.mouseMove.y - board_offset_y) / square_size;
+				pair<int, int> move_square_now = make_pair(mouse_y, mouse_x);
+				pair<int, int> move_square_temp = make_pair(temp_mouse_y, temp_mouse_x);
+
+				auto is_found_now = find(temp_pieceGetPossibleMoves.begin(), temp_pieceGetPossibleMoves.end(), move_square_now);
+				auto is_found_temp= find(temp_pieceGetPossibleMoves.begin(), temp_pieceGetPossibleMoves.end(), move_square_temp);
+
 				Piece* piece = board->square[mouse_y][mouse_x];
 				Piece* piece_temp = board->square[temp_mouse_y][temp_mouse_x];
 
@@ -367,19 +405,23 @@ int main() {
 					event.mouseMove.x - board_offset_x > 0 && event.mouseMove.y - board_offset_y > 0) {
 
 					//squares backlight yellow with hover
-					if ((temp_mouse_y + temp_mouse_x) % 2 == 0) {
-						piece_temp->square_sprite.setTexture(black_square);
+					if (is_found_now == temp_pieceGetPossibleMoves.end()) {
+						if ((mouse_y + mouse_x) % 2 == 0) {
+							piece->square_sprite.setTexture(yellow_black_square);
+						}
+						else {
+							piece->square_sprite.setTexture(yellow_white_square);
+						}
 					}
-					else {
-						piece_temp->square_sprite.setTexture(white_square);
-					}
-					if ((mouse_y + mouse_x) % 2 == 0) {
-						piece->square_sprite.setTexture(yellow_black_square);
-					}
-					else {
-						piece->square_sprite.setTexture(yellow_white_square);
-					}
+					if (is_found_temp == temp_pieceGetPossibleMoves.end()) {
 
+						if ((temp_mouse_y + temp_mouse_x) % 2 == 0) {
+							piece_temp->square_sprite.setTexture(black_square);
+						}
+						else {
+							piece_temp->square_sprite.setTexture(white_square);
+						}
+					}
 					temp_mouse_x = mouse_x;
 					temp_mouse_y = mouse_y;
 				}
