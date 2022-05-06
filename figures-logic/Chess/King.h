@@ -12,5 +12,5 @@ public:
     King(King& f) : Piece(f.colour, f.vertical, f.horizontal, f.type_piece) {};
     /*bool move(int vert, int hor, char col) override;
     bool cut_down(Piece& f) override;*/
-    bool getFirstMove() { return didMove; };
+    bool* getFirstMove() { return &didMove; };
 };
