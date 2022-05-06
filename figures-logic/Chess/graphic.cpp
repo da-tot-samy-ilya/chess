@@ -304,7 +304,7 @@ int main() {
 							colorSquare(piece, cursor_x_for_board, cursor_y_for_board, RED);
 							
 							std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece);
-							cout << pieceGetPossibleMoves.size() << "a" << endl;
+							//cout << pieceGetPossibleMoves.size() << "b" << endl;
 							if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
 								//закрашиваем возможные ходы предыдущего выбора фигуры
 								for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
@@ -316,7 +316,7 @@ int main() {
 								}
 							}
 							else {
-								for (int i = 0; i < pieceGetPossibleMoves.size(); ++i) {
+								for (int i = 0; i < pieceGetPossibleMoves.size(); i++) {
 									int possible_move_x = pieceGetPossibleMoves[i].first;
 									int possible_move_y = pieceGetPossibleMoves[i].second;
 									cout << "(" << possible_move_x << "," << possible_move_y << ") ";
