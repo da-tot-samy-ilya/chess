@@ -37,6 +37,7 @@ Board::Board() { SetBoard(); }
 
 void Board::SetBoard()
 {
+	
 	//for (int i = 0; i < 8; i++)
 	//{
 	//	Colour colour = NONE;
@@ -65,8 +66,9 @@ void Board::SetBoard()
 	for (int i = 0; i<8; i++)
 		for (int j = 0; j < 8; j++)
 			square[i][j] = new Piece(NONE, j, i, EMPTY);
-	square[4][4] = new Knight(BLACK, 4, 4, KNIGHT);
-	square[3][4] = new Pawn(WHITE, 4, 3, PAWN);
+	
+	square[3][3] = new Bishop(WHITE, 3, 3, BISHOP);
+	
 }
 
 void Board::SetPiece(Colour colour, int hor, int vert, TypePiece type)

@@ -203,7 +203,59 @@ void CreateIpWindow() {
 		ip_window.display();
 	}
 }
+void CreateChooseFigureWindow(int where_click) {
+	Piece* chooseFigures[4];
+	if (where_click == 0) {
+		chooseFigures[0] = new Queen(BLACK, 0, 0, QUEEN);
+		chooseFigures[1] = new Rook(BLACK, 0, 0, ROOK);
+		chooseFigures[2] = new Knight(BLACK, 0, 0, KNIGHT);
+		chooseFigures[3] = new Bishop(BLACK, 0, 0, BISHOP);
+	}
+	else if (where_click == 7) {
+		chooseFigures[0] = new Queen(WHITE, 0, 0, QUEEN);
+		chooseFigures[1] = new Rook(WHITE, 0, 0, ROOK);
+		chooseFigures[2] = new Knight(WHITE, 0, 0, KNIGHT);
+		chooseFigures[3] = new Bishop(WHITE, 0, 0, BISHOP);
+	}
+	
+	for (int i = 0; i < 4; ++i) {
+		int x, y;
+		Piece* piece = chooseFigures[i];
+		TypePiece n = *(piece->GetName());
+		Colour color = *(piece->GetColour());
+		x = n - 1;
+		color == WHITE ? y = 0 : y = 1;
+		piece->SetTextureFigures(figure_texture);
+		piece->setVisualFigures(Vector2f(square_size * i, 0), IntRect(square_size * x, square_size * y, square_size, square_size));
+	}
 
+	RenderWindow choose_figure_window(VideoMode(230, 60), "Choose figure", Style::Default);
+	Sprite background_sprite;
+	background_sprite.setTexture(aside_texture);
+	background_sprite.setTextureRect(IntRect(0, 0, 230, 60));
+	background_sprite.setPosition(0, 0);
+
+	while (choose_figure_window.isOpen()) {
+		Event event;
+		while (choose_figure_window.pollEvent(event)) {
+			if (event.type == Event::Closed) {
+				choose_figure_window.close();
+			}
+			else if (event.type == Event::MouseButtonPressed) {
+				if (event.mouseButton.button == Mouse::Left) {
+					int cursor_x = (Mouse::getPosition(choose_figure_window).x) / square_size;
+					cout << to_string(*chooseFigures[cursor_x]->GetName());
+				}
+			}
+		}
+		choose_figure_window.clear();
+		choose_figure_window.draw(background_sprite);
+		for (int i = 0; i < 4; ++i) {
+			choose_figure_window.draw(chooseFigures[i]->figure_sprite);
+		}
+		choose_figure_window.display();
+	}
+}
 int main() {
 	loadTexures();
 	Board* board = CreateBoard();
@@ -283,18 +335,29 @@ int main() {
 					int cursor_y_for_board = (cursor_y - board_offset_y) / square_size;
 					Piece* piece = board->square[cursor_y_for_board][cursor_x_for_board];
 
+					if ((cursor_y_for_board == 7 || cursor_y_for_board == 0) /*&& (*piece_wants_to_move->GetName()) == PAWN*/) {
+						CreateChooseFigureWindow(cursor_y_for_board);
+					}
+
 					pair<int, int> click_square = make_pair(cursor_y_for_board, cursor_x_for_board);
 					auto is_found = find(temp_pieceGetPossibleMoves.begin(), temp_pieceGetPossibleMoves.end(), click_square);
 
 					if (is_found != temp_pieceGetPossibleMoves.end()) {
 						//move figure
-						board->move(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
+						if ((*piece->GetName()) == EMPTY) {
+							board->move(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
+						}
+						else {
+							board->cut_down(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
+						}
+						
 						setFigures(board);
 						setSquaresPositions(board);
 
 						piece_wants_to_move = nullptr;
 						IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 						temp_pieceGetPossibleMoves.clear();
+						
 					}
 					else if (*(piece->GetName()) != EMPTY) {
 						//squares backlight red with onclick
@@ -304,7 +367,7 @@ int main() {
 							colorSquare(piece, cursor_x_for_board, cursor_y_for_board, RED);
 							
 							std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece);
-							cout << pieceGetPossibleMoves.size() << "a" << endl;
+							/*cout << pieceGetPossibleMoves.size() << "a" << endl;*/
 							if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
 								//закрашиваем возможные ходы предыдущего выбора фигуры
 								for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
@@ -319,12 +382,11 @@ int main() {
 								for (int i = 0; i < pieceGetPossibleMoves.size(); ++i) {
 									int possible_move_x = pieceGetPossibleMoves[i].first;
 									int possible_move_y = pieceGetPossibleMoves[i].second;
-									cout << "(" << possible_move_x << "," << possible_move_y << ") ";
+									/*cout << "(" << possible_move_x << "," << possible_move_y << ") ";*/
 									Piece* piece = board->square[possible_move_x][possible_move_y];
 									colorSquare(piece, possible_move_x, possible_move_y, GREEN);
 								}
-								cout << endl;
-								
+								/*cout << endl;*/
 								temp_pieceGetPossibleMoves = pieceGetPossibleMoves;
 								IS_CHOOSING_MOVE = CHOOSING_MOVE;
 							}
