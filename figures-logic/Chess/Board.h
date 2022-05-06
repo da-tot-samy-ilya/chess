@@ -364,28 +364,20 @@ void FindPossibleMovesForKing(vector<pair<int, int>>& PossibleMoves, int vStart,
 {
 	if (Check(vStart, hStart + 1) && !HasCheck(vStart, hStart + 1, colour) && *(board.square[hStart + 1][vStart]->GetColour()) != colour)
 		PossibleMoves.push_back(make_pair(hStart + 1, vStart));
-		//funkRook(PossibleMoves, vStart, hStart + 1, vStart, hStart, colour);
 	if (Check(vStart, hStart - 1) && !HasCheck(vStart, hStart - 1, colour) && *(board.square[hStart - 1][vStart]->GetColour()) != colour)
 		PossibleMoves.push_back(make_pair(hStart + 1, vStart));
-		//funkRook(PossibleMoves, vStart, hStart - 1, vStart, hStart, colour);
 	if (Check(vStart - 1, hStart) && !HasCheck(vStart - 1, hStart, colour) && * (board.square[hStart][vStart - 1]->GetColour()) != colour)
 		PossibleMoves.push_back(make_pair(hStart, vStart - 1));
-		//funkRook(PossibleMoves, vStart - 1, hStart, vStart, hStart, colour);
 	if (Check(vStart + 1, hStart) && !HasCheck(vStart + 1, hStart, colour) && *(board.square[hStart][vStart + 1]->GetColour()) != colour)
 		PossibleMoves.push_back(make_pair(hStart, vStart + 1));
-		//funkRook(PossibleMoves, vStart + 1, hStart, vStart, hStart, colour);
 	if (Check(vStart + 1, hStart + 1) && !HasCheck(vStart + 1, hStart + 1, colour)  && *(board.square[hStart + 1][vStart + 1]->GetColour()) != colour)
 		PossibleMoves.push_back(make_pair(hStart + 1, vStart + 1));
-		//funkBishop(PossibleMoves, vStart + 1, hStart + 1, vStart, hStart, colour);
 	if (Check(vStart - 1, hStart + 1) && !HasCheck(vStart - 1, hStart + 1, colour) && *(board.square[hStart + 1][vStart - 1]->GetColour()) != colour)
 		PossibleMoves.push_back(make_pair(hStart + 1, vStart - 1));
-		//funkBishop(PossibleMoves, vStart - 1, hStart + 1, vStart, hStart, colour);
 	if (Check(vStart + 1, hStart - 1) && !HasCheck(vStart + 1, hStart - 1, colour) && *(board.square[hStart - 1][vStart + 1]->GetColour()) != colour)
 		PossibleMoves.push_back(make_pair(hStart - 1, vStart + 1));
-		//funkBishop(PossibleMoves, vStart + 1, hStart - 1, vStart, hStart, colour);
 	if (Check(vStart - 1, hStart - 1) && !HasCheck(vStart - 1, hStart - 1, colour) && *(board.square[hStart - 1][vStart - 1]->GetColour()) != colour)
 		PossibleMoves.push_back(make_pair(hStart -1 , vStart - 1));
-		//funkBishop(PossibleMoves, vStart - 1, hStart - 1, vStart, hStart, colour);
 	//рокировка
 	if (/*board.square[hStart][vStart]->getFirstMove() == false &&*/ !HasCheck(vStart, hStart, colour))
 	{
