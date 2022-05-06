@@ -12,5 +12,5 @@ public:
     Pawn(Pawn& f) : Piece(f.colour, f.vertical, f.horizontal, f.type_piece) {};
     /*bool move(int vert, int hor, char col) override;
     bool cut_down(Piece& f) override;*/
-    bool getFirstMove() override { return didMove; };
+    bool* getFirstMove() override { return &didMove; };
 };

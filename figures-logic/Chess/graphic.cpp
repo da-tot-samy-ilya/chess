@@ -83,8 +83,8 @@ void setFigures(Board* board) {
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
-			TypePiece n = piece->GetName();
-			Colour color = piece->GetColour();
+			TypePiece n = *(piece->GetName());
+			Colour color = *(piece->GetColour());
 			if (n != EMPTY) {
 				x = n - 1;
 				color == WHITE ? y = 0: y = 1;
@@ -216,7 +216,7 @@ int main() {
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
-			if (piece->GetName() != EMPTY) {
+			if (*(piece->GetName()) != EMPTY) {
 				board->figures_count++;
 			}
 		}
@@ -288,7 +288,7 @@ int main() {
 
 					if (is_found != temp_pieceGetPossibleMoves.end()) {
 						//move figure
-						board->move(cursor_x_for_board, cursor_y_for_board, piece->GetColour(), piece_wants_to_move);
+						board->move(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
 						setFigures(board);
 						setSquaresPositions(board);
 
@@ -296,8 +296,7 @@ int main() {
 						IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 						temp_pieceGetPossibleMoves.clear();
 					}
-					else if (piece->GetName() != EMPTY ) {
-
+					else if (*(piece->GetName()) != EMPTY) {
 						//squares backlight red with onclick
 						piece_wants_to_move = piece;
 						if (cursor_x_for_board <= 7 && cursor_x_for_board >= 0 &&
@@ -305,6 +304,7 @@ int main() {
 							colorSquare(piece, cursor_x_for_board, cursor_y_for_board, RED);
 							
 							std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece);
+							cout << pieceGetPossibleMoves.size() << "a" << endl;
 							if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
 								//закрашиваем возможные ходы предыдущего выбора фигуры
 								for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
