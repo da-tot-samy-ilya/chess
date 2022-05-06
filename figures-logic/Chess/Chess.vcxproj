@@ -150,16 +150,9 @@
     <ClInclude Include="Rook.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Bishop.cpp" />
-    <ClCompile Include="CheckingForMove.h" />
     <ClCompile Include="graphic.cpp" />
-    <ClCompile Include="King.cpp" />
-    <ClCompile Include="Knight.cpp" />
     <ClCompile Include="LocalServer.cpp" />
     <ClCompile Include="Logic.cpp" />
-    <ClCompile Include="Pawn.cpp" />
-    <ClCompile Include="Queen.cpp" />
-    <ClCompile Include="Rook.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
