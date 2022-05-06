@@ -39,27 +39,15 @@
     <ClInclude Include="Board.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="ChessGame.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
     <ClInclude Include="LocalServer.h">
-      <Filter>Исходные файлы</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateBoard.h">
       <Filter>Исходные файлы</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CheckingForMove.h">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="LocalServer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Logic.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="Main.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="graphic.cpp">
