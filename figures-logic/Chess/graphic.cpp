@@ -83,11 +83,11 @@ void setFigures(Board* board) {
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
-			TypePiece n = piece->GetName();
-			Colour color = piece->GetColour();
-			if (n != EMPTY) {
-				x = n - 1;
-				color == BLACK ? y = 0: y = 1;
+			TypePiece* n = piece->GetName();
+			Colour* color = piece->GetColour();
+			if (*n != EMPTY) {
+				x = *n - 1;
+				*color == BLACK ? y = 0: y = 1;
 				piece->SetTextureFigures(figure_texture);
 				piece->setVisualFigures(Vector2f(board_offset_x + square_size * j, board_offset_y - 2 + square_size * i), IntRect(square_size * x, square_size * y, square_size, square_size));
 			}
@@ -216,7 +216,7 @@ int main() {
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
-			if (piece->GetName() != EMPTY) {
+			if (*(piece->GetName()) != EMPTY) {
 				board->figures_count++;
 			}
 		}
@@ -288,7 +288,7 @@ int main() {
 
 					if (is_found != temp_pieceGetPossibleMoves.end()) {
 						//move figure
-						board->move(cursor_x_for_board, cursor_y_for_board, piece->GetColour(), piece_wants_to_move);
+						board->move(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
 						setFigures(board);
 						setSquaresPositions(board);
 

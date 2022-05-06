@@ -36,24 +36,24 @@ public:
     };
     /*virtual bool move(int vert, int hor, char col) { return false; };
     virtual bool cut_down(Piece& f) { return false; };*/
-    virtual bool getFirstMove() { return false; }// move(Piece &t) in Board
+    virtual bool* getFirstMove() { return &(this->didMove); };// move(Piece &t) in Board
 
-    Colour GetColour() { return this->colour; };
-    int GetVert() { return this->vertical; };
-    int GetHor() { return this->horizontal; };
-    TypePiece GetName() { return this->type_piece; };
+    Colour* GetColour() { return &(this->colour); };
+    int* GetVert() { return &(this->vertical); };
+    int* GetHor() { return &(this->horizontal); };
+    TypePiece* GetName() { return &(this->type_piece); };
     IsChosenForMove GetIsChosenForMove() {
         return is_choosen_for_move;
     }
 
-    bool GetCanMove() { return this->canMove; };
+    bool* GetCanMove() { return &(this->canMove); };
 
     std::vector<std::pair<int, int>>* GetPossibleMoves() { 
         return &PossibleMoves; 
     };
 
 
-    bool* GetDidMove() { return &didMove; };
+    //bool* GetDidMove() { return &didMove; };
 
     void SetIsChosenForMove(IsChosenForMove is_choosen_for_move) {
         this->is_choosen_for_move = is_choosen_for_move;
