@@ -336,9 +336,7 @@ int main() {
 					int cursor_y_for_board = (cursor_y - board_offset_y) / square_size;
 					Piece* piece = board->square[cursor_y_for_board][cursor_x_for_board];
 
-					if ((cursor_y_for_board == 7 || cursor_y_for_board == 0) /*&& (*piece_wants_to_move->GetName()) == PAWN*/) {
-						CreateChooseFigureWindow(cursor_y_for_board, cursor_x_for_board);
-					}
+					
 
 					pair<int, int> click_square = make_pair(cursor_y_for_board, cursor_x_for_board);
 					auto is_found = find(temp_pieceGetPossibleMoves.begin(), temp_pieceGetPossibleMoves.end(), click_square);
@@ -351,7 +349,9 @@ int main() {
 						else {
 							board->cut_down(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
 						}
-						
+						if ((cursor_y_for_board == 7 || cursor_y_for_board == 0) && (*piece_wants_to_move->GetName()) == PAWN) {
+							CreateChooseFigureWindow(cursor_y_for_board, cursor_x_for_board);
+						}
 						setFigures(board);
 						setSquaresPositions(board);
 
