@@ -67,7 +67,7 @@ void Board::SetBoard()
 			square[i][j] = new Piece(NONE, j, i, EMPTY);
 	//square[1][1] = new Knight(BLACK, 1, 1, KNIGHT);
 	square[1][1] = new Pawn(WHITE, 1, 1, PAWN);
-	square[6][2] = new Pawn(BLACK, 2, 6, PAWN);
+	square[2][2] = new Pawn(BLACK, 2, 2, PAWN);
 }
 
 void Board::SetPiece(Colour colour, int hor, int vert, TypePiece type)
