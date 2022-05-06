@@ -203,21 +203,21 @@ void CreateIpWindow() {
 		ip_window.display();
 	}
 }
-void CreateChooseFigureWindow(int where_click) {
+void CreateChooseFigureWindow(int y, int x) {
 	Piece* chooseFigures[4];
-	if (where_click == 0) {
+	if (y == 0) {
 		chooseFigures[0] = new Queen(BLACK, 0, 0, QUEEN);
 		chooseFigures[1] = new Rook(BLACK, 0, 0, ROOK);
 		chooseFigures[2] = new Knight(BLACK, 0, 0, KNIGHT);
 		chooseFigures[3] = new Bishop(BLACK, 0, 0, BISHOP);
 	}
-	else if (where_click == 7) {
+	else if (y == 7) {
 		chooseFigures[0] = new Queen(WHITE, 0, 0, QUEEN);
 		chooseFigures[1] = new Rook(WHITE, 0, 0, ROOK);
 		chooseFigures[2] = new Knight(WHITE, 0, 0, KNIGHT);
 		chooseFigures[3] = new Bishop(WHITE, 0, 0, BISHOP);
 	}
-	
+	Colour color = *(chooseFigures[0]->GetColour());
 	for (int i = 0; i < 4; ++i) {
 		int x, y;
 		Piece* piece = chooseFigures[i];
@@ -244,7 +244,8 @@ void CreateChooseFigureWindow(int where_click) {
 			else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
 					int cursor_x = (Mouse::getPosition(choose_figure_window).x) / square_size;
-					cout << to_string(*chooseFigures[cursor_x]->GetName());
+					board.SetPiece(color, y, x, *chooseFigures[cursor_x]->GetName());
+					choose_figure_window.close();
 				}
 			}
 		}
@@ -336,7 +337,7 @@ int main() {
 					Piece* piece = board->square[cursor_y_for_board][cursor_x_for_board];
 
 					if ((cursor_y_for_board == 7 || cursor_y_for_board == 0) /*&& (*piece_wants_to_move->GetName()) == PAWN*/) {
-						CreateChooseFigureWindow(cursor_y_for_board);
+						CreateChooseFigureWindow(cursor_y_for_board, cursor_x_for_board);
 					}
 
 					pair<int, int> click_square = make_pair(cursor_y_for_board, cursor_x_for_board);
