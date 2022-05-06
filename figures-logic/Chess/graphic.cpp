@@ -87,7 +87,7 @@ void setFigures(Board* board) {
 			Colour color = *(piece->GetColour());
 			if (n != EMPTY) {
 				x = n - 1;
-				color == BLACK ? y = 0: y = 1;
+				color == WHITE ? y = 0: y = 1;
 				piece->SetTextureFigures(figure_texture);
 				piece->setVisualFigures(Vector2f(board_offset_x + square_size * j, board_offset_y - 2 + square_size * i), IntRect(square_size * x, square_size * y, square_size, square_size));
 			}
@@ -296,7 +296,7 @@ int main() {
 						IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 						temp_pieceGetPossibleMoves.clear();
 					}
-					else {
+					else if (*(piece->GetName()) != EMPTY) {
 						//squares backlight red with onclick
 						piece_wants_to_move = piece;
 						if (cursor_x_for_board <= 7 && cursor_x_for_board >= 0 &&

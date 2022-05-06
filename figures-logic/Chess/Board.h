@@ -408,7 +408,7 @@ void FindPossibleMovesForPawn(vector<pair<int, int>>& PossibleMoves, int vStart,
 	int tmp = 1;
 	if (didMove == false)
 		tmp = 2;
-	if (colour == BLACK)
+	if (colour == WHITE)
 		tmp *= -1;
 	funkRook(PossibleMoves, vStart, hStart + tmp, vStart, hStart, colour);
 	funkBishop(PossibleMoves, vStart + 1, hStart + 1, vStart, hStart, colour);
