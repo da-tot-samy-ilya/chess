@@ -243,6 +243,13 @@ void CreateChooseFigureWindow(int y, int x, Board* board) {
 			}
 			else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
+					for (int i = 0; i < 8; i++) {
+						for (int j = 0; j < 8; j++) {
+							cout << *(board->square[i][j]->GetName()) << " ";
+						}
+						cout << "\n";
+					}
+					cout << "\n";
 					int cursor_x = (Mouse::getPosition(choose_figure_window).x) / square_size;
 					TypePiece type = *(chooseFigures[cursor_x]->GetName());
 					switch (type) {
@@ -322,6 +329,13 @@ int main() {
 
 			else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
+					for (int i = 0; i < 8; i++) {
+						for (int j = 0; j < 8; j++) {
+							cout << *(board->square[i][j]->GetName()) << " ";
+						}
+						cout << "\n";
+					}
+					cout << "\n";
 					int cursor_x = Mouse::getPosition(window).x;
 					int cursor_y = Mouse::getPosition(window).y;
 
