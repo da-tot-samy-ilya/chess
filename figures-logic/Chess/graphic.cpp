@@ -464,7 +464,7 @@ int main() {
 							}
 							
 						}
-						else if (*(piece->GetName()) == EMPTY) {
+						else if (*(piece->GetName()) == EMPTY || (IS_NOW_PLAYING == WHITE && *(piece->GetColour()) == BLACK) || (IS_NOW_PLAYING == BLACK && *(piece->GetColour()) == WHITE)) {
 							piece_wants_to_move = nullptr;
 							for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
 								int possible_move_x = temp_pieceGetPossibleMoves[i].first;
