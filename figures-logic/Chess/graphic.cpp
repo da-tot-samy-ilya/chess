@@ -17,9 +17,14 @@ Texture black_square, white_square, red_black_square, red_white_square, yellow_b
 Texture figure_texture;
 Font font;
 Text header;
+Text is_moving_now;
 Text text;
 Texture ip_ok_button_texture;
+Texture is_moving_now_pic_black_texture;
+Texture is_moving_now_pic_white_texture;
 void loadTexures() {
+	is_moving_now_pic_black_texture.loadFromFile("images/is_mopving_now_pic_black.png");
+	is_moving_now_pic_white_texture.loadFromFile("images/is_mopving_now_pic_white.png");
 	figure_texture.loadFromFile("images/figures.png");
 	aside_texture.loadFromFile("images/aside_background.png");
 	main_background_texture.loadFromFile("images/grey_texture.png");
@@ -281,6 +286,14 @@ void CreateChooseFigureWindow(int y, int x, Board* board) {
 		choose_figure_window.display();
 	}
 }
+void ChangeColorIsMovingNow(Colour& IS_NOW_PLAYING) {
+	if (IS_NOW_PLAYING == WHITE) {
+		IS_NOW_PLAYING = BLACK;
+	}
+	else if (IS_NOW_PLAYING == BLACK) {
+		IS_NOW_PLAYING = WHITE;
+	}
+}
 int main() {
 	loadTexures();
 	Board* board = CreateBoard();
@@ -288,6 +301,7 @@ int main() {
 	IsChoosingMove IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 	std::vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
 	Piece* piece_wants_to_move = nullptr;
+	Colour IS_NOW_PLAYING = WHITE;
 
 	//count figures
 	for (int i = 0; i < 8; ++i) {
@@ -304,6 +318,14 @@ int main() {
 	InterfaceElement main_background(main_background_texture, Vector2f(167, 0), IntRect(0, 0, 488, 488));
 	InterfaceElement numbers(numbers_texture, Vector2f(167, 0), IntRect(0, 0, 20, 488));
 	InterfaceElement letters(letters_texture, Vector2f(167, 468), IntRect(0, 0, 488, 20));
+	InterfaceElement is_mopving_now_pic(is_moving_now_pic_white_texture, Vector2f(106, 13), IntRect(0, 0, 35, 35));
+
+	is_moving_now.setFont(font);
+	is_moving_now.setString("Moving now:");
+	is_moving_now.setCharacterSize(16);
+	is_moving_now.setFillColor(Color::Blue);
+	is_moving_now.setPosition(10, 20);
+
 	Button button1(first_button, Vector2f(10, 200), IntRect(0, 0, 146, 36));
 	Button button2(second_button, Vector2f(26, 250), IntRect(0, 0, 110, 36));
 	Button button3(third_button, Vector2f(40, 438), IntRect(0, 0, 88, 30));
@@ -313,6 +335,7 @@ int main() {
 	buttons_main_window.push_back(button1);
 	buttons_main_window.push_back(button2);
 	buttons_main_window.push_back(button3);
+
 
 	setFigures(board);
 	setSquaresPositions(board);
@@ -324,18 +347,24 @@ int main() {
 	int temp_mouse_y = 0;
 	while (window.isOpen()) {
 		Event event;
+		if (IS_NOW_PLAYING == WHITE) {
+			is_mopving_now_pic.sprite.setTexture(is_moving_now_pic_white_texture);
+		}
+		else if (IS_NOW_PLAYING == BLACK) {
+			is_mopving_now_pic.sprite.setTexture(is_moving_now_pic_black_texture);
+		}
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed) window.close();
 
 			else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
-					for (int i = 0; i < 8; i++) {
+					/*for (int i = 0; i < 8; i++) {
 						for (int j = 0; j < 8; j++) {
 							cout << *(board->square[i][j]->GetName()) << " ";
 						}
 						cout << "\n";
 					}
-					cout << "\n";
+					cout << "\n";*/
 					int cursor_x = Mouse::getPosition(window).x;
 					int cursor_y = Mouse::getPosition(window).y;
 
@@ -351,9 +380,11 @@ int main() {
 								piece_wants_to_move = nullptr;
 								IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 								temp_pieceGetPossibleMoves.clear();
+								IS_NOW_PLAYING = WHITE;
 							}
 							else if (buttons_main_window[i].name == "create_server") {
 								cout << "Create server\n";
+								
 							}
 							else if (buttons_main_window[i].name == "enter_ip") {
 								CreateIpWindow();
@@ -388,8 +419,10 @@ int main() {
 							IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 							temp_pieceGetPossibleMoves.clear();
 
+							ChangeColorIsMovingNow(IS_NOW_PLAYING);
+							
 						}
-						else if (*(piece->GetName()) != EMPTY) {
+						else if (*(piece->GetName()) != EMPTY && *(piece->GetColour()) == IS_NOW_PLAYING) {
 							if (piece_wants_to_move == piece) {
 								for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
 									int possible_move_x = temp_pieceGetPossibleMoves[i].first;
@@ -418,18 +451,16 @@ int main() {
 										colorSquare(piece, possible_move_x, possible_move_y, NONE_COLOR);
 									}
 								}
-								else {
-									for (int i = 0; i < pieceGetPossibleMoves.size(); ++i) {
-										int possible_move_x = pieceGetPossibleMoves[i].first;
-										int possible_move_y = pieceGetPossibleMoves[i].second;
-										/*cout << "(" << possible_move_x << "," << possible_move_y << ") ";*/
-										Piece* piece = board->square[possible_move_x][possible_move_y];
-										colorSquare(piece, possible_move_x, possible_move_y, GREEN);
-									}
-									/*cout << endl;*/
-									temp_pieceGetPossibleMoves = pieceGetPossibleMoves;
-									IS_CHOOSING_MOVE = CHOOSING_MOVE;
+								for (int i = 0; i < pieceGetPossibleMoves.size(); ++i) {
+									int possible_move_x = pieceGetPossibleMoves[i].first;
+									int possible_move_y = pieceGetPossibleMoves[i].second;
+									/*cout << "(" << possible_move_x << "," << possible_move_y << ") ";*/
+									Piece* piece = board->square[possible_move_x][possible_move_y];
+									colorSquare(piece, possible_move_x, possible_move_y, GREEN);
 								}
+								/*cout << endl;*/
+								temp_pieceGetPossibleMoves = pieceGetPossibleMoves;
+								IS_CHOOSING_MOVE = CHOOSING_MOVE;
 							}
 							
 						}
@@ -489,9 +520,11 @@ int main() {
 		}
 
 		window.clear();
-
+		
 		window.draw(aside.sprite);
 		window.draw(main_background.sprite);
+		window.draw(is_mopving_now_pic.sprite);
+		window.draw(is_moving_now);
 		window.draw(numbers.sprite);
 		window.draw(letters.sprite);
 
