@@ -46,7 +46,7 @@ const int square_size = 56;
 string IP = "";
 string  t = "";
 enum IsChoosingMove { CHOOSING_MOVE, NOT_CHOOSING_MOVE };
-enum ColorOfSquare {RED, GREEN, YELLOW, NONE_COLOR};
+enum ColorOfSquare { RED, GREEN, YELLOW, NONE_COLOR };
 
 class Button {
 public:
@@ -83,11 +83,11 @@ void setFigures(Board* board) {
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
 			Piece* piece = board->square[i][j];
-			TypePiece* n = piece->GetName();
-			Colour* color = piece->GetColour();
-			if (*n != EMPTY) {
-				x = *n - 1;
-				*color == BLACK ? y = 0: y = 1;
+			TypePiece n = *(piece->GetName());
+			Colour color = *(piece->GetColour());
+			if (n != EMPTY) {
+				x = n - 1;
+				color == WHITE ? y = 0 : y = 1;
 				piece->SetTextureFigures(figure_texture);
 				piece->setVisualFigures(Vector2f(board_offset_x + square_size * j, board_offset_y - 2 + square_size * i), IntRect(square_size * x, square_size * y, square_size, square_size));
 			}
@@ -203,11 +203,64 @@ void CreateIpWindow() {
 		ip_window.display();
 	}
 }
+void CreateChooseFigureWindow(int y, int x) {
+	Piece* chooseFigures[4];
+	if (y == 0) {
+		chooseFigures[0] = new Queen(BLACK, 0, 0, QUEEN);
+		chooseFigures[1] = new Rook(BLACK, 0, 0, ROOK);
+		chooseFigures[2] = new Knight(BLACK, 0, 0, KNIGHT);
+		chooseFigures[3] = new Bishop(BLACK, 0, 0, BISHOP);
+	}
+	else if (y == 7) {
+		chooseFigures[0] = new Queen(WHITE, 0, 0, QUEEN);
+		chooseFigures[1] = new Rook(WHITE, 0, 0, ROOK);
+		chooseFigures[2] = new Knight(WHITE, 0, 0, KNIGHT);
+		chooseFigures[3] = new Bishop(WHITE, 0, 0, BISHOP);
+	}
+	Colour color = *(chooseFigures[0]->GetColour());
+	for (int i = 0; i < 4; ++i) {
+		int x, y;
+		Piece* piece = chooseFigures[i];
+		TypePiece n = *(piece->GetName());
+		Colour color = *(piece->GetColour());
+		x = n - 1;
+		color == WHITE ? y = 0 : y = 1;
+		piece->SetTextureFigures(figure_texture);
+		piece->setVisualFigures(Vector2f(square_size * i, 0), IntRect(square_size * x, square_size * y, square_size, square_size));
+	}
 
+	RenderWindow choose_figure_window(VideoMode(230, 60), "Choose figure", Style::Default);
+	Sprite background_sprite;
+	background_sprite.setTexture(aside_texture);
+	background_sprite.setTextureRect(IntRect(0, 0, 230, 60));
+	background_sprite.setPosition(0, 0);
+
+	while (choose_figure_window.isOpen()) {
+		Event event;
+		while (choose_figure_window.pollEvent(event)) {
+			if (event.type == Event::Closed) {
+				choose_figure_window.close();
+			}
+			else if (event.type == Event::MouseButtonPressed) {
+				if (event.mouseButton.button == Mouse::Left) {
+					int cursor_x = (Mouse::getPosition(choose_figure_window).x) / square_size;
+					board.SetPiece(color, y, x, *chooseFigures[cursor_x]->GetName());
+					choose_figure_window.close();
+				}
+			}
+		}
+		choose_figure_window.clear();
+		choose_figure_window.draw(background_sprite);
+		for (int i = 0; i < 4; ++i) {
+			choose_figure_window.draw(chooseFigures[i]->figure_sprite);
+		}
+		choose_figure_window.display();
+	}
+}
 int main() {
 	loadTexures();
 	Board* board = CreateBoard();
-	
+
 	IsChoosingMove IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 	std::vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
 	Piece* piece_wants_to_move = nullptr;
@@ -275,7 +328,7 @@ int main() {
 								CreateIpWindow();
 								cout << "Enter ip\n";
 							}
-						}						
+						}
 					}
 
 					//find squares
@@ -283,27 +336,39 @@ int main() {
 					int cursor_y_for_board = (cursor_y - board_offset_y) / square_size;
 					Piece* piece = board->square[cursor_y_for_board][cursor_x_for_board];
 
+					if ((cursor_y_for_board == 7 || cursor_y_for_board == 0) /*&& (*piece_wants_to_move->GetName()) == PAWN*/) {
+						CreateChooseFigureWindow(cursor_y_for_board, cursor_x_for_board);
+					}
+
 					pair<int, int> click_square = make_pair(cursor_y_for_board, cursor_x_for_board);
 					auto is_found = find(temp_pieceGetPossibleMoves.begin(), temp_pieceGetPossibleMoves.end(), click_square);
 
 					if (is_found != temp_pieceGetPossibleMoves.end()) {
 						//move figure
-						board->move(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
+						if ((*piece->GetName()) == EMPTY) {
+							board->move(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
+						}
+						else {
+							board->cut_down(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
+						}
+
 						setFigures(board);
 						setSquaresPositions(board);
 
 						piece_wants_to_move = nullptr;
 						IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 						temp_pieceGetPossibleMoves.clear();
+
 					}
-					else {
+					else if (*(piece->GetName()) != EMPTY) {
 						//squares backlight red with onclick
 						piece_wants_to_move = piece;
 						if (cursor_x_for_board <= 7 && cursor_x_for_board >= 0 &&
 							cursor_y_for_board <= 7 && cursor_y_for_board >= 0) {
 							colorSquare(piece, cursor_x_for_board, cursor_y_for_board, RED);
-							
+
 							std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece);
+							/*cout << pieceGetPossibleMoves.size() << "a" << endl;*/
 							if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
 								//закрашиваем возможные ходы предыдущего выбора фигуры
 								for (int i = 0; i < temp_pieceGetPossibleMoves.size(); ++i) {
@@ -318,12 +383,11 @@ int main() {
 								for (int i = 0; i < pieceGetPossibleMoves.size(); ++i) {
 									int possible_move_x = pieceGetPossibleMoves[i].first;
 									int possible_move_y = pieceGetPossibleMoves[i].second;
-									cout << "(" << possible_move_x << "," << possible_move_y << ") ";
+									/*cout << "(" << possible_move_x << "," << possible_move_y << ") ";*/
 									Piece* piece = board->square[possible_move_x][possible_move_y];
 									colorSquare(piece, possible_move_x, possible_move_y, GREEN);
 								}
-								cout << endl;
-								
+								/*cout << endl;*/
 								temp_pieceGetPossibleMoves = pieceGetPossibleMoves;
 								IS_CHOOSING_MOVE = CHOOSING_MOVE;
 							}
@@ -338,7 +402,7 @@ int main() {
 				pair<int, int> move_square_temp = make_pair(temp_mouse_y, temp_mouse_x);
 
 				auto is_found_now = find(temp_pieceGetPossibleMoves.begin(), temp_pieceGetPossibleMoves.end(), move_square_now);
-				auto is_found_temp= find(temp_pieceGetPossibleMoves.begin(), temp_pieceGetPossibleMoves.end(), move_square_temp);
+				auto is_found_temp = find(temp_pieceGetPossibleMoves.begin(), temp_pieceGetPossibleMoves.end(), move_square_temp);
 
 				Piece* piece = board->square[mouse_y][mouse_x];
 				Piece* piece_temp = board->square[temp_mouse_y][temp_mouse_x];
@@ -350,11 +414,11 @@ int main() {
 					//squares backlight yellow with hover
 					if (is_found_now == temp_pieceGetPossibleMoves.end()) {
 						colorSquare(piece, mouse_x, mouse_y, YELLOW);
-						
+
 					}
 					if (is_found_temp == temp_pieceGetPossibleMoves.end()) {
 						colorSquare(piece_temp, temp_mouse_x, temp_mouse_y, NONE_COLOR);
-						
+
 					}
 					temp_mouse_x = mouse_x;
 					temp_mouse_y = mouse_y;
@@ -362,9 +426,9 @@ int main() {
 				//backlight black/white with moving mous out of board
 				if (mouse_x > 7 || event.mouseMove.x - board_offset_x < 0 || mouse_y > 7 || event.mouseMove.y - board_offset_y < 0) {
 					colorSquare(piece_temp, temp_mouse_x, temp_mouse_y, NONE_COLOR);
-					
+
 				}
-				
+
 			}
 
 		}
