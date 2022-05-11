@@ -34,8 +34,6 @@ public:
         vertical = f.vertical;
         horizontal = f.horizontal;
     };
-    /*virtual bool move(int vert, int hor, char col) { return false; };
-    virtual bool cut_down(Piece& f) { return false; };*/
     virtual int* getMoveCount() { return &(this->moveCount); }// move(Piece &t) in Board
 
     Colour* GetColour() { return &(this->colour); };

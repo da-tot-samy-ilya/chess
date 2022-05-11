@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include "Rook.h"
 #include "Knight.h"
 #include "Bishop.h"
@@ -23,8 +23,8 @@ public:
 	int figures_count = 0;
 	Piece* square[8][8];
 	Board();
-	void SetBoard(); // изначальное положение доски
-	void SetPiece(Colour colour, int hor, int vert, TypePiece type); // поставить фигуру, либо удалить её, если Empty
+	void SetBoard(); // РёР·РЅР°С‡Р°Р»СЊРЅРѕРµ РїРѕР»РѕР¶РµРЅРёРµ РґРѕСЃРєРё
+	void SetPiece(Colour colour, int hor, int vert, TypePiece type); // РїРѕСЃС‚Р°РІРёС‚СЊ С„РёРіСѓСЂСѓ, Р»РёР±Рѕ СѓРґР°Р»РёС‚СЊ РµС‘, РµСЃР»Рё Empty
 	void PieceMoving(int vEnd, int hEnd, int vStart, int hStart);
 	bool move(int vert, int hor, Colour col, Piece* piece);
 	bool cut_down(int vert, int hor, Colour col, Piece* piece);
@@ -108,11 +108,12 @@ void Board::PieceMoving(int vEnd, int hEnd, int vStart, int hStart)
 
 
 
-bool CanCut(pair<int, int> coords, Piece* CheckingPiece, Colour colour)
+bool CanCut(pair<int, int> coords, int hStart, int vStart, Colour colour)
 {
-	if (coords.first != -1)
+	if (Check(coords.first, coords.second))
 	{
-		return board.cut_down(coords.second, coords.first, colour, CheckingPiece); //потом поставить здесь цвет
+		auto PossibleMovis = board.square[coords.first][coords.second]->GetPossibleMoves();
+		return (find(PossibleMovis->begin(), PossibleMovis->end(), make_pair(hStart, vStart)) != PossibleMovis->end());
 	}
 	return false;
 }
@@ -318,10 +319,9 @@ bool KingLikeKnight(int vStart, int hStart, Colour kingColour)
 	return false;
 }
 
-bool HasCheck(int vStart, int hStart, Colour kingColour) //шах
+bool HasCheck(int vStart, int hStart, Colour kingColour) //С€Р°С…
 {
 	std::pair<int, int> coords(-1, -1);
-	Piece* CheckingPiece = board.square[hStart][vStart];
 
 	pair<int, int> coord1 = KingLikeRook(coords, vStart, 7, vStart, hStart, kingColour);
 	pair<int, int> coord2 = KingLikeRook(coords, vStart, 0, vStart, hStart, kingColour);
@@ -335,9 +335,9 @@ bool HasCheck(int vStart, int hStart, Colour kingColour) //шах
 	pair<int, int> coord7 = KingLikeBishop(coords, A[2].first, A[2].second, vStart, hStart, kingColour);
 	pair<int, int> coord8 = KingLikeBishop(coords, A[3].first, A[3].second, vStart, hStart, kingColour);
 
-	if (CanCut(coord1, CheckingPiece, kingColour) || CanCut(coord2, CheckingPiece, kingColour) || CanCut(coord3, CheckingPiece, kingColour)
-		|| CanCut(coord4, CheckingPiece, kingColour) || CanCut(coord5, CheckingPiece, kingColour) || CanCut(coord6, CheckingPiece, kingColour)
-		|| CanCut(coord7, CheckingPiece, kingColour) || CanCut(coord8, CheckingPiece, kingColour) || KingLikeKnight(vStart, hStart, kingColour)) return true;
+	if (!CanCut(coord1,hStart, vStart, kingColour) && !CanCut(coord2, hStart, vStart, kingColour) && !CanCut(coord3, hStart, vStart, kingColour)
+		&& !CanCut(coord4, hStart, vStart, kingColour) && !CanCut(coord5, hStart, vStart, kingColour) && !CanCut(coord6, hStart, vStart, kingColour)
+		&& !CanCut(coord7, hStart, vStart, kingColour) && !CanCut(coord8, hStart, vStart, kingColour) && !KingLikeKnight(vStart, hStart, kingColour)) return true;
 
 	return false;
 }
@@ -363,32 +363,32 @@ void MakeCastling(vector<pair<int, int>>& PossibleMoves, int vEnd, int vStart, i
 	}
 }
 
-void FindPossibleMovesForKing(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, Colour colour)
+void FindPossibleMovesForKing(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour)
 {
-	if (Check(vStart, hStart + 1) && !HasCheck(vStart, hStart + 1, colour))
-		funkRook(PossibleMoves, vStart, hStart + 1, vStart, hStart, colour);
-	if (Check(vStart, hStart - 1) && !HasCheck(vStart, hStart - 1, colour))
-		funkRook(PossibleMoves, vStart, hStart - 1, vStart, hStart, colour);
-	if (Check(vStart - 1, hStart) && !HasCheck(vStart - 1, hStart, colour))
-		funkRook(PossibleMoves, vStart - 1, hStart, vStart, hStart, colour);
-	if (Check(vStart + 1, hStart) && !HasCheck(vStart + 1, hStart, colour))
-		funkRook(PossibleMoves, vStart + 1, hStart, vStart, hStart, colour);
-	if (Check(vStart + 1, hStart + 1) && !HasCheck(vStart + 1, hStart + 1, colour))
-		funkBishop(PossibleMoves, vStart + 1, hStart + 1, vStart, hStart, colour);
-	if (Check(vStart - 1, hStart + 1) && !HasCheck(vStart - 1, hStart + 1, colour))
-		funkBishop(PossibleMoves, vStart - 1, hStart + 1, vStart, hStart, colour);
-	if (Check(vStart + 1, hStart - 1) && !HasCheck(vStart + 1, hStart - 1, colour))
-		funkBishop(PossibleMoves, vStart + 1, hStart - 1, vStart, hStart, colour);
-	if (Check(vStart - 1, hStart - 1) && !HasCheck(vStart - 1, hStart - 1, colour))
-		funkBishop(PossibleMoves, vStart - 1, hStart - 1, vStart, hStart, colour);
-	//рокировка
-	if (board.square[hStart][vStart]->getMoveCount() == 0 && !HasCheck(vStart, hStart, colour))
-	{
-		if (!HasCheck(2, hStart, colour))
-			MakeCastling(PossibleMoves, 0, vStart, hStart);
-		if (!HasCheck(6, hStart, colour))
-			MakeCastling(PossibleMoves, 7, vStart, hStart);
-	}
+	if (Check(vStart, hStart + 1) && !HasCheck(vStart, hStart + 1, colour) && *(board.square[hStart + 1][vStart]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart + 1, vStart));
+	if (Check(vStart, hStart - 1) && !HasCheck(vStart, hStart - 1, colour) && *(board.square[hStart - 1][vStart]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart - 1, vStart));
+	if (Check(vStart - 1, hStart) && !HasCheck(vStart - 1, hStart, colour) && *(board.square[hStart][vStart - 1]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart, vStart - 1));
+	if (Check(vStart + 1, hStart) && !HasCheck(vStart + 1, hStart, colour) && *(board.square[hStart][vStart + 1]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart, vStart + 1));
+	if (Check(vStart + 1, hStart + 1) && !HasCheck(vStart + 1, hStart + 1, colour) && *(board.square[hStart + 1][vStart + 1]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart + 1, vStart + 1));
+	if (Check(vStart - 1, hStart + 1) && !HasCheck(vStart - 1, hStart + 1, colour) && *(board.square[hStart + 1][vStart - 1]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart + 1, vStart - 1));
+	if (Check(vStart + 1, hStart - 1) && !HasCheck(vStart + 1, hStart - 1, colour) && *(board.square[hStart - 1][vStart + 1]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart - 1, vStart + 1));
+	if (Check(vStart - 1, hStart - 1) && !HasCheck(vStart - 1, hStart - 1, colour) && *(board.square[hStart - 1][vStart - 1]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart - 1, vStart - 1));
+//СЂРѕРєРёСЂРѕРІРєР°
+	//if (/*board.square[hStart][vStart]->getFirstMove() == false &&*/ !HasCheck(vStart, hStart, colour))
+	//{
+	//	//if (!HasCheck(2, hStart, colour))
+	//	MakeCastling(PossibleMoves, 0, vStart, hStart);
+	//	//if (!HasCheck(6, hStart, colour))
+	//	MakeCastling(PossibleMoves, 7, vStart, hStart);
+	//}
 }
 
 void funkKnight(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, Colour colour)
@@ -440,7 +440,7 @@ vector<pair<int, int>>* MakePossibleMoves(Piece* piece)
 	switch (*type)
 	{
 	case (KING):
-		FindPossibleMovesForKing(*vector1, *vert, *hor, *colour);
+		FindPossibleMovesForKing(vector1, *vert, *hor, *colour);
 		return piece->GetPossibleMoves();
 	case (QUEEN):
 		FindPossibleMovesForQueen(*vector1, *vert, *hor, *colour);
@@ -488,10 +488,10 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 	switch (*type)
 	{
 	case (KING):
-		FindPossibleMovesForKing(*PossibleMoves, *vertical, *horizontal, *colour);
+		FindPossibleMovesForKing(PossibleMoves, *vertical, *horizontal, *colour);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(*PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
-			//добавить перемещение ладьи при рокировке
+			//РґРѕР±Р°РІРёС‚СЊ РїРµСЂРµРјРµС‰РµРЅРёРµ Р»Р°РґСЊРё РїСЂРё СЂРѕРєРёСЂРѕРІРєРµ
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = hor;
 			*vertical = vert;
@@ -573,7 +573,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 	switch (*type)
 	{
 	case (KING):
-		FindPossibleMovesForKing(PossibleMoves, *vertical, *horizontal, *colour);
+		FindPossibleMovesForKing(&PossibleMoves, *vertical, *horizontal, *colour);
 		if (*colour != col && CanMakeMove(PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			int newHor = hor;
@@ -660,7 +660,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			*vertical = newVert;
 			*MoveCount += 1;
 			return true;
-			//взятие на проходе
+			//РІР·СЏС‚РёРµ РЅР° РїСЂРѕС…РѕРґРµ
 		}
 		return false;
 	case (EMPTY):
