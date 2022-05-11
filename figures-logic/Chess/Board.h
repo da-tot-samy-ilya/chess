@@ -67,8 +67,9 @@ void Board::SetBoard()
 	/*for (int i = 0; i < 8; ++i)
 		for (int j = 0; j< 8; ++j)
 			square[i][j] = new Piece(NONE, j, i, EMPTY);
-	square[7][0] = new Rook(BLACK, 0, 7, ROOK);
-	square[7][4] = new King(BLACK, 4, 7, KING);*/
+	square[0][0] = new Rook(WHITE, 0, 7, ROOK);
+	square[1][0] = new Rook(BLACK, 0, 7, ROOK);
+	square[1][4] = new King(BLACK, 4, 7, KING);*/
 }
 
 void Board::SetPiece(Colour colour, int hor, int vert, TypePiece type)
@@ -408,22 +409,41 @@ void FindPossibleMovesForKnight(vector<pair<int, int>>& PossibleMoves, int vStar
 }
 
 
-void FindPossibleMovesForPawn(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, Colour colour, bool didMove)
+void FindPossibleMovesForPawn(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour, bool didMove)
 {
-	//cout << didMove;
 	int tmp = 1;
 	if (colour == BLACK)
 		tmp *= -1;
-	if (Check(vStart, hStart - 1) && *(board.square[hStart - 1][vStart]->GetColour()) == NONE)
-		PossibleMoves.push_back(make_pair(hStart + tmp, vStart));
-	/*if (Check(vStart + tmp, hStart + tmp) && *(board.square[vStart + tmp][hStart + tmp]->GetColour()) != NONE && (*(board.square[vStart + tmp][hStart + tmp]->GetColour())) != colour)
-		PossibleMoves.push_back(make_pair(hStart + tmp, vStart + tmp));
+	if (Check(vStart, hStart + tmp) && *(board.square[hStart + tmp][vStart]->GetColour()) == NONE)
+		PossibleMoves->push_back(make_pair(hStart + tmp, vStart));
+	if (Check(vStart + tmp, hStart + tmp) && *(board.square[vStart + tmp][hStart + tmp]->GetColour()) != NONE && (*(board.square[vStart + tmp][hStart + tmp]->GetColour())) != colour)
+		PossibleMoves->push_back(make_pair(hStart + tmp, vStart + tmp));
 	if (Check(vStart - tmp, hStart + tmp) && *(board.square[vStart - tmp][hStart + tmp]->GetColour()) != NONE && (*(board.square[vStart - tmp][hStart + tmp]->GetColour())) != colour)
-		PossibleMoves.push_back(make_pair(hStart + tmp, vStart - tmp));
+		PossibleMoves->push_back(make_pair(hStart + tmp, vStart - tmp));
+	cout << didMove << endl;
 	if (didMove == false)
-		tmp = -2;
-	if(*(board.square[vStart][hStart + tmp]->GetColour()) == NONE)
-		PossibleMoves.push_back(make_pair(hStart + tmp, vStart));*/
+	{
+		tmp = 2;
+		if (colour == BLACK)
+			tmp *= -1;
+		if(*(board.square[vStart][hStart + tmp]->GetColour()) == NONE)
+			PossibleMoves->push_back(make_pair(hStart + tmp, vStart));
+	}
+		
+	
+	/*int tmp = 1;
+	if (colour == BLACK)
+		tmp = -1;
+	if (*(board.square[hStart][vStart + 2]->GetColour()) == NONE && colour == WHITE && hStart == 1)
+		PossibleMoves->push_back(make_pair(hStart + 2, vStart));
+	if (colour == BLACK && hStart == 6 && *(board.square[hStart][vStart + 2]->GetColour()) == NONE)
+		PossibleMoves->push_back(make_pair(hStart - 2, vStart));
+	if (Check(vStart + 1, hStart) && *(board.square[hStart + tmp][vStart]->GetColour()) == NONE)
+		PossibleMoves->push_back(make_pair(hStart + tmp, vStart));
+	if (Check(vStart + 1, hStart + 1) && *(board.square[hStart + tmp][vStart + 1]->GetColour()) != NONE && *(board.square[hStart + 1][vStart + 1]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart + tmp, vStart + 1));
+	if (Check(vStart + 1, hStart - 1) && *(board.square[hStart + tmp][vStart - 1]->GetColour()) != NONE && *(board.square[hStart + 1][vStart - 1]->GetColour()) != colour)
+		PossibleMoves->push_back(make_pair(hStart + tmp, vStart - 1));*/
 }
 
 vector<pair<int, int>>* MakePossibleMoves(Piece* piece)
@@ -433,6 +453,7 @@ vector<pair<int, int>>* MakePossibleMoves(Piece* piece)
 	int* hor = piece->GetHor();
 	int* vert = piece->GetVert();
 	TypePiece* type = piece->GetName();
+	bool* didMove = piece->getFirstMove();
 
 	switch (*type)
 	{
@@ -452,7 +473,7 @@ vector<pair<int, int>>* MakePossibleMoves(Piece* piece)
 		FindPossibleMovesForRook(*vector1, *vert, *hor, *colour);
 		return piece->GetPossibleMoves();
 	case(PAWN):
-		FindPossibleMovesForPawn(*vector1, *vert, *hor, *colour, piece->getFirstMove());
+		FindPossibleMovesForPawn(vector1, *vert, *hor, *colour, *didMove);
 		return piece->GetPossibleMoves();
 	case (EMPTY):
 		return vector1;
@@ -530,7 +551,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 		}
 		return false;
 	case(PAWN):
-		FindPossibleMovesForPawn(*PossibleMoves, *vertical, *horizontal, *colour, *didMove);
+		FindPossibleMovesForPawn(PossibleMoves, *vertical, *horizontal, *colour, *didMove);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(*PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
