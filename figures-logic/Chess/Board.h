@@ -102,7 +102,7 @@ Board* CreateBoard()
 
 void Board::PieceMoving(int vEnd, int hEnd, int vStart, int hStart)
 {
-	board.square[hEnd][vEnd] = board.square[hStart][vStart];
+	square[hEnd][vEnd] = square[hStart][vStart];
 	SetPiece(NONE, hStart, vStart, EMPTY);
 }
 
@@ -349,7 +349,7 @@ void MakeCastling(vector<pair<int, int>>& PossibleMoves, int vEnd, int vStart, i
 		sign = 2;
 	if (*(board.square[hStart][vEnd]->GetName()) == ROOK)
 	{
-		if (board.square[hStart][vEnd]->getFirstMove() == false)
+		if (board.square[hStart][vEnd]->getMoveCount() == 0)
 		{
 			bool allClear = true;
 			for (int i = min(vEnd, vStart) + 1; i < max(vEnd, vStart) && allClear; ++i)
@@ -382,7 +382,7 @@ void FindPossibleMovesForKing(vector<pair<int, int>>& PossibleMoves, int vStart,
 	if (Check(vStart - 1, hStart - 1) && !HasCheck(vStart - 1, hStart - 1, colour))
 		funkBishop(PossibleMoves, vStart - 1, hStart - 1, vStart, hStart, colour);
 	//рокировка
-	if (board.square[hStart][vStart]->getFirstMove() == false && !HasCheck(vStart, hStart, colour))
+	if (board.square[hStart][vStart]->getMoveCount() == 0 && !HasCheck(vStart, hStart, colour))
 	{
 		if (!HasCheck(2, hStart, colour))
 			MakeCastling(PossibleMoves, 0, vStart, hStart);
@@ -410,21 +410,23 @@ void FindPossibleMovesForKnight(vector<pair<int, int>>& PossibleMoves, int vStar
 }
 
 
-void FindPossibleMovesForPawn(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour, bool didMove)
+void FindPossibleMovesForPawn(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour, int MoveCount)
 {
 	int tmp = 1;
 	if (colour == BLACK)
-		tmp = -1;
-	if (*(board.square[hStart][vStart + 2]->GetColour()) == NONE && colour == WHITE && hStart == 1)
-		PossibleMoves->push_back(make_pair(hStart + 2, vStart));
-	if (colour == BLACK && hStart == 6 && *(board.square[hStart][vStart + 2]->GetColour()) == NONE)
-		PossibleMoves->push_back(make_pair(hStart - 2, vStart));
-	if (Check(vStart + 1, hStart) && *(board.square[hStart + tmp][vStart]->GetColour()) == NONE)
+		tmp *= -1;
+	if (Check(vStart, hStart + tmp) && *(board.square[hStart + tmp][vStart]->GetColour()) == NONE)
 		PossibleMoves->push_back(make_pair(hStart + tmp, vStart));
-	if (Check(vStart + 1, hStart + 1) && *(board.square[hStart + tmp][vStart + 1]->GetColour()) != NONE && *(board.square[hStart + 1][vStart + 1]->GetColour()) != colour)
-		PossibleMoves->push_back(make_pair(hStart + tmp, vStart + 1));
-	if (Check(vStart + 1, hStart - 1) && *(board.square[hStart + tmp][vStart - 1]->GetColour()) != NONE && *(board.square[hStart + 1][vStart - 1]->GetColour()) != colour)
-		PossibleMoves->push_back(make_pair(hStart + tmp, vStart - 1));
+	if (Check(vStart + tmp, hStart + tmp) && *(board.square[hStart + tmp][vStart + tmp]->GetColour()) != NONE && (*(board.square[hStart + tmp][vStart + tmp]->GetColour())) != colour)
+		PossibleMoves->push_back(make_pair(hStart + tmp, vStart + tmp));
+	if (Check(vStart - tmp, hStart + tmp) && *(board.square[hStart + tmp][vStart - tmp]->GetColour()) != NONE && (*(board.square[hStart + tmp][vStart - tmp]->GetColour())) != colour)
+		PossibleMoves->push_back(make_pair(hStart + tmp, vStart - tmp));
+	if (MoveCount == 0)
+	{
+		tmp *= 2;
+		if (*(board.square[hStart + tmp][vStart]->GetColour()) == NONE)
+			PossibleMoves->push_back(make_pair(hStart + tmp, vStart));
+	}
 }
 
 vector<pair<int, int>>* MakePossibleMoves(Piece* piece)
@@ -453,7 +455,7 @@ vector<pair<int, int>>* MakePossibleMoves(Piece* piece)
 		FindPossibleMovesForRook(*vector1, *vert, *hor, *colour);
 		return piece->GetPossibleMoves();
 	case(PAWN):
-		FindPossibleMovesForPawn(vector1, *vert, *hor, *colour, piece->getFirstMove());
+		FindPossibleMovesForPawn(vector1, *vert, *hor, *colour, *(piece->getMoveCount()));
 		//cout << "Massiv in Make" << vector1->size() << endl;
 		return piece->GetPossibleMoves();
 	case (EMPTY):
@@ -479,7 +481,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 	bool* canMove = piece->GetCanMove();
 	auto vertical = piece->GetVert();
 	int* horizontal = piece->GetHor();
-	bool* didMove = piece->GetDidMove();
+	int* MoveCount = piece->getMoveCount();
 	//cout << PossibleMoves->size();
 	//PossibleMoves->clear();
 	//cout << PossibleMoves->size();
@@ -493,7 +495,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = hor;
 			*vertical = vert;
-			*didMove = true;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
@@ -504,6 +506,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = hor;
 			*vertical = vert;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
@@ -514,6 +517,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = hor;
 			*vertical = vert;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
@@ -524,6 +528,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = hor;
 			*vertical = vert;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
@@ -534,18 +539,18 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = hor;
 			*vertical = vert;
-			*didMove = true;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
 	case(PAWN):
-		FindPossibleMovesForPawn(PossibleMoves, *vertical, *horizontal, *colour, *didMove);
+		FindPossibleMovesForPawn(PossibleMoves, *vertical, *horizontal, *colour, *MoveCount);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(*PossibleMoves, *canMove, make_pair(hor, vert)))//-Check -col
 		{
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*vertical = vert;
 			*horizontal = hor;
-			*didMove = true;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
@@ -562,7 +567,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 	bool* canMove = piece->GetCanMove();
 	int* vertical = piece->GetVert();
 	int* horizontal = piece->GetHor();
-	bool* didMove = piece->GetDidMove();
+	int* MoveCount = piece->getMoveCount();
 	int vsign = 1;
 	int hsign = 1;
 	switch (*type)
@@ -576,6 +581,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = newHor;
 			*vertical = newVert;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
@@ -592,6 +598,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = newHor;
 			*vertical = newVert;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
@@ -607,6 +614,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = newHor;
 			*vertical = newVert;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
@@ -619,6 +627,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = newHor;
 			*vertical = newVert;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
@@ -636,12 +645,12 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = newHor;
 			*vertical = newVert;
+			*MoveCount += 1;
 			return true;
 		}
 		return false;
 	case(PAWN):
-		FindPossibleMovesForPawn(&PossibleMoves, *vertical, *horizontal, *colour, *didMove);
-		if (hor < *horizontal) return false;
+		FindPossibleMovesForPawn(&PossibleMoves, *vertical, *horizontal, *colour, *MoveCount);
 		if (*colour != col && CanMakeMove(PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			int newHor = hor;
@@ -649,6 +658,7 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
 			*horizontal = newHor;
 			*vertical = newVert;
+			*MoveCount += 1;
 			return true;
 			//взятие на проходе
 		}

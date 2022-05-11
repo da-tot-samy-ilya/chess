@@ -502,13 +502,15 @@ int main()
 				{
 					if (event.mouseButton.button == Mouse::Left)
 					{
-						/*for (int i = 0; i < 8; i++) {
+						setFigures(board);
+						setSquaresPositions(board);
+						for (int i = 0; i < 8; i++) {
 							for (int j = 0; j < 8; j++) {
 								cout << *(board->square[i][j]->GetName()) << " ";
 							}
 							cout << "\n";
 						}
-						cout << "\n";*/
+						cout << "\n";
 						int cursor_x = Mouse::getPosition(window).x;
 						int cursor_y = Mouse::getPosition(window).y;
 
