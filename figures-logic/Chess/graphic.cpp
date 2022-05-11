@@ -67,8 +67,8 @@ public:
 		sprite.setPosition(bPosition);
 	}
 };
-std::vector<Button> buttons_main_window;
-std::vector<Button> buttons_ip_window;
+vector<Button> buttons_main_window;
+vector<Button> buttons_ip_window;
 class InterfaceElement {
 private:
 	Vector2f bPosition;
@@ -90,12 +90,14 @@ void setFigures(Board* board) {
 			Piece* piece = board->square[i][j];
 			TypePiece n = *(piece->GetName());
 			Colour color = *(piece->GetColour());
+			
 			if (n != EMPTY) {
 				x = n - 1;
 				color == WHITE ? y = 0: y = 1;
 				piece->SetTextureFigures(figure_texture);
 				piece->setVisualFigures(Vector2f(board_offset_x + square_size * j, board_offset_y - 2 + square_size * i), IntRect(square_size * x, square_size * y, square_size, square_size));
 			}
+			//cout << "(" << i << "," << j << ") " << " Color: " << color << " y: " << y << endl;
 		}
 	}
 }
@@ -299,19 +301,10 @@ int main() {
 	Board* board = CreateBoard();
 	
 	IsChoosingMove IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
-	std::vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
+	vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
 	Piece* piece_wants_to_move = nullptr;
 	Colour IS_NOW_PLAYING = WHITE;
 
-	//count figures
-	for (int i = 0; i < 8; ++i) {
-		for (int j = 0; j < 8; ++j) {
-			Piece* piece = board->square[i][j];
-			if (*(piece->GetName()) != EMPTY) {
-				board->figures_count++;
-			}
-		}
-	}
 	RenderWindow window(VideoMode(655, 488), "Chess");
 
 	InterfaceElement aside(aside_texture, Vector2f(0, 0), IntRect(0, 0, 167, 488));
@@ -358,13 +351,7 @@ int main() {
 
 			else if (event.type == Event::MouseButtonPressed) {
 				if (event.mouseButton.button == Mouse::Left) {
-					/*for (int i = 0; i < 8; i++) {
-						for (int j = 0; j < 8; j++) {
-							cout << *(board->square[i][j]->GetName()) << " ";
-						}
-						cout << "\n";
-					}
-					cout << "\n";*/
+					
 					int cursor_x = Mouse::getPosition(window).x;
 					int cursor_y = Mouse::getPosition(window).y;
 
@@ -477,7 +464,13 @@ int main() {
 							IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 						}
 					}
-					
+					/*for (int i = 0; i < 8; i++) {
+						for (int j = 0; j < 8; j++) {
+							cout << *(board->square[i][j]->GetName()) << " ";
+						}
+						cout << "\n";
+					}
+					cout << "\n";*/
 					
 				}
 			}
@@ -533,8 +526,10 @@ int main() {
 				Piece* piece = board->square[i][j];
 				window.draw(piece->square_sprite);
 				window.draw(piece->figure_sprite);
+				
 			}
 		}
+		
 		for (int i = 0; i < buttons_main_window.size(); ++i) {
 			window.draw(buttons_main_window[i].sprite);
 		}
