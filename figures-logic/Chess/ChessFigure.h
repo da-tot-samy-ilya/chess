@@ -19,7 +19,7 @@ protected:
     int vertical; // буквы
     int horizontal;// цифры
     bool canMove = true;
-    bool didMove = false;
+    int moveCount = 0;
     std::vector<std::pair<int, int>> PossibleMoves;
 public:
     Vector2f bPosition;
@@ -34,9 +34,7 @@ public:
         vertical = f.vertical;
         horizontal = f.horizontal;
     };
-    /*virtual bool move(int vert, int hor, char col) { return false; };
-    virtual bool cut_down(Piece& f) { return false; };*/
-    virtual bool* getFirstMove() { return false; }// move(Piece &t) in Board
+    virtual int* getMoveCount() { return &(this->moveCount); }// move(Piece &t) in Board
 
     Colour* GetColour() { return &(this->colour); };
     int* GetVert() { return &(this->vertical); };
@@ -51,9 +49,6 @@ public:
     std::vector<std::pair<int, int>>* GetPossibleMoves() { 
         return &PossibleMoves; 
     };
-
-
-    bool* GetDidMove() { return &didMove; };
 
     void SetIsChosenForMove(IsChosenForMove is_choosen_for_move) {
         this->is_choosen_for_move = is_choosen_for_move;
