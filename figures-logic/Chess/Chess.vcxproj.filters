@@ -47,9 +47,6 @@
     <ClCompile Include="LocalServer.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Logic.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="graphic.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
