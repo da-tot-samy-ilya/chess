@@ -15,18 +15,18 @@ private:
     IsChosenForMove is_choosen_for_move = NOT_CHOSEN;
 protected:
     TypePiece type_piece;
-    Colour colour = NONE; // цвет фигуры
-    int vertical; // буквы
-    int horizontal;// цифры
+    Colour colour = NONE;
+    int vertical; 
+    int horizontal;
     bool canMove = true;
-    bool didMove = false;
+    int moveCount = 0;
     std::vector<std::pair<int, int>> PossibleMoves;
 public:
     Vector2f bPosition;
     IntRect bSprite;
     Sprite figure_sprite;
     Sprite square_sprite;
-    Piece() : colour(NONE), vertical(-1), horizontal(-1), type_piece(EMPTY){};
+    Piece() : colour(NONE), vertical(-1), horizontal(-1), type_piece(EMPTY) {};
     Piece(Colour colour, int vert, int hor, TypePiece type) : colour(colour), vertical(vert), horizontal(hor), type_piece(type) {};
     Piece(Piece& f)
     {
@@ -34,9 +34,7 @@ public:
         vertical = f.vertical;
         horizontal = f.horizontal;
     };
-    /*virtual bool move(int vert, int hor, char col) { return false; };
-    virtual bool cut_down(Piece& f) { return false; };*/
-    virtual bool* getFirstMove() { return &(this->didMove); };// move(Piece &t) in Board
+    virtual int* getMoveCount() { return &(this->moveCount); }// move(Piece &t) in Board
 
     Colour* GetColour() { return &(this->colour); };
     int* GetVert() { return &(this->vertical); };
@@ -48,12 +46,9 @@ public:
 
     bool* GetCanMove() { return &(this->canMove); };
 
-    std::vector<std::pair<int, int>>* GetPossibleMoves() { 
-        return &PossibleMoves; 
+    std::vector<std::pair<int, int>>* GetPossibleMoves() {
+        return &PossibleMoves;
     };
-
-
-    //bool* GetDidMove() { return &didMove; };
 
     void SetIsChosenForMove(IsChosenForMove is_choosen_for_move) {
         this->is_choosen_for_move = is_choosen_for_move;
@@ -82,7 +77,7 @@ public:
         square_sprite.setTextureRect(bSprite);
         square_sprite.setPosition(bPosition);
     }
-    
+
 };
 
 bool Check(int vert, int hor)
