@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Board.h"
 #include "Rook.h"
 #include "Knight.h"
@@ -434,6 +435,9 @@ int main() {
 		}
 	}
 	RenderWindow window(VideoMode(655, 488), "Chess");
+	Music music;
+	music.openFromFile("music/music.ogg");
+	music.play();
 
 	InterfaceElement aside(aside_texture, Vector2f(0, 0), IntRect(0, 0, 167, 488));
 	InterfaceElement main_background(main_background_texture, Vector2f(167, 0), IntRect(0, 0, 488, 488));
@@ -704,7 +708,7 @@ int main() {
 		window.draw(numbers.sprite);
 		window.draw(letters.sprite);
 		window.draw(check_info.sprite);
-
+		
 		for (int i = 0; i < 8; ++i) {
 			for (int j = 0; j < 8; ++j) {
 				Piece* piece = board->square[i][j];
