@@ -21,6 +21,8 @@ protected:
     bool canMove = true;
     int moveCount = 0;
     std::vector<std::pair<int, int>> PossibleMoves;
+    pair<int, int> ρastling = make_pair(-1, -1); //θημενενθε
+    pair<int, int> captureEnPassant = make_pair(-1, -1);//θημενενθε
 public:
     Vector2f bPosition;
     IntRect bSprite;
@@ -35,6 +37,9 @@ public:
         horizontal = f.horizontal;
     };
     virtual int* getMoveCount() { return &(this->moveCount); }// move(Piece &t) in Board
+
+    pair<int, int>* isMackingCastling() { return  &(this->ρastling); } //θημενενθε
+    pair<int, int>* isCaptureEnPassant() { return &(this->captureEnPassant); }//θημενενθε
 
     Colour* GetColour() { return &(this->colour); };
     int* GetVert() { return &(this->vertical); };
