@@ -438,6 +438,7 @@ int main() {
 	Music music;
 	music.openFromFile("music/music.ogg");
 	music.play();
+	music.setLoop(true);
 
 	InterfaceElement aside(aside_texture, Vector2f(0, 0), IntRect(0, 0, 167, 488));
 	InterfaceElement main_background(main_background_texture, Vector2f(167, 0), IntRect(0, 0, 488, 488));
