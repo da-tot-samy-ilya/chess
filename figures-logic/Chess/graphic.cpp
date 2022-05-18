@@ -608,7 +608,7 @@ int main()
 									//squares backlight red with onclick
 									piece_wants_to_move = piece;
 									colorSquare(piece, cursor_x_for_board, cursor_y_for_board, RED);
-									std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece);
+									std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece, true);
 
 									if (IS_CHOOSING_MOVE == CHOOSING_MOVE)
 									{
@@ -715,6 +715,7 @@ int main()
 				window.draw(piece->square_sprite);
 				window.draw(piece->figure_sprite);
 			}
+			
 		}
 		for (int i = 0; i < buttons_main_window.size(); ++i)
 		{

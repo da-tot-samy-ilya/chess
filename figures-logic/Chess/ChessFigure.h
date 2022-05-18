@@ -39,6 +39,12 @@ public:
     Colour* GetColour() { return &(this->colour); };
     int* GetVert() { return &(this->vertical); };
     int* GetHor() { return &(this->horizontal); };
+    void SetCoords(pair<int, int> a)
+    {
+        vertical = a.second;
+        horizontal = a.first;
+    }
+
     TypePiece* GetName() { return &(this->type_piece); };
     IsChosenForMove GetIsChosenForMove() {
         return is_choosen_for_move;

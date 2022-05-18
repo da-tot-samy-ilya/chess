@@ -17,7 +17,7 @@
 //6
 //7
 using namespace std;
-vector<pair<int, int>>* MakePossibleMoves(Piece* piece);
+vector<pair<int, int>>* MakePossibleMoves(Piece* piece, bool Mode);
 class Board
 { // Piece
 public:
@@ -29,10 +29,7 @@ public:
 	void PieceMoving(int vEnd, int hEnd, int vStart, int hStart);
 	bool move(int vert, int hor, Colour col, Piece* piece);
 	bool cut_down(int vert, int hor, Colour col, Piece* piece);
-	void SetSquare(int hor, int vert);
 };
-
-
 
 Board::Board() { SetBoard(); }
 
@@ -63,42 +60,61 @@ void Board::SetBoard()
 					square[i][j] = new Piece(colour, j, i, EMPTY);
 		}
 	}
-	/*for (int i = 0; i<8; i++)
+	/*for (int i = 8; i< 12; i++)
 		for (int j = 0; j < 8; j++)
-			if (i == 1 || i == 6)
-				square[i][j] = new Pawn(WHITE, j, i, PAWN);
-			else
-				square[i][j] = new Piece(NONE, j, i, EMPTY);*/
+			square[i][j] = new Piece(NONE, j, i, EMPTY);
 
-				//square[1][1] = new Knight(BLACK, 1, 1, KNIGHT);
-				/*square[1][1] = new Pawn(WHITE, 1, 1, PAWN);
-				square[6][2] = new Pawn(BLACK, 2, 6, PAWN);*/
+
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			square[i][j] = new Piece(NONE, j, i, EMPTY);
+	square[4][3] = new Rook(WHITE, 3, 4, ROOK);
+	square[4][1] = new Queen(BLACK, 1, 4, QUEEN);
+	square[4][4] = new King(WHITE, 4, 4, KING);*/
+	/*square[5][1] = new King(BLACK, 4, 7, KING);*/
+
 }
+Board board;
 
 void Board::SetPiece(Colour colour, int hor, int vert, TypePiece type)
 {
+	/*for (int i = 0; i < 8; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			cout << *(board.square[i][j]->GetName()) << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;*/
 	switch (type)
 	{
 	case (KING):
-		square[hor][vert] = new King(colour, vert, hor, KING);
+		board.square[hor][vert] = new King(colour, vert, hor, KING);
+		break;
 	case (QUEEN):
-		square[hor][vert] = new Queen(colour, vert, hor, QUEEN);
+		board.square[hor][vert] = new Queen(colour, vert, hor, QUEEN);
+		break;
 	case(BISHOP):
-		square[hor][vert] = new Bishop(colour, vert, hor, BISHOP);
+		board.square[hor][vert] = new Bishop(colour, vert, hor, BISHOP);
+		break;
 	case(KNIGHT):
-		square[hor][vert] = new Knight(colour, vert, hor, KNIGHT);
+		board.square[hor][vert] = new Knight(colour, vert, hor, KNIGHT);
+		break;
 	case(ROOK):
-		square[hor][vert] = new Rook(colour, vert, hor, ROOK);
+		board.square[hor][vert] = new Rook(colour, vert, hor, ROOK);
+		break;
 	case(PAWN):
-		square[hor][vert] = new Pawn(colour, vert, hor, PAWN);
+		board.square[hor][vert] = new Pawn(colour, vert, hor, PAWN);
+		break;
 	case (EMPTY):
-		square[hor][vert] = new Piece(NONE, vert, hor, EMPTY);
+		board.square[hor][vert] = new Piece(NONE, vert, hor, EMPTY);
+		break;
 	}
 }
-Board board;
-pair<int, int> WhiteKingCoords = make_pair(0, 4);
+
+pair<int, int> WhiteKingCoords = make_pair(0, 4); // НЕ ЗАБУДЬ ВЕРНУТЬ НА (0, 4)
 pair<int, int> BlackKingCoords = make_pair(7, 4);
-Piece* CopySquare[8][8];
 
 Board* CreateBoard()
 {
@@ -107,11 +123,9 @@ Board* CreateBoard()
 
 void Board::PieceMoving(int vEnd, int hEnd, int vStart, int hStart)
 {
-	square[hEnd][vEnd] = square[hStart][vStart];
+	SetPiece(*(square[hStart][vStart]->GetColour()), hEnd, vEnd, *(square[hStart][vStart]->GetName()));
 	SetPiece(NONE, hStart, vStart, EMPTY);
 }
-
-
 
 bool CanMakeMove(vector<pair<int, int>>& PossibleMoves, bool& CanMove, pair<int, int> coords)
 {
@@ -159,6 +173,7 @@ pair<int, int> KingLikeBishop(pair<int, int> coords, int vEnd, int hEnd, int vSt
 
 pair<int, int> KingLikeRook(pair<int, int> coords, int vEnd, int hEnd, int vStart, int hStart, Colour kingColour)
 {
+	//cout << vEnd << hEnd << vStart << hStart << endl;
 	int sign = 1;
 	bool StartisV = true;
 	int End = vEnd;
@@ -173,12 +188,16 @@ pair<int, int> KingLikeRook(pair<int, int> coords, int vEnd, int hEnd, int vStar
 	Start += sign;
 	for (; abs(Start - End) >= 0 && Start < 8 && Start > -1; Start += sign)
 	{
+		//cout << "ABOBA" << endl;
 		if (StartisV)
 		{
+			//cout << *(board.square[hStart][Start]->GetName()) << endl;
 			if (*(board.square[hStart][Start]->GetName()) == ROOK || *(board.square[hStart][Start]->GetName()) == QUEEN)
 			{
+				
 				if (*(board.square[hStart][Start]->GetColour()) != kingColour)
 				{
+					
 					//cout << hStart << " " << vStart << endl;
 					coords.first = hStart;
 					coords.second = Start;
@@ -189,10 +208,13 @@ pair<int, int> KingLikeRook(pair<int, int> coords, int vEnd, int hEnd, int vStar
 		}
 		else
 		{
+			//cout << *(board.square[Start][vStart]->GetName()) << endl;
 			if (*(board.square[Start][vStart]->GetName()) == ROOK || *(board.square[Start][vStart]->GetName()) == QUEEN)
 			{
+				
 				if (*(board.square[Start][vStart]->GetColour()) != kingColour)
 				{
+					
 					coords.first = Start;
 					coords.second = vStart;
 					return coords;
@@ -200,6 +222,7 @@ pair<int, int> KingLikeRook(pair<int, int> coords, int vEnd, int hEnd, int vStar
 			}
 		}
 	}
+	//cout << endl;
 	return coords;
 }
 
@@ -225,15 +248,125 @@ bool KingLikeKnight(int vStart, int hStart, Colour kingColour)
 	return false;
 }
 
-bool CanCut(pair<int, int> coords, int hStart, int vStart, Colour colour)
+void KingProtected(pair<int, int> coords, int vStart, int hStart, vector<pair<int, int>>* PossibleMoves);
+
+void funkKnight(vector<pair<int, int>>* PossibleMoves, int vEnd, int hEnd, int vStart, int hStart, Colour colour, bool mode)
+{
+	if (Check(vEnd, hEnd) && *(board.square[hEnd][vEnd]->GetColour()) != colour)
+	{
+		PossibleMoves->push_back(make_pair(hEnd, vEnd));
+		if (mode)
+			KingProtected(make_pair(hEnd, vEnd), vStart, hStart, PossibleMoves);
+	}
+}
+
+void funkBishop(vector<pair<int, int>>* PossibleMoves, int vEnd, int hEnd, int vStart, int hStart, Colour colour, bool mode) // mode = true, если просто проверка ходов, mode = false, если внутри cancut
+{
+	int startH = hStart;
+	int startV = vStart;
+	int vsign = 1;
+	int hsign = 1;
+	if (vEnd < vStart) vsign = -1;
+	if (hEnd < hStart) hsign = -1;
+	vStart += vsign;
+	hStart += hsign;
+	std::pair<int, int> coords;
+	for (; abs(vStart - vEnd) >= 0 && vStart < 8 && vStart > -1 && hStart < 8 && hStart > -1; vStart += vsign, hStart += hsign)
+	{
+		if (*(board.square[hStart][vStart]->GetName()) != EMPTY)
+		{
+			if (*(board.square[hStart][vStart]->GetColour()) != colour) //&& *(board.square[hStart][vStart]->GetName()) != KING)
+			{
+				PossibleMoves->push_back(make_pair(hStart, vStart));
+				if (mode)
+					KingProtected(make_pair(hStart, vStart), startV, startH, PossibleMoves);
+			}
+			
+			break;
+		}
+		PossibleMoves->push_back(make_pair(hStart, vStart));
+		if (mode)
+			KingProtected(make_pair(hStart, vStart), startV, startH, PossibleMoves);
+	}
+}
+
+void funkRook(vector<pair<int, int>>* PossibleMoves, int vEnd, int hEnd, int vStart, int hStart, Colour colour, bool mode)
+{
+	if (Check(vEnd, hEnd) && Check(vStart, hStart))
+	{
+		int startV = vStart, startH = hStart;
+		int sign = 1;
+		bool StartisV = true;
+		int End = vEnd;
+		int Start = vStart;
+		if (vEnd == vStart)
+		{
+			End = hEnd;
+			Start = hStart;
+			StartisV = false;
+		}
+		if (End < Start) sign = -1;
+		Start += sign;
+		for (; abs(Start - End) >= 0 && Start < 8 && Start > -1; Start += sign)
+		{
+
+			if (StartisV)
+			{
+				if (*(board.square[hStart][Start]->GetName()) != EMPTY)
+				{
+					if (*(board.square[hStart][Start]->GetColour()) != colour) //&& *(board.square[hStart][Start]->GetName()) != KING)
+					{
+						PossibleMoves->push_back(make_pair(hStart, Start));
+						if (mode)
+							KingProtected(make_pair(hStart, Start), startV, startH, PossibleMoves);
+					}
+					break;
+				}
+				PossibleMoves->push_back(make_pair(hStart, Start));
+				if (mode)
+					KingProtected(make_pair(hStart, Start), startV, startH, PossibleMoves);
+			}
+			else
+			{
+				if (*(board.square[Start][vStart]->GetName()) != EMPTY)
+				{
+					if (*(board.square[Start][vStart]->GetColour()) != colour) //&& *(board.square[Start][vStart]->GetName()) != KING)
+					{
+						PossibleMoves->push_back(make_pair(Start, vStart));
+						if (mode)
+							KingProtected(make_pair(Start, vStart), startV, startH, PossibleMoves);
+					}
+					break;
+				}
+				PossibleMoves->push_back(make_pair(Start, vStart));
+				if (mode)
+					KingProtected(make_pair(Start, vStart), startV, startH, PossibleMoves);
+			}
+		}
+	}
+
+}
+
+bool CanCut(pair<int, int> coords, int hStart, int vStart, Colour colour, bool mode) // mode - работа с possible moves, false - с его копией
 {
 	if (Check(coords.first, coords.second))
 	{
-		
-		if (*(board.square[coords.first][coords.second])->GetName() != PAWN)
+		auto type = *(board.square[coords.first][coords.second])->GetName();
+		auto colour = *(board.square[coords.first][coords.second])->GetColour();
+		if (type != PAWN)
 		{
-			vector<pair<int, int>>* PossibleMovis = MakePossibleMoves(board.square[coords.first][coords.second]);
-			return (find(PossibleMovis->begin(), PossibleMovis->end(), make_pair(hStart, vStart)) != PossibleMovis->end());
+			//cout << *(board.square[coords.first][coords.second]->GetName()) << endl;
+			vector<pair<int, int>> PossibleMovis = *(board.square[coords.first][coords.second]->GetPossibleMoves());
+			if (type == KNIGHT)
+				funkKnight(&PossibleMovis, vStart, hStart, coords.second, coords.first, colour, false);
+			else
+			{
+				if (type == QUEEN || type == ROOK)
+					funkRook(&PossibleMovis, vStart, hStart, coords.second, coords.first, colour, false);
+				if (type == QUEEN || type == BISHOP)
+					funkBishop(&PossibleMovis, vStart, hStart, coords.second, coords.first, colour, false);
+			}
+			return (find(PossibleMovis.begin(), PossibleMovis.end(), make_pair(hStart, vStart)) != PossibleMovis.end());
 		}
 		int tmp = 1;
 		if (colour == BLACK)
@@ -263,10 +396,11 @@ pair<int, int>* GetEdge(int vStart, int hStart) // axis = 'h' - horizontal == 0,
 	return A;
 }
 
-bool HasCheck(int vStart, int hStart, Colour kingColour) //шах
+bool HasCheck(int vStart, int hStart, Colour kingColour, bool mode) //шах
 {
-	std::pair<int, int> coords(-1, -1);
+	std::pair<int, int> coords(-1, -1); // King = (4, 4): (0, 4), (7, 4), //(4, 0), //(4, 7)
 
+	//cout << vStart << " " << hStart << endl;
 	pair<int, int> coord1 = KingLikeRook(coords, vStart, 7, vStart, hStart, kingColour);
 	pair<int, int> coord2 = KingLikeRook(coords, vStart, 0, vStart, hStart, kingColour);
 	pair<int, int> coord3 = KingLikeRook(coords, 0, hStart, vStart, hStart, kingColour);
@@ -279,17 +413,27 @@ bool HasCheck(int vStart, int hStart, Colour kingColour) //шах
 	pair<int, int> coord7 = KingLikeBishop(coords, A[2].first, A[2].second, vStart, hStart, kingColour);
 	pair<int, int> coord8 = KingLikeBishop(coords, A[3].first, A[3].second, vStart, hStart, kingColour);
 
-	if (!CanCut(coord1, hStart, vStart, kingColour) && !CanCut(coord2, hStart, vStart, kingColour) && !CanCut(coord3, hStart, vStart, kingColour)
-		&& !CanCut(coord4, hStart, vStart, kingColour) && !CanCut(coord5, hStart, vStart, kingColour) && !CanCut(coord6, hStart, vStart, kingColour)
-		&& !CanCut(coord7, hStart, vStart, kingColour) && !CanCut(coord8, hStart, vStart, kingColour) && !KingLikeKnight(vStart, hStart, kingColour))
+	if (!CanCut(coord1, hStart, vStart, kingColour, mode) && !CanCut(coord2, hStart, vStart, kingColour, mode) && !CanCut(coord3, hStart, vStart, kingColour, mode)
+		&& !CanCut(coord4, hStart, vStart, kingColour, mode) && !CanCut(coord5, hStart, vStart, kingColour, mode) && !CanCut(coord6, hStart, vStart, kingColour, mode)
+		&& !CanCut(coord7, hStart, vStart, kingColour, mode) && !CanCut(coord8, hStart, vStart, kingColour, mode) && !KingLikeKnight(vStart, hStart, kingColour))
 	{
-		for (int i = 0; i < 8; i++)
+		/*cout << CanCut(coord1, hStart, vStart, kingColour) << endl;
+		cout << CanCut(coord2, hStart, vStart, kingColour) << endl;
+		cout << CanCut(coord3, hStart, vStart, kingColour) << endl;
+		cout << CanCut(coord4, hStart, vStart, kingColour) << endl;
+		cout << CanCut(coord5, hStart, vStart, kingColour) << endl;
+		cout << CanCut(coord6, hStart, vStart, kingColour) << endl;
+		cout << CanCut(coord7, hStart, vStart, kingColour) << endl;
+		cout << CanCut(coord8, hStart, vStart, kingColour) << endl;
+		cout << KingLikeKnight(vStart, hStart, kingColour) << endl;*/
+
+		/*for (int i = 0; i < 8; i++)
 		{
 			for (int j = 0; j < 8; j++)
 				cout << *(board.square[i][j]->GetName()) << " ";
 			cout << endl;
 		}
-		cout << endl;
+		cout << endl;*/
 		return false;
 	}
 
@@ -317,23 +461,23 @@ void MakeCastling(vector<pair<int, int>>& PossibleMoves, int vEnd, int vStart, i
 	}
 }
 
-void FindPossibleMovesForKing(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour)
+void FindPossibleMovesForKing(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour, bool mode)
 {
-	if (Check(vStart, hStart + 1) && !HasCheck(vStart, hStart + 1, colour) && *(board.square[hStart + 1][vStart]->GetColour()) != colour)
+	if (Check(vStart, hStart + 1) && !HasCheck(vStart, hStart + 1, colour, mode) && *(board.square[hStart + 1][vStart]->GetColour()) != colour)
 		PossibleMoves->push_back(make_pair(hStart + 1, vStart));
-	if (Check(vStart, hStart - 1) && !HasCheck(vStart, hStart - 1, colour) && *(board.square[hStart - 1][vStart]->GetColour()) != colour)
+	if (Check(vStart, hStart - 1) && !HasCheck(vStart, hStart - 1, colour, mode) && *(board.square[hStart - 1][vStart]->GetColour()) != colour)
 		PossibleMoves->push_back(make_pair(hStart - 1, vStart));
-	if (Check(vStart - 1, hStart) && !HasCheck(vStart - 1, hStart, colour) && *(board.square[hStart][vStart - 1]->GetColour()) != colour)
+	if (Check(vStart - 1, hStart) && !HasCheck(vStart - 1, hStart, colour, mode) && *(board.square[hStart][vStart - 1]->GetColour()) != colour)
 		PossibleMoves->push_back(make_pair(hStart, vStart - 1));
-	if (Check(vStart + 1, hStart) && !HasCheck(vStart + 1, hStart, colour) && *(board.square[hStart][vStart + 1]->GetColour()) != colour)
+	if (Check(vStart + 1, hStart) && !HasCheck(vStart + 1, hStart, colour, mode) && *(board.square[hStart][vStart + 1]->GetColour()) != colour)
 		PossibleMoves->push_back(make_pair(hStart, vStart + 1));
-	if (Check(vStart + 1, hStart + 1) && !HasCheck(vStart + 1, hStart + 1, colour) && *(board.square[hStart + 1][vStart + 1]->GetColour()) != colour)
+	if (Check(vStart + 1, hStart + 1) && !HasCheck(vStart + 1, hStart + 1, colour, mode) && *(board.square[hStart + 1][vStart + 1]->GetColour()) != colour)
 		PossibleMoves->push_back(make_pair(hStart + 1, vStart + 1));
-	if (Check(vStart - 1, hStart + 1) && !HasCheck(vStart - 1, hStart + 1, colour) && *(board.square[hStart + 1][vStart - 1]->GetColour()) != colour)
+	if (Check(vStart - 1, hStart + 1) && !HasCheck(vStart - 1, hStart + 1, colour, mode) && *(board.square[hStart + 1][vStart - 1]->GetColour()) != colour)
 		PossibleMoves->push_back(make_pair(hStart + 1, vStart - 1));
-	if (Check(vStart + 1, hStart - 1) && !HasCheck(vStart + 1, hStart - 1, colour) && *(board.square[hStart - 1][vStart + 1]->GetColour()) != colour)
+	if (Check(vStart + 1, hStart - 1) && !HasCheck(vStart + 1, hStart - 1, colour, mode) && *(board.square[hStart - 1][vStart + 1]->GetColour()) != colour)
 		PossibleMoves->push_back(make_pair(hStart - 1, vStart + 1));
-	if (Check(vStart - 1, hStart - 1) && !HasCheck(vStart - 1, hStart - 1, colour) && *(board.square[hStart - 1][vStart - 1]->GetColour()) != colour)
+	if (Check(vStart - 1, hStart - 1) && !HasCheck(vStart - 1, hStart - 1, colour, mode) && *(board.square[hStart - 1][vStart - 1]->GetColour()) != colour)
 		PossibleMoves->push_back(make_pair(hStart - 1, vStart - 1));
 	//рокировка
 		//if (/*board.square[hStart][vStart]->getFirstMove() == false &&*/ !HasCheck(vStart, hStart, colour))
@@ -345,146 +489,91 @@ void FindPossibleMovesForKing(vector<pair<int, int>>* PossibleMoves, int vStart,
 		//}
 }
 
-void funkKnight(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, Colour colour)
-{
-	if (Check(vEnd, hEnd) && *(board.square[hEnd][vEnd]->GetColour()) != colour && *(board.square[hEnd][vEnd]->GetName()) != KING)
-		PossibleMoves.push_back(make_pair(hEnd, vEnd));
-}
-
-void FindPossibleMovesForKnight(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, Colour colour)
-{
-	funkKnight(PossibleMoves, vStart - 1, hStart - 2, colour);
-	funkKnight(PossibleMoves, vStart - 1, hStart + 2, colour);
-	funkKnight(PossibleMoves, vStart + 1, hStart - 2, colour);
-	funkKnight(PossibleMoves, vStart + 1, hStart + 2, colour);
-	funkKnight(PossibleMoves, vStart - 2, hStart - 1, colour);
-	funkKnight(PossibleMoves, vStart - 2, hStart + 1, colour);
-	funkKnight(PossibleMoves, vStart + 2, hStart - 1, colour);
-	funkKnight(PossibleMoves, vStart + 2, hStart + 1, colour);
-}
-
-bool KingProtected(pair<int, int> coords, int vStart, int hStart)
-{
-	for (int i = 0; i < 8; i++)
-		for (int j = 0; j < 8; j++)
-			CopySquare[i][j] = board.square[i][j];
-	/*for (int i = 0; i < 8; i++)
+void KingProtected(pair<int, int> coords, int vStart, int hStart, vector<pair<int, int>>* PossibleMoves)
+{	
+	if (coords.first != hStart || coords.second != vStart)
 	{
-		for (int j = 0; j < 8; j++)
-			cout << *(board.square[i][j]->GetName()) << " ";
-		cout << endl;
-	}*/
-	/*cout << endl;*/
-	board.PieceMoving(coords.second, coords.first, vStart, hStart);
-	auto colour = *(board.square[coords.first][coords.second]->GetColour());
-	pair<int, int> kingCoords;
-	if (colour == WHITE)
-		kingCoords = WhiteKingCoords;
-	else
-		kingCoords = BlackKingCoords;
-	bool hasCheck = HasCheck(kingCoords.second, kingCoords.first, colour);
-	/*for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-			cout << *(board.square[i][j]->GetName()) << " ";
-		cout << endl;
-	}
-	cout << endl;*/
-	cout << hasCheck << endl;
-	cout << endl;
-	//board.PieceMoving(vStart, hStart, coords.second, coords.first);
-	for (int i = 0; i < 8; i++)
-		for (int j = 0; j < 8; j++)
-			board.square[i][j] = CopySquare[i][j];
-	/*for (int i = 0; i < 8; i++)
-	{
-		for (int j = 0; j < 8; j++)
-			cout << *(board.square[i][j]->GetName()) << " ";
-		cout << endl;
-	}
-	cout << endl;*/
-	if (hasCheck)
-		return true;
-	return false;
-}
-
-void funkBishop(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, int vStart, int hStart, Colour colour)
-{
-	int vsign = 1;
-	int hsign = 1;
-	if (vEnd < vStart) vsign = -1;
-	if (hEnd < hStart) hsign = -1;
-	vStart += vsign;
-	hStart += hsign;
-	std::pair<int, int> coords;
-	for (; abs(vStart - vEnd) >= 0 && vStart < 8 && vStart > -1 && hStart < 8 && hStart > -1; vStart += vsign, hStart += hsign)
-	{
-		if (*(board.square[hStart][vStart]->GetName()) != EMPTY)
+		Piece*** Copy = new Piece **[8];
+		for (int i = 0; i < 8; i++)
 		{
-			if (*(board.square[hStart][vStart]->GetColour()) != colour && *(board.square[hStart][vStart]->GetName()) != KING)
-				PossibleMoves.push_back(make_pair(hStart, vStart));
-			break;
+			Copy[i] = new Piece * [8];
+			for (int j = 0; j < 8; j++)
+				Copy[i][j] = board.square[i][j];
 		}
-		PossibleMoves.push_back(make_pair(hStart, vStart));
-	}
-}
 
-void funkRook(vector<pair<int, int>>& PossibleMoves, int vEnd, int hEnd, int vStart, int hStart, Colour colour)
-{
-	int sign = 1;
-	bool StartisV = true;
-	int End = vEnd;
-	int Start = vStart;
-	if (vEnd == vStart)
-	{
-		End = hEnd;
-		Start = hStart;
-		StartisV = false;
-	}
-	if (End < Start) sign = -1;
-	Start += sign;
-	for (; abs(Start - End) >= 0 && Start < 8 && Start > -1; Start += sign)
-	{
+		board.SetPiece(*(board.square[hStart][vStart]->GetColour()), coords.first, coords.second, *(board.square[hStart][vStart]->GetName()));
+		board.SetPiece(NONE, hStart, vStart, EMPTY);
 
-		if (StartisV)
+		/*for (int i = 0; i < 8; i++)
 		{
-			if (*(board.square[hStart][Start]->GetName()) != EMPTY)
+			for (int j = 0; j < 8; j++)
 			{
-				if (*(board.square[hStart][Start]->GetColour()) != colour && *(board.square[hStart][Start]->GetName()) != KING)
-					PossibleMoves.push_back(make_pair(hStart, Start));
-				break;
+				cout << *(board.square[i][j]->GetName()) << " ";
 			}
-			PossibleMoves.push_back(make_pair(hStart, Start));
+			cout << endl;
 		}
+		cout << coords.first << coords.second << endl;
+		cout << endl;*/
+
+		auto colour = *(board.square[coords.first][coords.second]->GetColour());
+		pair<int, int> kingCoords;
+		if (colour == WHITE)
+			kingCoords = WhiteKingCoords;
 		else
+			kingCoords = BlackKingCoords;
+		bool hasCheck = HasCheck(kingCoords.second, kingCoords.first, colour, 0);
+		//cout << hasCheck << endl;
+
+		for (int i = 0; i < 8; i++)
 		{
-			if (*(board.square[Start][vStart]->GetName()) != EMPTY)
-			{
-				if (*(board.square[Start][vStart]->GetColour()) != colour && *(board.square[Start][vStart]->GetName()) != KING)
-					PossibleMoves.push_back(make_pair(Start, vStart));
-				break;
-			}
-			PossibleMoves.push_back(make_pair(Start, vStart));
+			for (int j = 0; j < 8; j++)
+				board.square[i][j] = Copy[i][j];
+			delete[] Copy[i];
 		}
+		/*for (int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				cout << *(board.square[i][j]->GetName()) << " ";
+			}
+			cout << endl;
+		}
+		cout << coords.first << coords.second << endl;
+		cout << endl;*/
+		if (hasCheck)
+			PossibleMoves->pop_back();
 	}
 }
 
-void FindPossibleMovesForRook(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, Colour colour)
+void FindPossibleMovesForKnight(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour)
 {
-	funkRook(PossibleMoves, vStart, 7, vStart, hStart, colour);
-	funkRook(PossibleMoves, vStart, 0, vStart, hStart, colour);
-	funkRook(PossibleMoves, 0, hStart, vStart, hStart, colour);
-	funkRook(PossibleMoves, 7, hStart, vStart, hStart, colour);
+	funkKnight(PossibleMoves, vStart - 1, hStart - 2, vStart, hStart, colour, true);
+	funkKnight(PossibleMoves, vStart - 1, hStart + 2, vStart, hStart, colour, true);
+	funkKnight(PossibleMoves, vStart + 1, hStart - 2, vStart, hStart, colour, true);
+	funkKnight(PossibleMoves, vStart + 1, hStart + 2, vStart, hStart, colour, true);
+	funkKnight(PossibleMoves, vStart - 2, hStart - 1, vStart, hStart, colour, true);
+	funkKnight(PossibleMoves, vStart - 2, hStart + 1, vStart, hStart, colour, true);
+	funkKnight(PossibleMoves, vStart + 2, hStart - 1, vStart, hStart, colour, true);
+	funkKnight(PossibleMoves, vStart + 2, hStart + 1, vStart, hStart, colour, true);
 }
 
-void FindPossibleMovesForBishop(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, Colour colour)
+void FindPossibleMovesForRook(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour)
+{
+	funkRook(PossibleMoves, vStart, 7, vStart, hStart, colour, true); // тут может быть больше 1 клетки
+	funkRook(PossibleMoves, vStart, 0, vStart, hStart, colour, true);
+	funkRook(PossibleMoves, 0, hStart, vStart, hStart, colour, true);
+	funkRook(PossibleMoves, 7, hStart, vStart, hStart, colour, true);
+}
+
+void FindPossibleMovesForBishop(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour)
 {
 	pair<int, int>* A = GetEdge(vStart, hStart);
 	for (int i = 0; i < 4; i++)
-		funkBishop(PossibleMoves, A[i].second, A[i].first, vStart, hStart, colour);
+		if (Check(A[i].second, A[i].first))
+			funkBishop(PossibleMoves, A[i].second, A[i].first, vStart, hStart, colour, true);
 }
 
-void FindPossibleMovesForQueen(vector<pair<int, int>>& PossibleMoves, int vStart, int hStart, Colour colour)
+void FindPossibleMovesForQueen(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour)
 {
 	FindPossibleMovesForRook(PossibleMoves, vStart, hStart, colour);
 	FindPossibleMovesForBishop(PossibleMoves, vStart, hStart, colour);
@@ -492,101 +581,96 @@ void FindPossibleMovesForQueen(vector<pair<int, int>>& PossibleMoves, int vStart
 
 void FindPossibleMovesForPawn(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour, int MoveCount)
 {
-	bool canMove = true;
 	int tmp = 1;
 	if (colour == BLACK)
 		tmp *= -1;
-	if (canMove && Check(vStart, hStart + tmp) && *(board.square[hStart + tmp][vStart]->GetColour()) == NONE && *(board.square[hStart + tmp][vStart]->GetName()) != KING)
+	if (Check(vStart, hStart + tmp) && *(board.square[hStart + tmp][vStart]->GetColour()) == NONE) //&& *(board.square[hStart + tmp][vStart]->GetName()) != KING)
 	{
 		PossibleMoves->push_back(make_pair(hStart + tmp, vStart));
-		if (KingProtected(make_pair(hStart + tmp, vStart), vStart, hStart))
-		{
-			canMove = false;
-			PossibleMoves->clear();
-		}
+		KingProtected(make_pair(hStart + tmp, vStart), vStart, hStart, PossibleMoves);
 	}
-	if (canMove && Check(vStart + tmp, hStart + tmp) && *(board.square[hStart + tmp][vStart + tmp]->GetColour()) != NONE && (*(board.square[hStart + tmp][vStart + tmp]->GetColour())) != colour && *(board.square[hStart + tmp][vStart + tmp]->GetName()) != KING)
+	if (Check(vStart + tmp, hStart + tmp) && *(board.square[hStart + tmp][vStart + tmp]->GetColour()) != NONE && (*(board.square[hStart + tmp][vStart + tmp]->GetColour())) != colour) //&& *(board.square[hStart + tmp][vStart + tmp]->GetName()) != KING)
 	{
 		PossibleMoves->push_back(make_pair(hStart + tmp, vStart + tmp));
-		if (KingProtected(make_pair(hStart + tmp, vStart + tmp), vStart, hStart))
-		{
-			canMove = false;
-			PossibleMoves->clear();
-		}
+		KingProtected(make_pair(hStart + tmp, vStart + tmp), vStart, hStart, PossibleMoves);
+		
 	}
-	if (canMove && Check(vStart - tmp, hStart + tmp) && *(board.square[hStart + tmp][vStart - tmp]->GetColour()) != NONE && (*(board.square[hStart + tmp][vStart - tmp]->GetColour())) != colour && *(board.square[hStart + tmp][vStart - tmp]->GetName()) != KING)
+	if (Check(vStart - tmp, hStart + tmp) && *(board.square[hStart + tmp][vStart - tmp]->GetColour()) != NONE && (*(board.square[hStart + tmp][vStart - tmp]->GetColour())) != colour) //&& *(board.square[hStart + tmp][vStart - tmp]->GetName()) != KING)
 	{
 		PossibleMoves->push_back(make_pair(hStart + tmp, vStart - tmp));
-		if (KingProtected(make_pair(hStart + tmp, vStart - tmp), vStart, hStart))
-		{
-			canMove = false;
-			PossibleMoves->clear();
-		}
+		KingProtected(make_pair(hStart + tmp, vStart - tmp), vStart, hStart, PossibleMoves);
+		
 	}
-	if (canMove && MoveCount == 0)
+	if (MoveCount == 0)
 	{
+		cout << *(board.square[hStart][vStart]->getMoveCount()) << endl;
 		tmp *= 2;
-		if (*(board.square[hStart + tmp][vStart]->GetColour()) == NONE && *(board.square[hStart + tmp][vStart]->GetName()) != KING)
+		if (*(board.square[hStart + tmp][vStart]->GetColour()) == NONE)// && *(board.square[hStart + tmp][vStart]->GetName()) != KING)
 		{
 			PossibleMoves->push_back(make_pair(hStart + tmp, vStart));
-			if (KingProtected(make_pair(hStart + tmp, vStart), vStart, hStart))
-			{
-				canMove = false;
-				PossibleMoves->clear();
-			}
+			KingProtected(make_pair(hStart + tmp, vStart), vStart, hStart, PossibleMoves);
 		}
 	}
 
 }
 
-vector<pair<int, int>>* MakePossibleMoves(Piece* piece)
+vector<pair<int, int>>* MakePossibleMoves(Piece* piece, bool Mode)// режим работы: напрямую с массивом ходов или с его копией: true - напрямую, false - копия
 {
-	vector<pair<int, int>>* vector1 = piece->GetPossibleMoves();
+	vector<pair<int, int>>* vector1;
+	vector<pair<int, int>> vector2;
+	if (Mode)
+	{
+		piece->GetPossibleMoves()->clear();
+		vector1 = piece->GetPossibleMoves();
+	}
+	else
+	{
+		for (int i = 0; i < piece->GetPossibleMoves()->size(); i++)
+			vector2.push_back((*(piece->GetPossibleMoves()))[0]);
+		vector1 = &vector2;
+			
+	}
 	Colour* colour = piece->GetColour();
 	int* hor = piece->GetHor();
 	int* vert = piece->GetVert();
 	TypePiece* type = piece->GetName();
-	vector1->clear();
 	switch (*type)
 	{
 	case (KING):
-		FindPossibleMovesForKing(vector1, *vert, *hor, *colour);
-		return piece->GetPossibleMoves();
+		FindPossibleMovesForKing(vector1, *vert, *hor, *colour, Mode);
+		return vector1;
+		break;
 	case (QUEEN):
-		FindPossibleMovesForQueen(*vector1, *vert, *hor, *colour);
-		return piece->GetPossibleMoves();
+		FindPossibleMovesForQueen(vector1, *vert, *hor, *colour);
+		return vector1;
+		break;
 	case(BISHOP):
-		FindPossibleMovesForBishop(*vector1, *vert, *hor, *colour);
-		return piece->GetPossibleMoves();
+		FindPossibleMovesForBishop(vector1, *vert, *hor, *colour);
+		return vector1;
+		break;
 	case(KNIGHT):
-		FindPossibleMovesForKnight(*vector1, *vert, *hor, *colour);
-		return piece->GetPossibleMoves();
+		FindPossibleMovesForKnight(vector1, *vert, *hor, *colour);
+		return vector1;
+		break;
 	case(ROOK):
-		FindPossibleMovesForRook(*vector1, *vert, *hor, *colour);
-		return piece->GetPossibleMoves();
+		FindPossibleMovesForRook(vector1, *vert, *hor, *colour);
+		return vector1;
+		break;
 	case(PAWN):
 		FindPossibleMovesForPawn(vector1, *vert, *hor, *colour, *(piece->getMoveCount()));
-		return piece->GetPossibleMoves();
+		return vector1;
+		break;
 	case (EMPTY):
 		return vector1;
+		break;
 	}
-}
-
-void Board::SetSquare(int hor, int vert)
-{
-
-}
-
-void TurningAPawn()
-{
-
 }
 
 bool Board::move(int vert, int hor, Colour col, Piece* piece)
 {
 	Colour* colour = piece->GetColour();
 	TypePiece* type = piece->GetName();
-	auto PossibleMoves = piece->GetPossibleMoves();
+	auto PossibleMoves = MakePossibleMoves(piece, 1);
 	bool* canMove = piece->GetCanMove();
 	auto vertical = piece->GetVert();
 	int* horizontal = piece->GetHor();
@@ -594,7 +678,6 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 	switch (*type)
 	{
 	case (KING):
-		FindPossibleMovesForKing(PossibleMoves, *vertical, *horizontal, *colour);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(*PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			//добавить перемещение ладьи при рокировке
@@ -609,8 +692,8 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case (QUEEN):
-		FindPossibleMovesForQueen(*PossibleMoves, *vertical, *horizontal, *colour);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(*PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
@@ -620,8 +703,8 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case(BISHOP):
-		FindPossibleMovesForBishop(*PossibleMoves, *vertical, *horizontal, *colour);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(*PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
@@ -631,8 +714,8 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case(KNIGHT):
-		FindPossibleMovesForKnight(*PossibleMoves, *vertical, *horizontal, *colour);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(*PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
@@ -642,8 +725,8 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case(ROOK):
-		FindPossibleMovesForRook(*PossibleMoves, *(piece->GetVert()), *(piece->GetHor()), *colour);
 		if (canMove && col == NONE && Check(vert, hor) && CanMakeMove(*PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
@@ -653,8 +736,8 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case(PAWN):
-		FindPossibleMovesForPawn(PossibleMoves, *vertical, *horizontal, *colour, *MoveCount);
 		if (col == NONE && Check(vert, hor) && CanMakeMove(*PossibleMoves, *canMove, make_pair(hor, vert)))//-Check -col
 		{
 			board.PieceMoving(vert, hor, *vertical, *horizontal);
@@ -664,8 +747,10 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case (EMPTY):
 		return false;
+		break;
 	}
 }
 
@@ -683,7 +768,6 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 	switch (*type)
 	{
 	case (KING):
-		FindPossibleMovesForKing(&PossibleMoves, *vertical, *horizontal, *colour);
 		if (*colour != col && CanMakeMove(PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			int newHor = hor;
@@ -699,12 +783,12 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case (QUEEN):
 		if (vert < *vertical) vsign = -1;
 		if (vert == *vertical) vsign = 0;
 		if (hor < *horizontal) hsign = -1;
 		if (hor == *horizontal) hsign = 0;
-		FindPossibleMovesForQueen(PossibleMoves, *vertical, *horizontal, *colour);
 		if (*colour != col && CanMakeMove(PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			int newHor = hor;
@@ -716,11 +800,10 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case(BISHOP):
 		if (vert < *vertical) vsign = -1;
 		if (hor < *horizontal) hsign = -1;
-		//PossibleMoves.clear();
-		FindPossibleMovesForBishop(PossibleMoves, *vertical, *horizontal, *colour);
 		if (*colour != col && CanMakeMove(PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			int newHor = hor;
@@ -732,8 +815,8 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case(KNIGHT):
-		FindPossibleMovesForKnight(PossibleMoves, *vertical, *horizontal, *colour);
 		if (*colour != col && CanMakeMove(PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			int newHor = hor;
@@ -745,13 +828,12 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case(ROOK):
 		if (vert < *vertical) vsign = -1;
 		if (vert == *vertical) vsign = 0;
 		if (hor < *horizontal) hsign = -1;
 		if (hor == *horizontal) hsign = 0;
-		//PossibleMoves.clear();
-		FindPossibleMovesForRook(PossibleMoves, *vertical, *horizontal, *colour);
 		if (*colour != col && CanMakeMove(PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			int newHor = hor;
@@ -763,8 +845,8 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			return true;
 		}
 		return false;
+		break;
 	case(PAWN):
-		FindPossibleMovesForPawn(&PossibleMoves, *vertical, *horizontal, *colour, *MoveCount);
 		if (*colour != col && CanMakeMove(PossibleMoves, *canMove, make_pair(hor, vert)))
 		{
 			int newHor = hor;
@@ -777,7 +859,9 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 			//взятие на проходе
 		}
 		return false;
+		break;
 	case (EMPTY):
 		return false;
+		break;
 	}
 }
