@@ -955,7 +955,21 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 	}
 }
 
-//bool CheckmateAndPat(vector<pair<int, int>>* PossibleMoves)
-//{
-//	
-//}
+bool Pat(Colour colour)
+{
+	for (int i = 0; i < 8; i++)
+		for (int j = 0; j < 8; j++)
+			if (board.square[i][j]->GetPossibleMoves()->size() != 0 && *(board.square[i][j]->GetColour()) == colour)
+				return false;
+
+
+	pair<int, int> coordsKing; // мат
+	if (colour == BLACK)
+		coordsKing = BlackKingCoords;
+	else
+		coordsKing = WhiteKingCoords;
+	if (HasCheck(coordsKing.second, coordsKing.first, colour, false) && Pat(colour))
+		return true;
+
+	return true;
+}
