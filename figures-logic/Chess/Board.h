@@ -961,8 +961,11 @@ bool Pat(Colour colour)
 		for (int j = 0; j < 8; j++)
 			if (board.square[i][j]->GetPossibleMoves()->size() != 0 && *(board.square[i][j]->GetColour()) == colour)
 				return false;
+	return true;
+}
 
-
+bool Checkmate(Colour colour)
+{
 	pair<int, int> coordsKing; // мат
 	if (colour == BLACK)
 		coordsKing = BlackKingCoords;
@@ -970,6 +973,4 @@ bool Pat(Colour colour)
 		coordsKing = WhiteKingCoords;
 	if (HasCheck(coordsKing.second, coordsKing.first, colour, false) && Pat(colour))
 		return true;
-
-	return true;
 }
