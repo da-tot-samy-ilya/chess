@@ -83,7 +83,7 @@ void loadTexures() {
 	green_white_square.loadFromFile("images/green_white_texture.png");
 	font.loadFromFile("images/Roboto-Bold.ttf");
 	ok_button_texture.loadFromFile("images/enter_ip_ok.png");
-	cry_cat_texture.loadFromFile("images/cry_cat.png");	
+	cry_cat_texture.loadFromFile("images/cry_cat.png");
 	laughing_cat_texture.loadFromFile("images/laughing_cat.png");
 	naughty_cat_texture.loadFromFile("images/naughty_cat.png");
 	check_info_texture.loadFromFile("images/check_info.png");
@@ -96,7 +96,7 @@ string IP = "";
 string  t = "";
 enum IsChoosingMove { CHOOSING_MOVE, NOT_CHOOSING_MOVE };
 enum ColorOfSquare { RED, GREEN, YELLOW, NONE_COLOR };
-enum GameResult {WIN, LOSE, DRAW};
+enum GameResult { WIN, LOSE, DRAW };
 
 class Button {
 public:
@@ -260,16 +260,16 @@ void CreateIpWindow(Colour* a) {
 void CreateChooseFigureWindow(int y, int x, Board* board) {
 	Piece* chooseFigures[4];
 	if (y == 0) {
-		chooseFigures[0] = new Queen(BLACK, 0, 0, QUEEN);
-		chooseFigures[1] = new Rook(BLACK, 0, 0, ROOK);
-		chooseFigures[2] = new Knight(BLACK, 0, 0, KNIGHT);
-		chooseFigures[3] = new Bishop(BLACK, 0, 0, BISHOP);
+		chooseFigures[0] = new Queen(BLACK, 0, 0, QUEEN, 0);
+		chooseFigures[1] = new Rook(BLACK, 0, 0, ROOK, 0);
+		chooseFigures[2] = new Knight(BLACK, 0, 0, KNIGHT, 0);
+		chooseFigures[3] = new Bishop(BLACK, 0, 0, BISHOP, 0);
 	}
 	else if (y == 7) {
-		chooseFigures[0] = new Queen(WHITE, 0, 0, QUEEN);
-		chooseFigures[1] = new Rook(WHITE, 0, 0, ROOK);
-		chooseFigures[2] = new Knight(WHITE, 0, 0, KNIGHT);
-		chooseFigures[3] = new Bishop(WHITE, 0, 0, BISHOP);
+		chooseFigures[0] = new Queen(WHITE, 0, 0, QUEEN, 0);
+		chooseFigures[1] = new Rook(WHITE, 0, 0, ROOK, 0);
+		chooseFigures[2] = new Knight(WHITE, 0, 0, KNIGHT, 0);
+		chooseFigures[3] = new Bishop(WHITE, 0, 0, BISHOP, 0);
 	}
 	Colour color = *(chooseFigures[0]->GetColour());
 	for (int i = 0; i < 4; ++i) {
@@ -308,16 +308,16 @@ void CreateChooseFigureWindow(int y, int x, Board* board) {
 					TypePiece type = *(chooseFigures[cursor_x]->GetName());
 					switch (type) {
 					case (QUEEN):
-						board->square[y][x] = new Queen(color, x, y, type);
+						board->square[y][x] = new Queen(color, x, y, type, 0);
 						break;
 					case(BISHOP):
-						board->square[y][x] = new Bishop(color, x, y, type);
+						board->square[y][x] = new Bishop(color, x, y, type, 0);
 						break;
 					case(KNIGHT):
-						board->square[y][x] = new Knight(color, x, y, type);
+						board->square[y][x] = new Knight(color, x, y, type, 0);
 						break;
 					case(ROOK):
-						board->square[y][x] = new Rook(color, x, y, type);
+						board->square[y][x] = new Rook(color, x, y, type, 0);
 						break;
 					}
 					choose_figure_window.close();
@@ -332,7 +332,7 @@ void CreateChooseFigureWindow(int y, int x, Board* board) {
 		choose_figure_window.display();
 	}
 }
-void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* board, IsChoosingMove& IS_CHOOSING_MOVE, std::vector<std::pair<int, int>>& temp_pieceGetPossibleMoves, Piece* piece_wants_to_move, Colour& IS_NOW_PLAYING)  {
+void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* board, IsChoosingMove& IS_CHOOSING_MOVE, std::vector<std::pair<int, int>>& temp_pieceGetPossibleMoves, Piece* piece_wants_to_move, Colour& IS_NOW_PLAYING) {
 	RenderWindow result_window(VideoMode(200, 100), "Result", Style::Default);
 	Sprite background_sprite;
 	background_sprite.setTexture(aside_texture);
@@ -360,7 +360,7 @@ void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* 
 		cat.setTexture(laughing_cat_texture);
 	}
 	else if (result == LOSE) {
-		result_header.setString("You lose!"); 
+		result_header.setString("You lose!");
 		result_header.setFillColor(Color::Color(251, 94, 94));
 		cat.setTexture(cry_cat_texture);
 	}
@@ -394,7 +394,7 @@ void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* 
 							}
 						}
 					}
-					
+
 				}
 			}
 		}
@@ -487,7 +487,7 @@ int main() {
 			second_hor = msg[1] % 8;
 			second_vert = msg[1] / 8;
 			piece_wants_to_move = board->square[first_vert][first_hor];
-			
+
 			Piece* piece = board->square[second_vert][second_hor];
 			if (*(piece->GetName()) == EMPTY) {
 				board->move(second_hor, second_vert, *(piece->GetColour()), piece_wants_to_move);
@@ -558,7 +558,7 @@ int main() {
 								}
 								else if (buttons_main_window[i].name == "enter_ip") {
 									CreateIpWindow(&IS_NOW_PLAYING);
-									
+
 									cout << "Enter ip\n";
 								}
 							}
@@ -620,7 +620,7 @@ int main() {
 									//squares backlight red with onclick
 									piece_wants_to_move = piece;
 									colorSquare(piece, cursor_x_for_board, cursor_y_for_board, RED);
-									std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece);
+									std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece, true);
 
 									if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
 										//убираем возможные ходы предыдущего выбора фигуры
@@ -709,7 +709,7 @@ int main() {
 		window.draw(numbers.sprite);
 		window.draw(letters.sprite);
 		window.draw(check_info.sprite);
-		
+
 		for (int i = 0; i < 8; ++i) {
 			for (int j = 0; j < 8; ++j) {
 				Piece* piece = board->square[i][j];

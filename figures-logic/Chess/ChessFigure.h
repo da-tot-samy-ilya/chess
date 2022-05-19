@@ -19,15 +19,17 @@ protected:
     int vertical; // буквы
     int horizontal;// цифры
     bool canMove = true;
-    int moveCount = 0;
+    int moveCount;
     std::vector<std::pair<int, int>> PossibleMoves;
+    pair<int, int> castling = make_pair(-1, -1); 
+    pair<int, int> captureEnPassant = make_pair(-1, -1);
 public:
     Vector2f bPosition;
     IntRect bSprite;
     Sprite figure_sprite;
     Sprite square_sprite;
-    Piece() : colour(NONE), vertical(-1), horizontal(-1), type_piece(EMPTY){};
-    Piece(Colour colour, int vert, int hor, TypePiece type) : colour(colour), vertical(vert), horizontal(hor), type_piece(type) {};
+    Piece() : colour(NONE), vertical(-1), horizontal(-1), type_piece(EMPTY), moveCount(-1) {};
+    Piece(Colour colour, int vert, int hor, TypePiece type, int move) : colour(colour), vertical(vert), horizontal(hor), type_piece(type), moveCount(move) {};
     Piece(Piece& f)
     {
         colour = f.colour;
@@ -36,9 +38,18 @@ public:
     };
     virtual int* getMoveCount() { return &(this->moveCount); }// move(Piece &t) in Board
 
+    pair<int, int>* isMackingCastling() { return  &(this->castling); }
+    pair<int, int>* isCaptureEnPassant() { return &(this->captureEnPassant); }
+
     Colour* GetColour() { return &(this->colour); };
     int* GetVert() { return &(this->vertical); };
     int* GetHor() { return &(this->horizontal); };
+    void SetCoords(pair<int, int> a)
+    {
+        vertical = a.second;
+        horizontal = a.first;
+    }
+
     TypePiece* GetName() { return &(this->type_piece); };
     IsChosenForMove GetIsChosenForMove() {
         return is_choosen_for_move;
