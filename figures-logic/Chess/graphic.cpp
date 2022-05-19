@@ -290,17 +290,17 @@ void CreateChooseFigureWindow(int y, int x, Board* board)
 	Piece* chooseFigures[4];
 	if (y == 0)
 	{
-		chooseFigures[0] = new Queen(BLACK, 0, 0, QUEEN);
-		chooseFigures[1] = new Rook(BLACK, 0, 0, ROOK);
-		chooseFigures[2] = new Knight(BLACK, 0, 0, KNIGHT);
-		chooseFigures[3] = new Bishop(BLACK, 0, 0, BISHOP);
+		chooseFigures[0] = new Queen(BLACK, 0, 0, QUEEN, 0);
+		chooseFigures[1] = new Rook(BLACK, 0, 0, ROOK, 0);
+		chooseFigures[2] = new Knight(BLACK, 0, 0, KNIGHT, 0);
+		chooseFigures[3] = new Bishop(BLACK, 0, 0, BISHOP, 0);
 	}
 	else if (y == 7)
 	{
-		chooseFigures[0] = new Queen(WHITE, 0, 0, QUEEN);
-		chooseFigures[1] = new Rook(WHITE, 0, 0, ROOK);
-		chooseFigures[2] = new Knight(WHITE, 0, 0, KNIGHT);
-		chooseFigures[3] = new Bishop(WHITE, 0, 0, BISHOP);
+		chooseFigures[0] = new Queen(WHITE, 0, 0, QUEEN, 0);
+		chooseFigures[1] = new Rook(WHITE, 0, 0, ROOK, 0);
+		chooseFigures[2] = new Knight(WHITE, 0, 0, KNIGHT, 0);
+		chooseFigures[3] = new Bishop(WHITE, 0, 0, BISHOP, 0);
 	}
 	Colour color = *(chooseFigures[0]->GetColour());
 	for (int i = 0; i < 4; ++i)
@@ -345,19 +345,20 @@ void CreateChooseFigureWindow(int y, int x, Board* board)
 					cout << "\n";
 					int cursor_x = (Mouse::getPosition(choose_figure_window).x) / square_size;
 					TypePiece type = *(chooseFigures[cursor_x]->GetName());
+					int move = *(chooseFigures[cursor_x]->getMoveCount());
 					switch (type)
 					{
 					case (QUEEN):
-						board->square[y][x] = new Queen(color, x, y, type);
+						board->square[y][x] = new Queen(color, x, y, type, move);
 						break;
 					case(BISHOP):
-						board->square[y][x] = new Bishop(color, x, y, type);
+						board->square[y][x] = new Bishop(color, x, y, type, move);
 						break;
 					case(KNIGHT):
-						board->square[y][x] = new Knight(color, x, y, type);
+						board->square[y][x] = new Knight(color, x, y, type, move);
 						break;
 					case(ROOK):
-						board->square[y][x] = new Rook(color, x, y, type);
+						board->square[y][x] = new Rook(color, x, y, type, move);
 						break;
 					}
 					choose_figure_window.close();
