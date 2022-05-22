@@ -137,9 +137,7 @@ bool CanMakeMove(vector<pair<int, int>>& PossibleMoves, bool& CanMove, pair<int,
 		return false;
 	}
 	CanMove = true;
-	if (find(PossibleMoves.begin(), PossibleMoves.end(), coords) != PossibleMoves.end())
-		return true;
-	return false;
+	return (find(PossibleMoves.begin(), PossibleMoves.end(), coords) != PossibleMoves.end());
 }
 
 pair<int, int> KingLikeBishop(pair<int, int> coords, int vEnd, int hEnd, int vStart, int hStart, Colour kingColour)

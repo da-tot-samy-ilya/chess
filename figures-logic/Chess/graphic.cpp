@@ -14,8 +14,8 @@
 using namespace std;
 
 //Server
-Server server("127.0.0.1", 1111);
-Client client("127.0.0.1", 1111);
+Server server("127.0.0.1", 1995);
+Client client("127.0.0.1", 1995);
 SOCKET cl;
 bool isServer = false;
 bool waitAnswer = false;
@@ -237,7 +237,7 @@ void CreateIpWindow(Colour* a) {
 							cursor_y > buttons_ip_window[i].bPosition.y && cursor_y < buttons_ip_window[i].bPosition.y + buttons_ip_window[i].bSprite.height) {
 							if (buttons_ip_window[i].name == "close_ok") {
 								IP = t;
-								CreateClient(t, 1111);
+								CreateClient(t, 1995);
 								serverGame = true;
 								waitAnswer = true;
 								ip_window.close();
@@ -489,6 +489,7 @@ int main() {
 			piece_wants_to_move = board->square[first_vert][first_hor];
 
 			Piece* piece = board->square[second_vert][second_hor];
+			std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece_wants_to_move, true);
 			if (*(piece->GetName()) == EMPTY) {
 				board->move(second_hor, second_vert, *(piece->GetColour()), piece_wants_to_move);
 			}
@@ -553,7 +554,7 @@ int main() {
 								}
 								else if (buttons_main_window[i].name == "create_server") {
 									cout << "Create server\n";
-									CreateServer(1111);
+									CreateServer(1995);
 									serverGame = true;
 								}
 								else if (buttons_main_window[i].name == "enter_ip") {
