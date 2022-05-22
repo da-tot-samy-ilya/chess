@@ -37,43 +37,38 @@ Board::Board() { SetBoard(); }
 
 void Board::SetBoard()
 {
-	for (int i = 0; i < 8; i++)
-	{
-		Colour colour = NONE;
-		if (i < 2) colour = WHITE;//AHAHAHAHHA
-		if (i > 5) colour = BLACK;
-		if (i == 0 || i == 7)
-		{
-			square[i][0] = new Rook(colour, 0, i, ROOK, 0);
-			square[i][1] = new Knight(colour, 1, i, KNIGHT, 0);
-			square[i][2] = new Bishop(colour, 2, i, BISHOP, 0);
-			square[i][3] = new Queen(colour, 3, i, QUEEN, 0);
-			square[i][4] = new King(colour, 4, i, KING, 0);
-			square[i][5] = new Bishop(colour, 5, i, BISHOP, 0);
-			square[i][6] = new Knight(colour, 6, i, KNIGHT, 0);
-			square[i][7] = new Rook(colour, 7, i, ROOK, 0);
-		}
-		else
-		{
-			for (int j = 0; j < 8; j++)
-				if (i == 1 || i == 6)
-					square[i][j] = new Pawn(colour, j, i, PAWN, 0);
-				else
-					square[i][j] = new Piece(colour, j, i, EMPTY, 0);
-		}
-	}
-	/*for (int i = 8; i< 12; i++)
-		for (int j = 0; j < 8; j++)
-			square[i][j] = new Piece(NONE, j, i, EMPTY);
-
-
+	//for (int i = 0; i < 8; i++)
+	//{
+	//	Colour colour = NONE;
+	//	if (i < 2) colour = WHITE;//AHAHAHAHHA
+	//	if (i > 5) colour = BLACK;
+	//	if (i == 0 || i == 7)
+	//	{
+	//		square[i][0] = new Rook(colour, 0, i, ROOK, 0);
+	//		square[i][1] = new Knight(colour, 1, i, KNIGHT, 0);
+	//		square[i][2] = new Bishop(colour, 2, i, BISHOP, 0);
+	//		square[i][3] = new Queen(colour, 3, i, QUEEN, 0);
+	//		square[i][4] = new King(colour, 4, i, KING, 0);
+	//		square[i][5] = new Bishop(colour, 5, i, BISHOP, 0);
+	//		square[i][6] = new Knight(colour, 6, i, KNIGHT, 0);
+	//		square[i][7] = new Rook(colour, 7, i, ROOK, 0);
+	//	}
+	//	else
+	//	{
+	//		for (int j = 0; j < 8; j++)
+	//			if (i == 1 || i == 6)
+	//				square[i][j] = new Pawn(colour, j, i, PAWN, 0);
+	//			else
+	//				square[i][j] = new Piece(colour, j, i, EMPTY, 0);
+	//	}
+	//}
 	for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 8; j++)
-			square[i][j] = new Piece(NONE, j, i, EMPTY);
-	square[4][3] = new Rook(WHITE, 3, 4, ROOK);
-	square[4][1] = new Queen(BLACK, 1, 4, QUEEN);
-	square[4][4] = new King(WHITE, 4, 4, KING);*/
-	/*square[5][1] = new King(BLACK, 4, 7, KING);*/
+			square[i][j] = new Piece(NONE, j, i, EMPTY,0);
+	square[4][3] = new Rook(WHITE, 3, 4, ROOK,0);
+	square[4][1] = new Queen(BLACK, 1, 4, QUEEN,0);
+	square[4][4] = new King(WHITE, 4, 4, KING,0);
+	square[5][1] = new King(BLACK, 4, 7, KING,0);
 
 }
 Board board;
