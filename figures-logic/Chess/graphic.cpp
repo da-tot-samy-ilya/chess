@@ -425,6 +425,15 @@ int main() {
 	Piece* piece_wants_to_move = nullptr;
 	Colour IS_NOW_PLAYING = WHITE;
 
+	//count figures
+	for (int i = 0; i < 8; ++i) {
+		for (int j = 0; j < 8; ++j) {
+			Piece* piece = board->square[i][j];
+			if (*(piece->GetName()) != EMPTY) {
+				board->figures_count++;
+			}
+		}
+	}
 	RenderWindow window(VideoMode(655, 488), "Chess");
 	Music music;
 	music.openFromFile("music/music.ogg");
@@ -535,7 +544,7 @@ int main() {
 									cout << "Play again\n";
 
 									// создание окна результата
-									//CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move, IS_NOW_PLAYING);
+									/*CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move, IS_NOW_PLAYING);*/
 
 									piece_wants_to_move = nullptr;
 									IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
@@ -584,23 +593,6 @@ int main() {
 								if ((cursor_y_for_board == 7 || cursor_y_for_board == 0) && (*piece_wants_to_move->GetName()) == PAWN) {
 									CreateChooseFigureWindow(cursor_y_for_board, cursor_x_for_board, board);
 								}
-								Colour temp_IS_NOW_PLAYING = IS_NOW_PLAYING;
-								ChangeColorIsMovingNow(temp_IS_NOW_PLAYING);
-
-								pair<int, int> coordsKing;
-								if (temp_IS_NOW_PLAYING == BLACK)
-									coordsKing = BlackKingCoords;
-								else
-									coordsKing = WhiteKingCoords;
-
-								if (HasCheck(coordsKing.second, coordsKing.first, temp_IS_NOW_PLAYING, false)) {
-									cout << "check\n";
-								}
-								else {
-									cout << "not check\n";
-								}
-
-
 								setFigures(board);
 								setSquaresPositions(board);
 
