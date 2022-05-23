@@ -332,7 +332,20 @@ void CreateChooseFigureWindow(int y, int x, Board* board) {
 		choose_figure_window.display();
 	}
 }
-void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* board, IsChoosingMove& IS_CHOOSING_MOVE, std::vector<std::pair<int, int>>& temp_pieceGetPossibleMoves, Piece* piece_wants_to_move, Colour& IS_NOW_PLAYING) {
+
+IsChoosingMove IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
+std::vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
+Piece* piece_wants_to_move = nullptr;
+Colour IS_NOW_PLAYING = WHITE;
+void ChangeColorIsMovingNow(Colour& IS_NOW_PLAYING) {
+	if (IS_NOW_PLAYING == WHITE) {
+		IS_NOW_PLAYING = BLACK;
+	}
+	else if (IS_NOW_PLAYING == BLACK) {
+		IS_NOW_PLAYING = WHITE;
+	}
+}
+void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* board, IsChoosingMove& IS_CHOOSING_MOVE, std::vector<std::pair<int, int>>& temp_pieceGetPossibleMoves, Piece* piece_wants_to_move) {
 	RenderWindow result_window(VideoMode(200, 100), "Result", Style::Default);
 	Sprite background_sprite;
 	background_sprite.setTexture(aside_texture);
@@ -343,9 +356,6 @@ void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* 
 	cat.setTexture(aside_texture);
 	cat.setTextureRect(IntRect(0, 0, 56, 56));
 	cat.setPosition(120, 11);
-
-	//индикатор наличия шаха
-	check_info.sprite.setTexture(check_info_texture);
 
 	result_header.setFont(font);
 	result_header.setCharacterSize(20);
@@ -389,7 +399,9 @@ void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* 
 								piece_wants_to_move = nullptr;
 								IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 								temp_pieceGetPossibleMoves.clear();
-								IS_NOW_PLAYING = WHITE;
+								if (IS_NOW_PLAYING == WHITE) {
+									ChangeColorIsMovingNow(IS_NOW_PLAYING);
+								}
 								result_window.close();
 							}
 						}
@@ -408,33 +420,13 @@ void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* 
 		result_window.display();
 	}
 }
-void ChangeColorIsMovingNow(Colour& IS_NOW_PLAYING) {
-	if (IS_NOW_PLAYING == WHITE) {
-		IS_NOW_PLAYING = BLACK;
-	}
-	else if (IS_NOW_PLAYING == BLACK) {
-		IS_NOW_PLAYING = WHITE;
-	}
-}
+
 int main() {
 	loadTexures();
 	Board* board = CreateBoard();
 
-	IsChoosingMove IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
-	std::vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
-	Piece* piece_wants_to_move = nullptr;
-	Colour IS_NOW_PLAYING = WHITE;
-
-	//count figures
-	for (int i = 0; i < 8; ++i) {
-		for (int j = 0; j < 8; ++j) {
-			Piece* piece = board->square[i][j];
-			if (*(piece->GetName()) != EMPTY) {
-				board->figures_count++;
-			}
-		}
-	}
 	RenderWindow window(VideoMode(655, 488), "Chess");
+
 	Music music;
 	music.openFromFile("music/music.ogg");
 	music.play();
@@ -523,13 +515,6 @@ int main() {
 					if (event.mouseButton.button == Mouse::Left) {
 						setFigures(board);
 						setSquaresPositions(board);
-						/*for (int i = 0; i < 8; i++) {
-							for (int j = 0; j < 8; j++) {
-								cout << *(board->square[i][j]->GetName()) << " ";
-							}
-							cout << "\n";
-						}
-						cout << "\n";*/
 						int cursor_x = Mouse::getPosition(window).x;
 						int cursor_y = Mouse::getPosition(window).y;
 
@@ -542,9 +527,7 @@ int main() {
 									setFigures(board);
 									setSquaresPositions(board);
 									cout << "Play again\n";
-
-									// создание окна результата
-									/*CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move, IS_NOW_PLAYING);*/
+									check_info.sprite.setTexture(aside_texture);
 
 									piece_wants_to_move = nullptr;
 									IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
@@ -593,6 +576,33 @@ int main() {
 								if ((cursor_y_for_board == 7 || cursor_y_for_board == 0) && (*piece_wants_to_move->GetName()) == PAWN) {
 									CreateChooseFigureWindow(cursor_y_for_board, cursor_x_for_board, board);
 								}
+								Colour temp_IS_NOW_PLAYING = IS_NOW_PLAYING;
+								ChangeColorIsMovingNow(temp_IS_NOW_PLAYING);
+								board->MakePossibleMovesForBoard();
+
+								pair<int, int> coordsKing;
+								if (temp_IS_NOW_PLAYING == BLACK)
+									coordsKing = BlackKingCoords;
+								else
+									coordsKing = WhiteKingCoords;
+								//cout << coordsKing.second << " " << coordsKing.first << endl;
+								bool hasCheck = HasCheck(coordsKing.second, coordsKing.first, temp_IS_NOW_PLAYING, false);
+								bool pat = Pat(temp_IS_NOW_PLAYING);
+								if (hasCheck && pat) {
+									CreateResultWindow(check_info, WIN, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+								}
+								else {
+									if (pat) {
+										CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+									}
+									if (hasCheck) {
+										check_info.sprite.setTexture(check_info_texture);
+									}
+									else {
+										check_info.sprite.setTexture(aside_texture);
+									}
+								}
+
 								setFigures(board);
 								setSquaresPositions(board);
 
@@ -620,6 +630,7 @@ int main() {
 									//squares backlight red with onclick
 									piece_wants_to_move = piece;
 									colorSquare(piece, cursor_x_for_board, cursor_y_for_board, RED);
+
 									std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece, true);
 
 									if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
