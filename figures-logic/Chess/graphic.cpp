@@ -14,8 +14,8 @@
 using namespace std;
 
 //Server
-Server server("127.0.0.1", 1995);
-Client client("127.0.0.1", 1995);
+Server server("127.0.0.1", 1111);
+Client client("127.0.0.1", 1111);
 SOCKET cl;
 bool isServer = false;
 bool waitAnswer = false;
@@ -237,7 +237,7 @@ void CreateIpWindow(Colour* a) {
 							cursor_y > buttons_ip_window[i].bPosition.y && cursor_y < buttons_ip_window[i].bPosition.y + buttons_ip_window[i].bSprite.height) {
 							if (buttons_ip_window[i].name == "close_ok") {
 								IP = t;
-								CreateClient(t, 1995);
+								CreateClient(t, 1111);
 								serverGame = true;
 								waitAnswer = true;
 								ip_window.close();
@@ -425,15 +425,6 @@ int main() {
 	Piece* piece_wants_to_move = nullptr;
 	Colour IS_NOW_PLAYING = WHITE;
 
-	//count figures
-	for (int i = 0; i < 8; ++i) {
-		for (int j = 0; j < 8; ++j) {
-			Piece* piece = board->square[i][j];
-			if (*(piece->GetName()) != EMPTY) {
-				board->figures_count++;
-			}
-		}
-	}
 	RenderWindow window(VideoMode(655, 488), "Chess");
 	Music music;
 	music.openFromFile("music/music.ogg");
@@ -489,7 +480,6 @@ int main() {
 			piece_wants_to_move = board->square[first_vert][first_hor];
 
 			Piece* piece = board->square[second_vert][second_hor];
-			std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece_wants_to_move, true);
 			if (*(piece->GetName()) == EMPTY) {
 				board->move(second_hor, second_vert, *(piece->GetColour()), piece_wants_to_move);
 			}
@@ -545,7 +535,7 @@ int main() {
 									cout << "Play again\n";
 
 									// создание окна результата
-									CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move, IS_NOW_PLAYING);
+									//CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move, IS_NOW_PLAYING);
 
 									piece_wants_to_move = nullptr;
 									IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
@@ -554,7 +544,7 @@ int main() {
 								}
 								else if (buttons_main_window[i].name == "create_server") {
 									cout << "Create server\n";
-									CreateServer(1995);
+									CreateServer(1111);
 									serverGame = true;
 								}
 								else if (buttons_main_window[i].name == "enter_ip") {
@@ -594,6 +584,32 @@ int main() {
 								if ((cursor_y_for_board == 7 || cursor_y_for_board == 0) && (*piece_wants_to_move->GetName()) == PAWN) {
 									CreateChooseFigureWindow(cursor_y_for_board, cursor_x_for_board, board);
 								}
+								Colour temp_IS_NOW_PLAYING = IS_NOW_PLAYING;
+								ChangeColorIsMovingNow(temp_IS_NOW_PLAYING);
+								board->MakePossibleMovesForBoard();
+
+								pair<int, int> coordsKing;
+								if (temp_IS_NOW_PLAYING == BLACK)
+									coordsKing = BlackKingCoords;
+								else
+									coordsKing = WhiteKingCoords;
+								//cout << coordsKing.second << " " << coordsKing.first << endl;
+								bool hasCheck = HasCheck(coordsKing.second, coordsKing.first, temp_IS_NOW_PLAYING, false);
+								bool pat = Pat(temp_IS_NOW_PLAYING);
+								if (hasCheck && pat)
+								{
+									cout << "checkmate\n";
+								}
+								else {
+									if (pat)
+										cout << "pat\n";
+									if (hasCheck)
+										cout << "check\n";
+									else
+										cout << "not check\n";
+									
+								}
+
 								setFigures(board);
 								setSquaresPositions(board);
 
@@ -621,6 +637,7 @@ int main() {
 									//squares backlight red with onclick
 									piece_wants_to_move = piece;
 									colorSquare(piece, cursor_x_for_board, cursor_y_for_board, RED);
+
 									std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece, true);
 
 									if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
