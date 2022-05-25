@@ -365,12 +365,12 @@ void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* 
 	buttons_result_window.push_back(result_ok_button);
 
 	if (result == WIN) {
-		result_header.setString("You win!");
+		result_header.setString("MATE!");
 		result_header.setFillColor(Color::Color(97, 206, 101));
 		cat.setTexture(laughing_cat_texture);
 	}
 	else if (result == LOSE) {
-		result_header.setString("You lose!");
+		result_header.setString("MATE!");
 		result_header.setFillColor(Color::Color(251, 94, 94));
 		cat.setTexture(cry_cat_texture);
 	}
@@ -459,6 +459,9 @@ int main() {
 	setFigures(board);
 	setSquaresPositions(board);
 
+	/*bool hasCheck;
+	bool pat;*/
+
 	//for mouse_move
 	int mouse_x = 0;
 	int mouse_y = 0;
@@ -466,6 +469,33 @@ int main() {
 	int temp_mouse_y = 0;
 	while (window.isOpen()) {
 		if (waitAnswer) {
+
+			Colour temp_IS_NOW_PLAYING = IS_NOW_PLAYING;
+			ChangeColorIsMovingNow(temp_IS_NOW_PLAYING);
+
+			pair<int, int> coordsKing;
+			if (temp_IS_NOW_PLAYING == BLACK)
+				coordsKing = BlackKingCoords;
+			else
+				coordsKing = WhiteKingCoords;
+
+			bool hasCheck = HasCheck(coordsKing.second, coordsKing.first, temp_IS_NOW_PLAYING, false);
+			bool pat = Pat(temp_IS_NOW_PLAYING);
+			if (hasCheck && pat) {
+				CreateResultWindow(check_info, WIN, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+			}
+			else {
+				if (pat) {
+					CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+				}
+				if (hasCheck) {
+					check_info.sprite.setTexture(check_info_texture);
+				}
+				else {
+					check_info.sprite.setTexture(aside_texture);
+				}
+			}
+
 			int first_hor;
 			int first_vert;
 			int second_hor;
@@ -491,6 +521,31 @@ int main() {
 				CreateChooseFigureWindow(second_vert, second_hor, board);
 			}
 			board->MakePossibleMovesForBoard();
+
+			temp_IS_NOW_PLAYING = IS_NOW_PLAYING;
+			ChangeColorIsMovingNow(temp_IS_NOW_PLAYING);
+			
+			if (temp_IS_NOW_PLAYING == BLACK)
+				coordsKing = BlackKingCoords;
+			else
+				coordsKing = WhiteKingCoords;
+			hasCheck = HasCheck(coordsKing.second, coordsKing.first, temp_IS_NOW_PLAYING, false);
+			pat = Pat(temp_IS_NOW_PLAYING);
+			if (hasCheck && pat) {
+				CreateResultWindow(check_info, WIN, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+			}
+			else {
+				if (pat) {
+					CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+				}
+				if (hasCheck) {
+					check_info.sprite.setTexture(check_info_texture);
+				}
+				else {
+					check_info.sprite.setTexture(aside_texture);
+				}
+			}
+
 			setFigures(board);
 			setSquaresPositions(board);
 
@@ -559,6 +614,33 @@ int main() {
 							if (is_found != temp_pieceGetPossibleMoves.end()) {
 								//move figure
 								if (serverGame) {
+
+									Colour temp_IS_NOW_PLAYING = IS_NOW_PLAYING;
+									ChangeColorIsMovingNow(temp_IS_NOW_PLAYING);
+
+									pair<int, int> coordsKing;
+									if (temp_IS_NOW_PLAYING == BLACK)
+										coordsKing = BlackKingCoords;
+									else
+										coordsKing = WhiteKingCoords;
+									
+									bool hasCheck = HasCheck(coordsKing.second, coordsKing.first, temp_IS_NOW_PLAYING, false);
+									bool pat = Pat(temp_IS_NOW_PLAYING);
+									if (hasCheck && pat) {
+										CreateResultWindow(check_info, WIN, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+									}
+									else {
+										if (pat) {
+											CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+										}
+										if (hasCheck) {
+											check_info.sprite.setTexture(check_info_texture);
+										}
+										else {
+											check_info.sprite.setTexture(aside_texture);
+										}
+									}
+
 									char first_pos = *(piece_wants_to_move->GetHor()) * 8 + *(piece_wants_to_move->GetVert());
 									char second_pos = cursor_y_for_board * 8 + cursor_x_for_board;
 									string a = "";
@@ -566,11 +648,34 @@ int main() {
 									a += second_pos;
 									if (isServer) server.sendMsg(a.c_str(), cl);
 									else client.sendMsg(a.c_str());
+
+									temp_IS_NOW_PLAYING = IS_NOW_PLAYING;
+									ChangeColorIsMovingNow(temp_IS_NOW_PLAYING);
+
+									if (temp_IS_NOW_PLAYING == BLACK)
+										coordsKing = BlackKingCoords;
+									else
+										coordsKing = WhiteKingCoords;
+									hasCheck = HasCheck(coordsKing.second, coordsKing.first, temp_IS_NOW_PLAYING, false);
+									pat = Pat(temp_IS_NOW_PLAYING);
+									if (hasCheck && pat) {
+										CreateResultWindow(check_info, WIN, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+									}
+									else {
+										if (pat) {
+											CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+										}
+										if (hasCheck) {
+											check_info.sprite.setTexture(check_info_texture);
+										}
+										else {
+											check_info.sprite.setTexture(aside_texture);
+										}
+									}
+
 									waitAnswer = true;
 								}
-								//board->MakePossibleMovesForBoard();
-								/*cout << *(piece_wants_to_move->GetHor()) << " " << *(piece_wants_to_move->GetVert()) << " " << piece_wants_to_move->GetPossibleMoves()->size() << endl;
-								cout << endl;*/
+								
 								if ((*piece->GetName()) == EMPTY) {
 									board->move(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
 								}
