@@ -598,13 +598,13 @@ void FindPossibleMovesForKing(vector<pair<int, int>>* PossibleMoves, int vStart,
 		PossibleMoves->push_back(make_pair(hStart - 1, vStart - 1));
 		KingProtected(make_pair(hStart - 1, vStart - 1), vStart, hStart, PossibleMoves);
 	}
-	//if (*(board.square[hStart][vStart])->getMoveCount() == 0 && !HasCheck(vStart, hStart, colour, true))// исправить
-	//{
-	//	if (!HasCheck(2, hStart, colour, true))
-	//		MakeCastling(*PossibleMoves, 0, vStart, hStart);
-	//	if (!HasCheck(6, hStart, colour, true))
-	//		MakeCastling(*PossibleMoves, 7, vStart, hStart);
-	//}
+	if (*(board.square[hStart][vStart])->getMoveCount() == 0 && !HasCheck(vStart, hStart, colour, true))// исправить
+	{
+		if (!HasCheck(2, hStart, colour, true))
+			MakeCastling(*PossibleMoves, 0, vStart, hStart);
+		if (!HasCheck(6, hStart, colour, true))
+			MakeCastling(*PossibleMoves, 7, vStart, hStart);
+	}
 }
 
 void FindPossibleMovesForKnight(vector<pair<int, int>>* PossibleMoves, int vStart, int hStart, Colour colour)
@@ -755,7 +755,7 @@ bool Board::move(int vert, int hor, Colour col, Piece* piece)
 {
 	Colour* colour = piece->GetColour();
 	TypePiece* type = piece->GetName();
-	auto PossibleMoves = MakePossibleMoves(piece, 1);
+	auto PossibleMoves = piece->GetPossibleMoves();
 	bool* canMove = piece->GetCanMove();
 	auto vertical = piece->GetVert();
 	int* horizontal = piece->GetHor();
@@ -980,16 +980,17 @@ bool Board::cut_down(int vert, int hor, Colour col, Piece* piece)
 
 bool Pat(Colour colour)
 {
-	/*cout << "START" << colour << endl;*/
+	//cout << "START" << colour << endl;
 	for (int i = 0; i < 8; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			/*cout << board.square[i][j]->GetPossibleMoves()->size() << " " << i << " " << j << endl;*/
+			//cout << board.square[i][j]->GetPossibleMoves()->size() << " " << i << " " << j << endl;
+
 			if (board.square[i][j]->GetPossibleMoves()->size() != 0 && *(board.square[i][j]->GetColour()) == colour)
 				return false;
 		}
-		/*cout << endl;*/
+		//cout << endl;
 	}
 	return true;
 }

@@ -332,7 +332,20 @@ void CreateChooseFigureWindow(int y, int x, Board* board) {
 		choose_figure_window.display();
 	}
 }
-void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* board, IsChoosingMove& IS_CHOOSING_MOVE, std::vector<std::pair<int, int>>& temp_pieceGetPossibleMoves, Piece* piece_wants_to_move, Colour& IS_NOW_PLAYING) {
+
+IsChoosingMove IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
+std::vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
+Piece* piece_wants_to_move = nullptr;
+Colour IS_NOW_PLAYING = WHITE;
+void ChangeColorIsMovingNow(Colour& IS_NOW_PLAYING) {
+	if (IS_NOW_PLAYING == WHITE) {
+		IS_NOW_PLAYING = BLACK;
+	}
+	else if (IS_NOW_PLAYING == BLACK) {
+		IS_NOW_PLAYING = WHITE;
+	}
+}
+void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* board, IsChoosingMove& IS_CHOOSING_MOVE, std::vector<std::pair<int, int>>& temp_pieceGetPossibleMoves, Piece* piece_wants_to_move) {
 	RenderWindow result_window(VideoMode(200, 100), "Result", Style::Default);
 	Sprite background_sprite;
 	background_sprite.setTexture(aside_texture);
@@ -343,9 +356,6 @@ void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* 
 	cat.setTexture(aside_texture);
 	cat.setTextureRect(IntRect(0, 0, 56, 56));
 	cat.setPosition(120, 11);
-
-	//индикатор наличия шаха
-	check_info.sprite.setTexture(check_info_texture);
 
 	result_header.setFont(font);
 	result_header.setCharacterSize(20);
@@ -389,7 +399,9 @@ void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* 
 								piece_wants_to_move = nullptr;
 								IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
 								temp_pieceGetPossibleMoves.clear();
-								IS_NOW_PLAYING = WHITE;
+								if (IS_NOW_PLAYING == WHITE) {
+									ChangeColorIsMovingNow(IS_NOW_PLAYING);
+								}
 								result_window.close();
 							}
 						}
@@ -408,24 +420,13 @@ void CreateResultWindow(InterfaceElement& check_info, GameResult result, Board* 
 		result_window.display();
 	}
 }
-void ChangeColorIsMovingNow(Colour& IS_NOW_PLAYING) {
-	if (IS_NOW_PLAYING == WHITE) {
-		IS_NOW_PLAYING = BLACK;
-	}
-	else if (IS_NOW_PLAYING == BLACK) {
-		IS_NOW_PLAYING = WHITE;
-	}
-}
+
 int main() {
 	loadTexures();
 	Board* board = CreateBoard();
 
-	IsChoosingMove IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
-	std::vector<std::pair<int, int>> temp_pieceGetPossibleMoves;
-	Piece* piece_wants_to_move = nullptr;
-	Colour IS_NOW_PLAYING = WHITE;
-
 	RenderWindow window(VideoMode(655, 488), "Chess");
+
 	Music music;
 	music.openFromFile("music/music.ogg");
 	music.play();
@@ -489,6 +490,7 @@ int main() {
 			if ((second_vert == 7 || second_vert == 0) && (*piece_wants_to_move->GetName()) == PAWN) {
 				CreateChooseFigureWindow(second_vert, second_hor, board);
 			}
+			board->MakePossibleMovesForBoard();
 			setFigures(board);
 			setSquaresPositions(board);
 
@@ -514,13 +516,6 @@ int main() {
 					if (event.mouseButton.button == Mouse::Left) {
 						setFigures(board);
 						setSquaresPositions(board);
-						/*for (int i = 0; i < 8; i++) {
-							for (int j = 0; j < 8; j++) {
-								cout << *(board->square[i][j]->GetName()) << " ";
-							}
-							cout << "\n";
-						}
-						cout << "\n";*/
 						int cursor_x = Mouse::getPosition(window).x;
 						int cursor_y = Mouse::getPosition(window).y;
 
@@ -533,9 +528,7 @@ int main() {
 									setFigures(board);
 									setSquaresPositions(board);
 									cout << "Play again\n";
-
-									// создание окна результата
-									//CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move, IS_NOW_PLAYING);
+									check_info.sprite.setTexture(aside_texture);
 
 									piece_wants_to_move = nullptr;
 									IS_CHOOSING_MOVE = NOT_CHOOSING_MOVE;
@@ -575,6 +568,9 @@ int main() {
 									else client.sendMsg(a.c_str());
 									waitAnswer = true;
 								}
+								//board->MakePossibleMovesForBoard();
+								/*cout << *(piece_wants_to_move->GetHor()) << " " << *(piece_wants_to_move->GetVert()) << " " << piece_wants_to_move->GetPossibleMoves()->size() << endl;
+								cout << endl;*/
 								if ((*piece->GetName()) == EMPTY) {
 									board->move(cursor_x_for_board, cursor_y_for_board, *(piece->GetColour()), piece_wants_to_move);
 								}
@@ -596,18 +592,19 @@ int main() {
 								//cout << coordsKing.second << " " << coordsKing.first << endl;
 								bool hasCheck = HasCheck(coordsKing.second, coordsKing.first, temp_IS_NOW_PLAYING, false);
 								bool pat = Pat(temp_IS_NOW_PLAYING);
-								if (hasCheck && pat)
-								{
-									cout << "checkmate\n";
+								if (hasCheck && pat) {
+									CreateResultWindow(check_info, WIN, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
 								}
 								else {
-									if (pat)
-										cout << "pat\n";
-									if (hasCheck)
-										cout << "check\n";
-									else
-										cout << "not check\n";
-									
+									if (pat) {
+										CreateResultWindow(check_info, DRAW, board, IS_CHOOSING_MOVE, temp_pieceGetPossibleMoves, piece_wants_to_move);
+									}
+									if (hasCheck) {
+										check_info.sprite.setTexture(check_info_texture);
+									}
+									else {
+										check_info.sprite.setTexture(aside_texture);
+									}
 								}
 
 								setFigures(board);
@@ -638,7 +635,9 @@ int main() {
 									piece_wants_to_move = piece;
 									colorSquare(piece, cursor_x_for_board, cursor_y_for_board, RED);
 
-									std::vector<std::pair<int, int>> pieceGetPossibleMoves = *MakePossibleMoves(piece, true);
+									std::vector<std::pair<int, int>> pieceGetPossibleMoves = *(piece->GetPossibleMoves());
+									/*cout << *(piece->GetHor()) << " " << *(piece->GetVert()) << " " << pieceGetPossibleMoves.size() << endl;
+									cout << endl;*/
 
 									if (IS_CHOOSING_MOVE == CHOOSING_MOVE) {
 										//убираем возможные ходы предыдущего выбора фигуры
@@ -650,6 +649,7 @@ int main() {
 											colorSquare(piece, possible_move_x, possible_move_y, NONE_COLOR);
 										}
 									}
+								
 									for (int i = 0; i < pieceGetPossibleMoves.size(); ++i) {
 										int possible_move_x = pieceGetPossibleMoves[i].first;
 										int possible_move_y = pieceGetPossibleMoves[i].second;
